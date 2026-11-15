@@ -31,6 +31,16 @@ To reproduce only those two cases, use
 Selected cases write to a separate `selected/` evidence directory and leave the
 complete inventory intact.
 
+A later macOS Intel CI check caught the menu-wrap assertion one completed paint
+early: the retained raw output highlights Sunleaf armor at character 128270 and
+Bow at 129301 after the final Tab. The test now retains thirteen rapid presses,
+requires a visible intermediate selection change, and waits for the visible
+wrap. A separate physical recheck passed in 6.71 seconds; all seven frames were
+inspected and replayed from their exact raw offsets. This [supplemental menu
+review](menu-wrap-review.json) leaves the original 177-row, 506-frame inventory
+intact. Reproduce it with
+`python3 tools/ansi_audit.py --case paused 'Up/Down/Tab boundaries'`.
+
 The harness sends physical ANSI bytes to running tui4j, with the shipped 256 MiB
 heap limit. A test-only host supplies isolated starting states; it never calls
 an input handler for a tested command. Game classes and assets load from the

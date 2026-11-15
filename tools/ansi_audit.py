@@ -253,19 +253,27 @@ class Terminal:
     def text(self) -> str:
         return "\n".join(self.screen.display)
 
-    def save(self, label: str) -> dict:
-        state = self.state()
+    def save(
+        self,
+        label: str,
+        *,
+        screen: TerminalScreen | None = None,
+        observation: dict | None = None,
+        complete_offset: int | None = None,
+    ) -> dict:
+        screen = self.screen if screen is None else screen
+        state = self.state() if observation is None else dict(observation)
         # The raw stream is cumulative. This character offset reproduces exactly
         # the completed frame used by this screenshot, even after later inputs.
-        state["ansi_complete_character_offset"] = self.complete_offset
+        state["ansi_complete_character_offset"] = (
+            self.complete_offset if complete_offset is None else complete_offset
+        )
         (self.directory / f"{label}.json").write_text(
             json.dumps(state, indent=2) + "\n"
         )
-        (self.directory / f"{label}.txt").write_text(self.text() + "\n")
+        (self.directory / f"{label}.txt").write_text("\n".join(screen.display) + "\n")
         (self.directory / "terminal.ansi").write_text(self.raw)
-        image = Image.new(
-            "RGB", (self.screen.columns * 8, self.screen.lines * 16), "black"
-        )
+        image = Image.new("RGB", (screen.columns * 8, screen.lines * 16), "black")
         draw = ImageDraw.Draw(image)
         font_path = next(
             path
@@ -277,9 +285,9 @@ class Terminal:
             if path.exists()
         )
         font = ImageFont.truetype(str(font_path), 12)
-        for y in range(self.screen.lines):
-            for x in range(self.screen.columns):
-                cell = self.screen.buffer[y][x]
+        for y in range(screen.lines):
+            for x in range(screen.columns):
+                cell = screen.buffer[y][x]
                 fg, bg = rgb(cell.fg, (230, 230, 230)), rgb(cell.bg, (0, 0, 0))
                 if cell.reverse:
                     fg, bg = bg, fg
@@ -1165,12 +1173,39 @@ def menu_edges(terminal: Terminal) -> None:
     )
     terminal.save("up-clamped")
     for binding in ("Down", "Tab"):
+        intermediate = None
         for _ in range(13):
             terminal.key(binding, 0.045)
+            selected = next(
+                line for line in terminal.screen.display if line.startswith(" >")
+            )
+            if selected != initial and intermediate is None:
+                # Retain an observed change without pausing the rapid key burst
+                # for PNG encoding. Final input acknowledgement can precede its
+                # completed paint, especially on the macOS Intel runner.
+                intermediate = (
+                    copy.deepcopy(terminal.screen),
+                    terminal.state(),
+                    terminal.complete_offset,
+                )
         require(
-            next(line for line in terminal.screen.display if line.startswith(" >"))
-            == initial,
+            intermediate is not None,
+            f"Repeated {binding} must visibly leave the initial selection",
+        )
+        wait_for(
+            terminal,
+            lambda: (
+                next(line for line in terminal.screen.display if line.startswith(" >"))
+                == initial
+            ),
             f"Thirteen repeated {binding} presses must wrap to the first item",
+        )
+        screen, observation, offset = intermediate
+        terminal.save(
+            f"{binding.lower()}-traversing",
+            screen=screen,
+            observation=observation,
+            complete_offset=offset,
         )
         terminal.save(f"{binding.lower()}-wrapped")
 

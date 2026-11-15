@@ -8,4 +8,6 @@ World +x means screen-right, +y down. Physics belongs in Game. TUI4J owns termin
 
 Use the shared TerminalSession for production and audit hosts. Ctrl+Z pauses without toggling resume; preserve the complete native terminal settings and prevent interrupt-time output flushing during play. Run `python3 tools/terminal_lifecycle_audit.py` after lifecycle changes; ANSI escape cleanup alone does not prove exact terminal restoration. Keep source-build/package operations separate from source-launch audits so build locks do not invalidate startup timing.
 
+Synchronize visual assertions with the required observable result in completed ANSI paints. A key acknowledgement or fixed delay does not establish that a new frame has been presented. Preserve failed traces alongside explained rechecks; never relax the expected player-facing behavior to make an audit pass.
+
 Installer prerequisite handling lives in install.sh and is shared with bootstrap.sh. Offline checks never install packages. For graphical Linux installs, a terminal executable alone is insufficient: prove that the desktop launcher can select it, or provide a recognized fallback. See docs/QUALITY_REVIEW.md for the session-derived criteria and evidence.

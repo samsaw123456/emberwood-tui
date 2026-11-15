@@ -2806,5 +2806,18 @@
         }
       ]
     }
+  ],
+  "supplemental_focused_regressions": [
+    {
+      "binding": "Up/Down/Tab boundaries",
+      "status": "PASSED",
+      "passed_cases": 1,
+      "reviewed_frames": 7,
+      "duration_seconds": 6.71,
+      "review_manifest": "docs/evidence/menu-wrap-review.json",
+      "evidence": "build/quality-review/menu-wrap-final/selected",
+      "reason": "CI Intel final Tab acknowledgement preceded completed wrap paint. Physical recheck preserves rapid13-key bursts and additionally requires visible intermediate movement before bounded final-wrap observation.",
+      "included_in_506_inventory_frames": false
+    }
   ]
 }

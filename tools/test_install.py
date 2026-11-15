@@ -10,6 +10,7 @@ import json
 import os
 import platform
 import pty
+import re
 import select
 import shlex
 import shutil
@@ -34,11 +35,11 @@ def terminal_probe(
     while_open: Callable[[], None] | None = None,
 ) -> str:
     """Run the installed public CLI through its actual terminal, with isolated preferences."""
-    # Keep the slave open in the parent so post-exit tcgetattr also works on
-    # macOS. Capture before forking: the child must not race this baseline.
+    # macOS revokes the controlling terminal when its session owner exits,
+    # even if the parent retains a slave fd. Keep Bash alive until measurement.
     descriptor, slave = pty.openpty()
     fcntl.ioctl(slave, termios.TIOCSWINSZ, struct.pack("HHHH", 40, 120, 0, 0))
-    before = termios.tcgetattr(slave)
+    before = None
     child = os.fork()
     if child == 0:
         os.close(descriptor)
@@ -48,12 +49,37 @@ def terminal_probe(
             os.dup2(slave, target)
         if slave > 2:
             os.close(slave)
-        os.execve(str(command), [str(command), "--offline"], env)
+        child_env = env.copy()
+        child_env.pop("BASH_ENV", None)
+        child_env.pop("ENV", None)
+        # Monitor mode gives the game its own foreground process group, so
+        # physical Ctrl+Z reaches the game without stopping the keeper shell.
+        script = (
+            "printf '__EMBERWOOD_INSTALL_READY__\\n'; "
+            "IFS= read -r start_probe; "
+            '"$1" --offline; game_status=$?; '
+            "printf '\\n__EMBERWOOD_INSTALL_EXIT_%s__\\n' \"$game_status\"; "
+            'IFS= read -r finish_probe; exit "$game_status"'
+        )
+        os.execve(
+            "/bin/bash",
+            [
+                "bash",
+                "--noprofile",
+                "--norc",
+                "-m",
+                "-c",
+                script,
+                "emberwood-install-probe",
+                str(command),
+            ],
+            child_env,
+        )
     output = ""
     reaped = False
     try:
         deadline = time.monotonic() + 20
-        phase = "title"
+        phase = "shell"
         sound_key_at = 0.0
         while time.monotonic() < deadline:
             readable, _, _ = select.select([descriptor], [], [], 0.1)
@@ -62,7 +88,12 @@ def terminal_probe(
                 output += fragment
                 if "\x1b[6n" in fragment:
                     os.write(descriptor, b"\x1b[1;1R")
-            if (
+            if phase == "shell" and "__EMBERWOOD_INSTALL_READY__" in output:
+                before = termios.tcgetattr(slave)
+                output = ""
+                os.write(descriptor, b"\n")
+                phase = "title"
+            elif (
                 phase == "title"
                 and "Enter:" in output
                 and (toggle or "sound: off" in output)
@@ -93,6 +124,7 @@ def terminal_probe(
                 f"Installed terminal did not recover after Ctrl+Z ({phase}): {output[-2000:]}"
             )
         deadline = time.monotonic() + 5
+        measured = False
         while time.monotonic() < deadline:
             # Keep draining while tui4j flushes its final frame and restores the PTY.
             # Waiting without reading can block a renderer on a full terminal buffer.
@@ -109,23 +141,46 @@ def terminal_probe(
                     # Linux reports EIO once the child closes its terminal.
                     if error.errno != errno.EIO:
                         raise
-            done, status = os.waitpid(child, os.WNOHANG)
-            if done:
-                reaped = True
-                assert os.waitstatus_to_exitcode(status) == 0
+            exit_marker = re.search(r"__EMBERWOOD_INSTALL_EXIT_(\d+)__", output)
+            if exit_marker and not measured:
+                assert exit_marker[1] == "0", (
+                    f"Installed game exited with status {exit_marker[1]}"
+                )
                 after = termios.tcgetattr(slave)
                 assert after == before, (
                     f"Terminal settings changed: {before!r} -> {after!r}"
                 )
+                measured = True
+                os.write(descriptor, b"\n")
+            done, status = os.waitpid(child, os.WNOHANG)
+            if done:
+                reaped = True
+                assert os.waitstatus_to_exitcode(status) == 0
+                assert measured, "PTY owner exited before terminal-state measurement"
                 return output
             time.sleep(0.05)
         raise AssertionError("Installed terminal did not exit after Q.")
     finally:
+        if not reaped:
+            # A failed probe may leave a game foreground job. Only terminate a
+            # group belonging to this newly created, private terminal session.
+            try:
+                foreground = os.tcgetpgrp(descriptor)
+                if (
+                    foreground > 0
+                    and foreground != child
+                    and os.getsid(foreground) == child
+                ):
+                    os.killpg(foreground, signal.SIGKILL)
+            except (OSError, ProcessLookupError):
+                pass
+            try:
+                os.kill(child, signal.SIGKILL)
+            except ProcessLookupError:
+                pass
+            os.waitpid(child, 0)
         os.close(descriptor)
         os.close(slave)
-        if not reaped:
-            os.kill(child, signal.SIGKILL)
-            os.waitpid(child, 0)
 
 
 def run(*arguments: str, env: dict[str, str] | None = None, success: bool = True):

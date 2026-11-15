@@ -133,6 +133,32 @@ An earlier probe overlapped the source package build and timed out waiting for
 the launcher lock before Java started. That interference is retained separately;
 the clean twenty-case run is `build/quality-review/terminal-final-clean`.
 
+## Cross-platform audit corrections
+
+The CI rechecks also exposed measurement errors in the audit helpers. The Intel
+macOS menu test sampled the preceding completed paint after its final Tab key:
+the original ANSI stream shows Sunleaf armor at offset 128270 and the correct
+wrapped Bow selection at offset 129301. The corrected test retains thirteen
+rapid presses, requires a visible intermediate selection, and waits for the
+required completed wrap paint. All seven supplemental local captures were
+inspected and replayed exactly from raw ANSI; the original 177-case, 506-frame
+local inventory remains intact.
+
+On macOS ARM, the installed game exited successfully, but the test's subsequent
+`tcgetattr` failed because the controlling session had ended. The installation
+probe now keeps its Bash session owner alive until after exact native terminal
+comparison. A deliberate negative probe ran the real game, then disabled echo
+before exiting successfully; the test correctly rejected the changed attributes.
+The shell therefore does not conceal a restoration failure. The separate ten-case
+native lifecycle audit had already passed on that runner.
+
+Earlier literal Ctrl+Z setup also differed between Linux and Darwin. The fixture
+now disables the suspend control character on its own child terminal before Java
+starts; its parser-acknowledgement requirement remains distinct from the seven
+ordinary Ctrl+Z signal cases. Failed CI logs, original frames, exact replay and
+successful targeted rechecks are retained under `build/quality-review/ci-final`
+and `menu-wrap-final`. These audit corrections do not change the tested game JAR.
+
 ## Performance and evidence boundaries
 
 Before the terminal-lifecycle fix, ten-second samples of the v1.0.0 game at

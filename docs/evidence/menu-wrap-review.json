@@ -1,0 +1,77 @@
+{
+  "status": "PASSED",
+  "jar_sha256": "10220ad3607d6f947b4cf8ae017589f532a5b53ccd409e5d225b7488f859d5a2",
+  "row_count": 1,
+  "reviewed_capture_count": 7,
+  "visual_inspection": "All seven captures viewed together; Down traversal and final Tab wrap also opened full size. Up remains Bow; Down and Tab each visibly select Leaf armor during rapid 13-key bursts and return to Bow. World and instructions remain intact.",
+  "raw_replay": "Each capture text independently redecoded from exact UTF-8 raw prefix and compared byte-for-byte; every offset ends at a completed paint.",
+  "captures": [
+    {
+      "path": "build/quality-review/menu-wrap-final/selected/paused-up-down-tab-boundaries/before.png",
+      "sha256": "0e09d34e2e0309f3989c68e82bea5945a2b3a05f87d3dc55ca355dbd1fc93786",
+      "complete_character_offset": 107582,
+      "key_count": 0,
+      "observed_selection": " > Bow                 equipped"
+    },
+    {
+      "path": "build/quality-review/menu-wrap-final/selected/paused-up-down-tab-boundaries/up-clamped.png",
+      "sha256": "0e09d34e2e0309f3989c68e82bea5945a2b3a05f87d3dc55ca355dbd1fc93786",
+      "complete_character_offset": 107582,
+      "key_count": 1,
+      "observed_selection": " > Bow                 equipped"
+    },
+    {
+      "path": "build/quality-review/menu-wrap-final/selected/paused-up-down-tab-boundaries/down-traversing.png",
+      "sha256": "37f4c1fed60028047dd00c8d04af3ecf9cf673ce112ab14988c1fc42853da25f",
+      "complete_character_offset": 108106,
+      "key_count": 2,
+      "observed_selection": " > Leaf armor          owned"
+    },
+    {
+      "path": "build/quality-review/menu-wrap-final/selected/paused-up-down-tab-boundaries/down-wrapped.png",
+      "sha256": "0e09d34e2e0309f3989c68e82bea5945a2b3a05f87d3dc55ca355dbd1fc93786",
+      "complete_character_offset": 118957,
+      "key_count": 14,
+      "observed_selection": " > Bow                 equipped"
+    },
+    {
+      "path": "build/quality-review/menu-wrap-final/selected/paused-up-down-tab-boundaries/tab-traversing.png",
+      "sha256": "37f4c1fed60028047dd00c8d04af3ecf9cf673ce112ab14988c1fc42853da25f",
+      "complete_character_offset": 119481,
+      "key_count": 15,
+      "observed_selection": " > Leaf armor          owned"
+    },
+    {
+      "path": "build/quality-review/menu-wrap-final/selected/paused-up-down-tab-boundaries/tab-wrapped.png",
+      "sha256": "0e09d34e2e0309f3989c68e82bea5945a2b3a05f87d3dc55ca355dbd1fc93786",
+      "complete_character_offset": 130332,
+      "key_count": 27,
+      "observed_selection": " > Bow                 equipped"
+    },
+    {
+      "path": "build/quality-review/menu-wrap-final/selected/paused-up-down-tab-boundaries/after.png",
+      "sha256": "0e09d34e2e0309f3989c68e82bea5945a2b3a05f87d3dc55ca355dbd1fc93786",
+      "complete_character_offset": 130332,
+      "key_count": 27,
+      "observed_selection": " > Bow                 equipped"
+    }
+  ],
+  "prior_failure": "build/quality-review/ci-final/intel-menu-failure/replay-findings.json",
+  "finding": "macOS Intel assertion preceded final completed paint: Sunleaf armor at128270, Bow at129301. Physical final Tab acknowledged. Bounded visible wait retains strict wrapping and additionally requires observed intermediate change.",
+  "duration_seconds": 6.71,
+  "role": "Supplemental stronger menu evidence; the original177-row506-frame inventory remains unchanged.",
+  "original_ci_run": "https://github.com/samsaw123456/emberwood-tui/actions/runs/43701783017",
+  "original_ci_row_result": "macOS Intel176/177; only Up/Down/Tab boundaries failed before final repaint",
+  "original_raw_sha256": "e850491838c41b8c385515e46a18e62e9854635ad9389dc8c191eddf647a82f2",
+  "replay_complete_offsets": {
+    "penultimate_sunleaf_armor": 128270,
+    "final_bow": 129301
+  },
+  "independent_peer_review": {
+    "reviewer": "campaign",
+    "manifest": "build/quality-review/menu-wrap-final/selected/visual-review-menu-recheck.json",
+    "sha256": "87d350493500067fbe8cb1c6832e466608dbb55037056e224ffe6be76f95aea9",
+    "reviewed_frames": 7,
+    "findings": []
+  }
+}
