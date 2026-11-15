@@ -431,6 +431,9 @@ def dependency_preflight(temp: Path) -> list[str]:
         )
 
     directory, log, env = environment("desktop-terminal", set())
+    kitty = directory / "kitty"
+    kitty.write_text("#!/bin/bash\nexit 0\n")
+    kitty.chmod(0o755)
     curl = directory / "curl"
     if curl.exists():
         curl.unlink()
@@ -457,12 +460,48 @@ def dependency_preflight(temp: Path) -> list[str]:
     assert "fixture download stopped" in output and not prefix.exists(), output
     assert shlex.split(log.read_text().splitlines()[-1])[-1] == "xterm"
 
-    return [
+    evidence = [
         "Missing tools/font support trigger the expected apt, dnf, pacman and zypper package commands exactly once; a repeated preflight changes nothing (isolated PATH and package-manager fixtures).",
         "Offline preflight succeeds without download/hash/archive tools and never invokes a package manager, including when runtime prerequisites are missing.",
         "Failed or ineffective dependency installation leaves existing game files untouched; missing package manager/elevation produces a precise failure.",
-        "A graphical install without a terminal requests xterm; a headless install does not request graphical packages (isolated fixtures).",
+        "A graphical install with only an unregistered kitty terminal requests xterm; a headless install does not request graphical packages (isolated fixtures).",
     ]
+    gio = shutil.which("gio")
+    if gio:
+        probe = fixture / "gio-terminal"
+        probe.mkdir()
+        desktop = probe / "harmless.desktop"
+        desktop.write_text(
+            "[Desktop Entry]\nType=Application\nName=Emberwood terminal probe\n"
+            "Exec=/bin/true\nTerminal=true\n"
+        )
+        marker = probe / "called"
+        terminal_script = (
+            '#!/bin/bash\nprintf "%s\\n" "$@" > '
+            + shlex.quote(str(marker))
+            + "\nexit 0\n"
+        )
+        (probe / "kitty").write_text(terminal_script)
+        (probe / "kitty").chmod(0o755)
+        gio_env = os.environ | {
+            "PATH": str(probe),
+            "DISPLAY": "",
+            "WAYLAND_DISPLAY": "",
+            "DBUS_SESSION_BUS_ADDRESS": "unix:path=" + str(probe / "no-session"),
+        }
+        run(gio, "launch", str(desktop), env=gio_env, success=False)
+        assert not marker.exists(), "GIO unexpectedly dispatched an unregistered kitty"
+        (probe / "xterm").write_text(terminal_script)
+        (probe / "xterm").chmod(0o755)
+        run(gio, "launch", str(desktop), env=gio_env)
+        deadline = time.monotonic() + 3
+        while not marker.exists() and time.monotonic() < deadline:
+            time.sleep(0.02)
+        assert marker.read_text().splitlines() == ["-e", "/bin/true"]
+        evidence.append(
+            "Actual GIO Terminal=true lookup fails in a kitty-only PATH and dispatches the supplied xterm fallback with the expected harmless command; no desktop preferences change."
+        )
+    return evidence
 
 
 def interrupted_install(temp: Path, prefix: Path, env: dict[str, str]) -> None:

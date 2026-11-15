@@ -61,8 +61,10 @@ has_certificates() {
 }
 has_terminal() {
     local terminal
-    for terminal in x-terminal-emulator gnome-terminal kgx konsole xfce4-terminal mate-terminal \
-        tilix terminator xterm alacritty kitty wezterm foot cosmic-term; do
+    # Terminal=true consumers need a registered dispatcher or a recognized
+    # fallback; merely finding an unregistered kitty/foot binary is not enough.
+    for terminal in xdg-terminal-exec x-terminal-emulator gnome-terminal kgx konsole \
+        xfce4-terminal mate-terminal tilix xterm; do
         ! command -v "$terminal" >/dev/null || return 0
     done
     return 1

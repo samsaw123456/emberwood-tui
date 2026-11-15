@@ -128,6 +128,6 @@ fun main(args: Array<String>) {
                     return UpdateResult.from(this, result.command())
                 }
             }
-        terminalProgram(wrapper).run()
+        runTerminal(wrapper)
     }
 }

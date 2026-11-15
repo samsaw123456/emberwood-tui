@@ -39,6 +39,52 @@ allows newer releases with caveats. The requested current Gradle 9.9.1 combinati
 passes the project's actual checks; that does not extend the vendor's support
 statement. The release metadata is retained in `build/quality-review/dependencies.json`.
 
+## Installation, editor and upgrade results
+
+The final v1.0.1 executable is
+`10220ad3607d6f947b4cf8ae017589f532a5b53ccd409e5d225b7488f859d5a2`.
+All 40 tests and Kotlin lint checks passed. Byte comparison with v1.0.0 confirms
+unchanged physics, equipment, artwork, level and terminal-input classes. The
+changed application classes implement terminal lifecycle, the safe Ctrl+Z pause
+and version reporting; `Tick` has unchanged disassembled instructions.
+
+- Twenty installer checks pass, including missing-tool package-manager paths,
+  noninteractive apt input, offline checks, SIGTERM staging cleanup, departed-PID
+  lock recovery, active-lock rejection, version validation, all seventeen notices,
+  saved preferences and invalid-runtime rollback. The installed public game also
+  exercises Ctrl+Z, visible mute recovery and exact terminal restoration.
+- A real minimal Ubuntu 24.04.5 image initially lacked downloaders, HTTPS roots,
+  fontconfig, fonts, ALSA and Java. The local release installed in 36.119 seconds
+  using real authenticated apt transactions and a fresh private Java download.
+  Installed play then passed with networking disabled: title, start, steering,
+  stop, Ctrl+Z pause, resume, Q and terminal cleanup. All captured frames were
+  inspected. The launcher entry and original icon matched. No host packages
+  changed. The disposable user namespace maps its optional `staff`/`adm` groups
+  to its only available GID and runs apt's download sandbox as its mapped root;
+  these are documented test-environment adaptations, not installer behavior.
+- An actual installed v1.0.0 process kept playing while the v1.0.1 installer
+  replaced its application directory and JAR inode. Jump, projectile, pause,
+  resume and quit still worked. A corrupt installed JAR was repaired; a corrupt
+  update candidate was rejected without replacing the healthy installation.
+  A new offline process reported v1.0.1 and loaded both saved preferences.
+- Fresh Zed 1.28.1 loaded all three tasks. Play opened a 130×41 center terminal,
+  downloaded Java into an empty private cache, and accepted actual start,
+  movement, stop, pause/resume and Q commands. Twenty native captures were
+  inspected; the user's editor preferences were not changed.
+
+Reproduce the optional minimal Linux check after packaging:
+
+```sh
+python3 tools/minimal_install_audit.py --archive dist/emberwood-tui-1.0.1.tar.gz
+```
+
+This requires bubblewrap and the normal Python audit dependencies on the Linux
+x86-64 audit host. The checked official Ubuntu Base archive is cached under
+`build/quality-review`; the disposable system is removed after the run. Raw logs,
+complete-paint captures and checksums remain alongside the result. Native macOS
+and non-apt package-manager execution are not established by this Linux run;
+the other package-manager branches use isolated fixtures.
+
 ## Evidence boundaries
 
 Before the terminal-lifecycle fix, ten-second samples of the v1.0.0 game at
