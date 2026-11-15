@@ -47,7 +47,15 @@ Menu launches pass `--desktop`, asking the terminal for 120×40 cells before the
 game starts. A terminal that disallows window resizing keeps its existing size
 and shows the normal minimum-size instruction when necessary.
 macOS gets `~/Applications/Emberwood Terminal.app`, which opens the game in
-Terminal.app. Pin either launcher to your dock or favorites. A graphical desktop
+Terminal.app. The published v1.0.1 installer registers the application menu but
+does not pin the taskbar. From the current source checkout, `./install.sh --pin`
+also pins the default user installation to the active GNOME dock. This explicit
+option preserves all existing favorites and their order and is idempotent;
+ordinary installs leave dock preferences unchanged. It requires a writable GNOME
+desktop session and the default application-menu location, and rejects unsupported
+platforms, custom prefixes or headless sessions before installation. On other
+desktops, use the launcher's **Add to Favorites** action; on macOS, drag the
+installed application to the Dock. A graphical desktop
 and installed terminal emulator are required for menu launching; the command
 itself also works in an SSH terminal. The terminal must support UTF-8 and ANSI
 color. Original artwork and game fonts are bundled; the installer supplies
@@ -68,7 +76,8 @@ its lock. Archive extraction keeps ownership with the installing user.
 To uninstall the default Linux installation, remove `~/.local/bin/emberwood-tui`,
 `~/.local/share/emberwood-tui`,
 `~/.local/share/applications/emberwood-terminal.desktop`, and
-`~/.local/share/icons/hicolor/512x512/apps/emberwood-terminal.png`.
+the `emberwood-terminal.png` files under
+`~/.local/share/icons/hicolor/*/apps/`. Remove its dock favorite first if pinned.
 On macOS also remove `~/Applications/Emberwood Terminal.app`. The private Java
 cache is `~/.cache/emberwood-tui` (or `$XDG_CACHE_HOME/emberwood-tui`). Removing
 that cache requires downloading Java again on the next online launch; an offline

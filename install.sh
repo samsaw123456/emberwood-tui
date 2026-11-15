@@ -7,13 +7,15 @@ prefix=${HOME}/.local
 custom_prefix=false
 dependencies_only=false
 offline=false
+pin=false
 fail() { printf '%s\n' "Emberwood Terminal: $*" >&2; exit 2; }
 usage() {
-    printf '%s\n' 'Usage: ./install.sh [--prefix PATH] | --dependencies-only [--offline]' \
+    printf '%s\n' 'Usage: ./install.sh [--prefix PATH | --pin] | --dependencies-only [--offline]' \
         'Installs the game, private Java 25, command, and application-menu launcher for this user.' \
         'Missing Linux system prerequisites are installed with the system package manager.' \
         'Only missing packages need administrator access; system Java is unchanged.' \
         'Default prefix: ~/.local. --dependencies-only prepares prerequisites without installing the game.' \
+        '--pin also adds the default installation to the current GNOME dock, preserving existing favorites.' \
         '--dependencies-only --offline checks play requirements without downloads or package changes.'
 }
 while (($#)); do
@@ -21,12 +23,15 @@ while (($#)); do
         --prefix) (($# >= 2)) || fail '--prefix needs a directory.'; prefix=$2; custom_prefix=true; shift 2 ;;
         --dependencies-only) dependencies_only=true; shift ;;
         --offline) offline=true; shift ;;
+        --pin) pin=true; shift ;;
         --help|-h) usage; exit 0 ;;
         *) fail "Unknown option: $1" ;;
     esac
 done
 $offline && ! $dependencies_only && fail '--offline is only supported with --dependencies-only. Installed play uses emberwood-tui --offline.'
 $dependencies_only && $custom_prefix && fail '--dependencies-only does not accept --prefix.'
+$pin && $dependencies_only && fail '--pin cannot be combined with --dependencies-only.'
+$pin && $custom_prefix && fail '--pin uses the default user installation; omit --prefix.'
 case $prefix in /*) ;; *) fail '--prefix must be an absolute path.' ;; esac
 [[ $prefix != / && $prefix != *$'\n'* && $prefix != *$'\r'* ]] || fail 'Choose a normal user-owned installation directory.'
 # Bash can identify the host even when coreutils (including uname) is missing.
@@ -35,6 +40,56 @@ host_arch=${MACHTYPE%%-*}
 if command -v uname >/dev/null; then host_system=$(uname -s); host_arch=$(uname -m); fi
 case $host_system in Linux|linux-gnu) platform=linux ;; Darwin|darwin) platform=mac ;; *) fail 'Supported systems: glibc Linux and macOS.' ;; esac
 case $host_arch in x86_64|amd64|arm64|aarch64) ;; *) fail 'Supported processors: x86-64 and ARM64.' ;; esac
+
+read_favorites() {
+    favorites=$(gsettings get org.gnome.shell favorite-apps) || fail 'Cannot read the GNOME dock favorites.'
+    favorites=${favorites#@as }
+    [[ $favorites == \[*\] ]] || fail 'GNOME returned an unsupported favorites value; nothing was pinned.'
+}
+has_game_favorite() {
+    # Read GVariant's quoted string elements without evaluating shell text.
+    # Quotes or commas inside another app ID must not look like our own entry.
+    local quote='' item='' character escaped=false position
+    for ((position=0; position<${#favorites}; position++)); do
+        character=${favorites:position:1}
+        if [[ -n $quote ]]; then
+            if $escaped; then item+=$character; escaped=false
+            elif [[ $character == "\\" ]]; then escaped=true
+            elif [[ $character == "$quote" ]]; then
+                [[ $item != emberwood-terminal.desktop ]] || return 0
+                quote=''; item=''
+            else item+=$character
+            fi
+        elif [[ $character == "'" || $character == '"' ]]; then quote=$character
+        fi
+    done
+    return 1
+}
+pin_to_dock() {
+    # Re-read just before writing so changes made during installation are kept.
+    read_favorites
+    if has_game_favorite; then
+        printf '%s\n' 'Emberwood Terminal is already pinned to the GNOME dock.'
+        return
+    fi
+    local updated
+    if [[ $favorites == '[]' ]]; then updated="['emberwood-terminal.desktop']"
+    else updated="${favorites%]}, 'emberwood-terminal.desktop']"
+    fi
+    gsettings set org.gnome.shell favorite-apps "$updated" || fail 'The game is installed, but GNOME could not pin its launcher.'
+    read_favorites
+    [[ $favorites == "$updated" ]] || fail 'The game is installed, but the GNOME dock change did not persist.'
+    printf '%s\n' 'Pinned Emberwood Terminal to the GNOME dock.'
+}
+if $pin; then
+    [[ $platform == linux ]] || fail '--pin supports GNOME on Linux. On macOS, drag the installed application to your Dock.'
+    case :${XDG_CURRENT_DESKTOP:-}: in *:GNOME:*|*:gnome:*) ;; *) fail '--pin needs an active GNOME desktop session.' ;; esac
+    [[ -n ${DISPLAY:-}${WAYLAND_DISPLAY:-} && -n ${DBUS_SESSION_BUS_ADDRESS:-} ]] || fail '--pin needs the current graphical desktop session and its D-Bus connection.'
+    [[ ${XDG_DATA_HOME:-$HOME/.local/share} == "$prefix/share" ]] || fail '--pin requires the default application-menu location; XDG_DATA_HOME points elsewhere.'
+    command -v gsettings >/dev/null || fail '--pin needs the GNOME gsettings command; install without --pin and pin the launcher through your desktop.'
+    read_favorites
+    [[ $(gsettings writable org.gnome.shell favorite-apps) == true ]] || fail 'The GNOME dock favorites are not writable; no installation changes were made.'
+fi
 
 # One authoritative preflight for the standalone installer and source/runtime
 # bootstrap. It uses only Bash until any missing base utilities are prepared.
@@ -251,9 +306,16 @@ chmod +x "$work/command"
 mv -- "$work/command" "$prefix/bin/emberwood-tui"
 if [[ $platform == linux ]]; then
     apps=$prefix/share/applications
-    icons=$prefix/share/icons/hicolor/512x512/apps
-    mkdir -p -- "$apps" "$icons"
-    cp -- "$target/packaging/emberwood-terminal.png" "$icons/emberwood-terminal.png"
+    icons=$prefix/share/icons/hicolor
+    mkdir -p -- "$apps" "$icons/512x512/apps"
+    cp -- "$target/packaging/emberwood-terminal.png" "$icons/512x512/apps/emberwood-terminal.png"
+    for icon in "$target"/packaging/icons/*.png; do
+        [[ -f "$icon" ]] || continue
+        size=${icon##*/}; size=${size%.png}
+        [[ $size =~ ^[0-9]+$ ]] || fail "Invalid packaged icon size: $size"
+        mkdir -p -- "$icons/${size}x${size}/apps"
+        cp -- "$icon" "$icons/${size}x${size}/apps/emberwood-terminal.png"
+    done
     # Desktop strings are unescaped before Exec parsing: two layers of quoting.
     executable=''
     command_path=$prefix/bin/emberwood-tui
@@ -305,6 +367,7 @@ MAC_LAUNCH
     /System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister -f "$bundle" || printf '%s\n' 'Launch Services refresh unavailable; open the installed app in Applications directly.' >&2
 fi
 [[ ! -e "$backup" ]] || rm -rf -- "$backup"
+$pin && pin_to_dock
 printf '\n%s\n' 'Installed Emberwood Terminal.' "Play: $prefix/bin/emberwood-tui" 'Or open Emberwood Terminal from your application menu.'
 # shellcheck disable=SC2016 # The instruction must contain the user's future $PATH.
 case :$PATH: in *:"$prefix/bin":*) ;; *) printf 'To use the short command in new terminals, add this to your shell profile:\n  export PATH=%q:"$PATH"\n' "$prefix/bin" ;; esac

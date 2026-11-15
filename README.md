@@ -24,7 +24,9 @@ The installer checks prerequisites, verifies the release checksum, downloads a c
 
 If `curl` or HTTPS certificates are missing, [download install.sh](https://github.com/samsaw123456/emberwood-tui/releases/download/v1.0.1/install.sh) in your browser and run `bash ~/Downloads/install.sh`. The downloaded installer can prepare those dependencies itself. Stock macOS already supplies its system tools and Terminal.app.
 
-The Linux launcher uses your desktop's terminal application. macOS gets an application in `~/Applications` that opens Terminal.app. Both use Emberwood's original fox icon. Installation needs internet; installed play works offline. See [installation details, overrides, updates and removal](docs/PACKAGING.md).
+The Linux launcher uses your desktop's terminal application. macOS gets an application in `~/Applications` that opens Terminal.app. Both use Emberwood's original fox artwork. Installation needs internet; installed play works offline. See [installation details, overrides, updates and removal](docs/PACKAGING.md).
+
+The application menu and pinned taskbar are separate. **From this source checkout**, `./install.sh --pin` also pins Emberwood Terminal to the current GNOME dock, preserving other favorites and their order. Repeating it does not add duplicates. The published v1.0.1 installer registers the application menu only; use **Add to Favorites** in GNOME or drag the installed macOS application to the Dock.
 
 Use a UTF-8 color terminal and a monospace font that includes `▀`. **100×36 cells or larger** is recommended; 80×28 is the minimum. Enlarge the terminal or reduce its font size for more detailed artwork. Truecolor preserves the original RGB palette; Apple Terminal automatically uses a 256-color approximation. Set `EMBERWOOD_TUI_COLOR=256` or `EMBERWOOD_TUI_COLOR=truecolor` to override detection. Desktop launches request 120×40 cells where the terminal supports resizing. No graphics protocol, browser, GPU, or Godot installation is required.
 

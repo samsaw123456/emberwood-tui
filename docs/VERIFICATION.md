@@ -33,6 +33,38 @@ inspected; launcher, original icon and final JAR matched. The downloaded script
 was supplied to Bash through a stdin pipe. Raw evidence is under
 `build/quality-review/public-release`; no host packages changed.
 
+## Source launcher follow-up
+
+The application-menu entry existed, but the requested GNOME taskbar favorite
+was absent. The current source installer adds explicit `--pin` support, retaining
+existing favorites and their order and avoiding duplicates. This is a source
+follow-up; published v1.0.1 release assets remain unchanged.
+
+On the actual desktop, appending the launcher preserved all 22 other favorites.
+GNOME Shell's accessibility tree then exposed a visible, showing **Emberwood
+Terminal** dock button. Both actual source `--pin` append and repeat invocations
+passed. All 23 installer checks, ShellCheck, Ruff, `./emberwood-tui --build` and
+`./gradlew check` passed; unchanged Kotlin tests were up to date. The game JAR
+still matches the final hash above, so the recorded gameplay/control evidence
+continues to describe this executable.
+
+The new launcher artwork reuses the licensed original fox inside a forest-green
+terminal window with an amber prompt. Eight packaged PNG sizes from 16 to 512
+pixels distinguish it from the other Emberwood editions. Both reviewers
+inspected the generated artwork; all installed size bytes matched. Actual GTK
+theme lookup and rendering passed at seven sizes, including this dock's 56-pixel
+size. Reproduce the artwork with `python3 tools/build_icon.py`.
+
+The actual installed desktop entry launched through GIO into GNOME Terminal at
+120×40 cells, entered terminal input mode and closed on an interrupt. The first
+probe incorrectly looked for a main-class argument; the launcher uses `java
+-jar`, and the corrected process matcher passed. Its failed trace remains.
+The session subsequently reported `LockedHint=yes`, preventing final native dock
+pixel capture and physical click verification. Those checks remain **unverified**;
+no screenshot restriction or lock setting was bypassed. Local evidence is under
+`build/launcher-fix/`, including shell accessibility, GTK rendering, actual launch,
+pin/reinstall results and the exact lock blocker.
+
 ## Original v1.0.0 baseline
 
 Verified on Linux x86-64 on November 15, 2026. Model tests, actual terminal

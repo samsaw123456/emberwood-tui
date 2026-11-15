@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import ast
 import errno
 import fcntl
 import hashlib
@@ -605,6 +606,118 @@ def interrupted_install(temp: Path, prefix: Path, env: dict[str, str]) -> None:
             process.wait(timeout=5)
 
 
+def dock_pinning(temp: Path) -> list[str]:
+    """Run the real installer with isolated favorites; never alter the host dock."""
+    if platform.system() != "Linux":
+        output = run("./install.sh", "--pin", success=False)
+        assert "supports GNOME on Linux" in output, output
+        return ["Unsupported macOS dock pinning fails before installation changes."]
+    fixture = temp / "dock-pinning"
+    fakebin = fixture / "bin"
+    fakebin.mkdir(parents=True)
+    state = fixture / "favorites"
+    writes = fixture / "writes"
+    gsettings = fakebin / "gsettings"
+    gsettings.write_text(
+        "#!/bin/bash\nset -eu\n"
+        'case "$1" in\n'
+        ' get) cat "$EMBERWOOD_PIN_STATE"; '
+        'if [[ -n ${EMBERWOOD_PIN_AFTER_READ:-} && ! -e "$EMBERWOOD_PIN_STATE.changed" ]]; then '
+        'printf "%s\\n" "$EMBERWOOD_PIN_AFTER_READ" > "$EMBERWOOD_PIN_STATE"; '
+        'touch "$EMBERWOOD_PIN_STATE.changed"; fi ;;\n'
+        ' writable) printf "%s\\n" "${EMBERWOOD_PIN_WRITABLE:-true}" ;;\n'
+        ' set) printf "write\\n" >> "$EMBERWOOD_PIN_WRITES"; '
+        "[[ ${EMBERWOOD_PIN_IGNORE_WRITE:-false} == true ]] || "
+        'printf "%s\\n" "$4" > "$EMBERWOOD_PIN_STATE" ;;\n'
+        " *) exit 2 ;;\nesac\n"
+    )
+    gsettings.chmod(0o755)
+    # The synthetic desktop must not ask a headless CI host to install a terminal.
+    # No GUI is opened by these installation/settings fixtures.
+    terminal = fakebin / "xterm"
+    terminal.write_text("#!/bin/bash\nexit 0\n")
+    terminal.chmod(0o755)
+    home = fixture / "home"
+    home.mkdir()
+    env = os.environ | {
+        "HOME": str(home),
+        "XDG_DATA_HOME": str(home / ".local/share"),
+        "XDG_CONFIG_HOME": str(fixture / "config"),
+        "XDG_CURRENT_DESKTOP": "ubuntu:GNOME",
+        "DISPLAY": ":fixture",
+        "DBUS_SESSION_BUS_ADDRESS": "unix:path=/fixture",
+        "PATH": str(fakebin) + os.pathsep + os.environ["PATH"],
+        "EMBERWOOD_PIN_STATE": str(state),
+        "EMBERWOOD_PIN_WRITES": str(writes),
+        "EMBERWOOD_TUI_JAVA_HOME": run("./tools/bootstrap.sh", "--offline").strip(),
+    }
+    state.write_text("['keep.desktop']\n")
+    for changes, expected in [
+        ({"XDG_CURRENT_DESKTOP": "KDE"}, "active GNOME desktop"),
+        ({"DISPLAY": "", "WAYLAND_DISPLAY": ""}, "graphical desktop session"),
+        ({"DBUS_SESSION_BUS_ADDRESS": ""}, "D-Bus connection"),
+        ({"EMBERWOOD_PIN_WRITABLE": "false"}, "not writable"),
+        ({"XDG_DATA_HOME": str(fixture / "other-data")}, "application-menu location"),
+    ]:
+        output = run("./install.sh", "--pin", env=env | changes, success=False)
+        assert expected in output and not (home / ".local").exists(), output
+        assert not writes.exists()
+    no_gsettings = fixture / "without-gsettings"
+    no_gsettings.mkdir()
+    (no_gsettings / "bash").symlink_to(shutil.which("bash"))
+    output = run(
+        "./install.sh",
+        "--pin",
+        env=env | {"PATH": str(no_gsettings)},
+        success=False,
+    )
+    assert "needs the GNOME gsettings command" in output, output
+    assert not (home / ".local").exists() and not writes.exists()
+    original = [
+        "first.desktop",
+        "quoted 'emberwood-terminal.desktop' name.desktop",
+        'double "quote", $cash `literal` \\ slash.desktop',
+        "last.desktop",
+    ]
+    state.write_text(repr(original) + "\n")
+    run("./install.sh", env=env)
+    assert ast.literal_eval(state.read_text()) == original and not writes.exists()
+    output = run("./install.sh", "--pin", env=env)
+    assert "Pinned Emberwood Terminal" in output, output
+    expected = original + ["emberwood-terminal.desktop"]
+    assert ast.literal_eval(state.read_text()) == expected
+    assert writes.read_text().splitlines() == ["write"]
+    output = run("./install.sh", "--pin", env=env)
+    assert "already pinned" in output
+    assert ast.literal_eval(state.read_text()) == expected
+    assert writes.read_text().splitlines() == ["write"]
+    for empty in ("[]", "@as []"):
+        state.write_text(empty + "\n")
+        run("./install.sh", "--pin", env=env)
+        assert ast.literal_eval(state.read_text()) == ["emberwood-terminal.desktop"]
+    state.write_text(repr(original) + "\n")
+    changed = original + ["added-during-install.desktop"]
+    run("./install.sh", "--pin", env=env | {"EMBERWOOD_PIN_AFTER_READ": repr(changed)})
+    assert ast.literal_eval(state.read_text()) == changed + [
+        "emberwood-terminal.desktop"
+    ]
+    state.write_text("['keep.desktop']\n")
+    output = run(
+        "./install.sh",
+        "--pin",
+        env=env | {"EMBERWOOD_PIN_IGNORE_WRITE": "true"},
+        success=False,
+    )
+    assert "did not persist" in output, output
+    assert ast.literal_eval(state.read_text()) == ["keep.desktop"]
+    assert not (home / ".local/share/.emberwood-tui.previous").exists()
+    run(str(home / ".local/bin/emberwood-tui"), "--offline", "--version", env=env)
+    return [
+        "Default installation leaves dock preferences unchanged; explicit --pin preserves all favorites and ordering including changes during installation, handles quoted IDs and empty typed/untyped lists, and never adds a duplicate (real installer; isolated gsettings fixture).",
+        "Unsupported/headless/read-only or undiscoverable dock pinning fails before installation; a discarded write is detected while the installed game remains usable.",
+    ]
+
+
 def main() -> None:
     evidence: list[str] = []
     run(
@@ -623,6 +736,8 @@ def main() -> None:
         ("--unknown",),
         ("--offline",),
         ("--dependencies-only", "--prefix", "/tmp/unused"),
+        ("--pin", "--dependencies-only"),
+        ("--pin", "--prefix", "/tmp/unused"),
     ):
         run("./install.sh", *args, success=False)
     run("./emberwood-tui", "--build", "unexpected", success=False)
@@ -632,6 +747,7 @@ def main() -> None:
     with tempfile.TemporaryDirectory(prefix="emberwood installer test ") as directory:
         temp = Path(directory)
         evidence.extend(dependency_preflight(temp))
+        evidence.extend(dock_pinning(temp))
         source_launch_concurrency(temp)
         evidence.append(
             "Concurrent source launches wait for one complete build; neither executes a partial JAR, and the source lock is removed."
@@ -749,10 +865,16 @@ def main() -> None:
             assert (
                 prefix / "share/icons/hicolor/512x512/apps/emberwood-terminal.png"
             ).stat().st_size > 1000
+            for source_icon in (ROOT / "packaging/icons").glob("*.png"):
+                icon = (
+                    prefix
+                    / f"share/icons/hicolor/{source_icon.stem}x{source_icon.stem}/apps/emberwood-terminal.png"
+                )
+                assert icon.read_bytes() == source_icon.read_bytes(), str(icon)
             if shutil.which("desktop-file-validate"):
                 run("desktop-file-validate", str(desktop))
                 evidence.append(
-                    "Linux desktop entry validates; original PNG icon installed; Terminal=true."
+                    "Linux desktop entry validates; every bundled launcher-icon size installs byte-for-byte; Terminal=true."
                 )
             else:
                 evidence.append(
