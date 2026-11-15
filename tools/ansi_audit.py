@@ -89,6 +89,8 @@ class Terminal:
         self.screen = pyte.Screen(columns, rows)
         self.stream = pyte.Stream(self.screen)
         self.raw = ""
+        self.pending_output = ""
+        self.complete_offset = 0
         self.frames: list[str] = []
         self.key_latencies: list[float] = []
         java_home = os.environ.get("EMBERWOOD_JAVA_HOME") or os.environ.get("JAVA_HOME")
@@ -151,7 +153,17 @@ class Terminal:
                     131072, timeout=min(0.025, max(0.001, deadline - time.monotonic()))
                 )
                 self.raw += data
-                self.stream.feed(data)
+                self.pending_output += data
+                # tui4j restores auto-wrap after each complete RendererFlush.
+                # Commit only finished paints so a capture cannot combine a new
+                # HUD with world pixels from the preceding frame.
+                marker = "\x1b[?7h"
+                complete = self.pending_output.rfind(marker)
+                if complete >= 0:
+                    end = complete + len(marker)
+                    self.stream.feed(self.pending_output[:end])
+                    self.complete_offset += end
+                    self.pending_output = self.pending_output[end:]
                 if "\x1b[6n" in data:
                     self.child.send("\x1b[1;1R")
             except pexpect.TIMEOUT:
@@ -196,6 +208,9 @@ class Terminal:
 
     def save(self, label: str) -> dict:
         state = self.state()
+        # The raw stream is cumulative. This character offset reproduces exactly
+        # the completed frame used by this screenshot, even after later inputs.
+        state["ansi_complete_character_offset"] = self.complete_offset
         (self.directory / f"{label}.json").write_text(
             json.dumps(state, indent=2) + "\n"
         )
@@ -534,6 +549,15 @@ def exit_command(terminal: Terminal, binding: str) -> None:
         f"{binding} must terminate the process",
     )
     require("\x1b[?1049l" in terminal.raw, "Exit must restore primary terminal screen")
+    modes = {}
+    for parameters, action in re.findall(r"\x1b\[\?([0-9;]+)([hl])", terminal.raw):
+        for parameter in parameters.split(";"):
+            modes[parameter] = action
+    require(modes.get("25") == "h", "Exit must restore the visible terminal cursor")
+    require(modes.get("1004") == "l", "Exit must disable game focus reporting")
+    require(
+        modes.get("2004") == "l", "Exit must disable game bracketed-paste reporting"
+    )
 
 
 def dash(terminal: Terminal) -> None:
@@ -556,6 +580,40 @@ def dash(terminal: Terminal) -> None:
         lambda: "Dash: ready" in terminal.text(),
         "Dash must recover after cooldown",
     )
+    face_left(terminal)
+    terminal.save("facing-left")
+    old_x, old_pixels = terminal.state()["x"], terminal.fox()
+    terminal.key("X", 0)
+    wait_for(
+        terminal,
+        lambda: (
+            terminal.state()["x"] < old_x - 35 and terminal.fox()[0] < old_pixels[0] - 4
+        ),
+        "Facing left must produce a visibly screen-left dash",
+    )
+    terminal.save("left-dash")
+    terminal.key("S", 0.05)
+    wait_for(
+        terminal,
+        lambda: abs(terminal.state()["vx"]) < 0.1,
+        "Left dash must recover to a stop",
+    )
+
+
+def face_left(terminal: Terminal) -> None:
+    old_x = terminal.state()["x"]
+    terminal.key("A", 0.05)
+    wait_for(
+        terminal,
+        lambda: terminal.state()["x"] < old_x - 20,
+        "Turning left must actually move the fox left",
+    )
+    terminal.key("S", 0.05)
+    wait_for(
+        terminal,
+        lambda: abs(terminal.state()["vx"]) < 0.1,
+        "Stop before aiming left must brake",
+    )
 
 
 PROJECTILE_COLORS = {
@@ -567,17 +625,27 @@ PROJECTILE_COLORS = {
 }
 
 
-def fire_visible(terminal: Terminal, weapon: str) -> None:
-    colors = PROJECTILE_COLORS[weapon]
-    baseline = set(color_pixels(terminal, colors))
+def projectile_pixels(
+    terminal: Terminal, weapon: str, direction: int = 1
+) -> set[tuple[int, int]]:
+    fox_x, fox_y = terminal.fox()
+    return {
+        (x, y)
+        for x, y in color_pixels(terminal, PROJECTILE_COLORS[weapon])
+        if (x - fox_x) * direction > 6 and abs(y - fox_y) < 16
+    }
+
+
+def fire_visible(terminal: Terminal, weapon: str, direction: int = 1) -> None:
+    baseline = projectile_pixels(terminal, weapon, direction)
     terminal.key("J", 0)
     wait_for(
         terminal,
         lambda: (
             terminal.state()["shots"] > 0
-            and bool(set(color_pixels(terminal, colors)) - baseline)
+            and bool(projectile_pixels(terminal, weapon, direction) - baseline)
         ),
-        f"{weapon} must produce visible projectile pixels after physical J input",
+        f"{weapon} must produce a visibly separate projectile to the {'right' if direction > 0 else 'left'} after physical J input",
         timeout=2,
     )
 
@@ -598,13 +666,13 @@ def shoot(terminal: Terminal, armed: bool = True) -> None:
 
 
 def repeat_shoot(terminal: Terminal) -> None:
-    baseline = set(color_pixels(terminal, PROJECTILE_COLORS["bow"]))
+    baseline = projectile_pixels(terminal, "bow")
     terminal.send_keys("jjj", expected_keys=3, wait=0)
     wait_for(
         terminal,
         lambda: (
             terminal.state()["shots"] == 1
-            and bool(set(color_pixels(terminal, PROJECTILE_COLORS["bow"])) - baseline)
+            and bool(projectile_pixels(terminal, "bow") - baseline)
         ),
         "A repeated J burst must make one visible arrow without bypassing cooldown",
     )
@@ -754,23 +822,44 @@ def opposing(terminal: Terminal) -> None:
         terminal.state()["direction"] == 1,
         "Keyboard autorepeat must maintain direction",
     )
-    terminal.key("S", 0.25)
+    terminal.key("S", 0.05)
+    wait_for(
+        terminal,
+        lambda: (
+            terminal.state()["direction"] == 0
+            and abs(terminal.state()["vx"]) < 0.1
+            and "Steering: STOP" in terminal.text()
+        ),
+        "Stop after held/repeated input must visibly recover",
+    )
+    stopped = terminal.save("stopped-after-repeat")
+    terminal.pump(0.2)
     require(
-        terminal.state()["direction"] == 0 and abs(terminal.state()["vx"]) < 0.1,
-        "Stop after held/repeated input must recover",
+        abs(terminal.state()["x"] - stopped["x"]) < 0.1,
+        "Stopping after repeated input must remain stationary",
     )
 
 
 def simultaneous(terminal: Terminal) -> None:
     old = terminal.fox()
-    terminal.send_keys("dw", expected_keys=2, wait=0.18)
+    terminal.send_keys("dw", expected_keys=2, wait=0)
+    wait_for(
+        terminal,
+        lambda: (
+            terminal.state()["direction"] == 1
+            and terminal.state()["y"] < 500
+            and terminal.fox()[0] > old[0] + 2
+            and terminal.fox()[1] < old[1] - 2
+        ),
+        "Combined input must produce a completed frame visibly moving right and up",
+    )
     state, pixels = terminal.save("run-and-jump"), terminal.fox()
     require(
         state["direction"] == 1 and state["y"] < 500,
         "Simultaneous direction+jump must execute both commands",
     )
     require(
-        pixels[0] > old[0] and pixels[1] < old[1],
+        pixels[0] > old[0] + 2 and pixels[1] < old[1] - 2,
         "Combined input must visibly move right and up",
     )
     terminal.key("P")
@@ -961,6 +1050,15 @@ def every_equipment(
         terminal.key("P")
         fire_visible(terminal, item_id)
         terminal.save("fired")
+        wait_for(
+            terminal,
+            lambda: terminal.state()["shots"] == 0,
+            "First weapon shot must expire",
+            timeout=5,
+        )
+        face_left(terminal)
+        fire_visible(terminal, item_id, -1)
+        terminal.save("fired-left")
 
 
 def run() -> None:
@@ -992,7 +1090,12 @@ def run() -> None:
             "Visible upward jump, second press double-jumps, then lands",
             lambda t, b=binding: jump(t, b),
         )
-    case("playing", "X", "Dash moves fox, reports cooldown, recovers", dash)
+    case(
+        "playing",
+        "X",
+        "Dash visibly moves both right and left, respects cooldown, and recovers",
+        dash,
+    )
     case("playing", "J", "Projectile appears and expires", shoot)
     case(
         "playing",
@@ -1183,7 +1286,7 @@ def run() -> None:
         case(
             "paused",
             f"Enter [{item_id}]",
-            "Equip, remove, restore; weapon fires after resume",
+            "Equip, remove, restore; weapon visibly fires right and left after resume",
             lambda t, i=index, item=item_id, c=category: every_equipment(t, i, item, c),
         )
 

@@ -11,16 +11,24 @@ from __future__ import annotations
 
 import errno
 import gzip
+import hashlib
 import json
 import math
 import multiprocessing
 import os
+import re
 import select
 import time
 from contextlib import ExitStack
 
 import pexpect
 from ansi_audit import ROOT, Terminal
+
+FRAME_END = re.compile(r"\x1b\[\?7h\x1b\[\d+;1H")
+
+
+class NavigationError(AssertionError):
+    """An ordinary failed route attempt that may recover at a campfire."""
 
 
 def levels() -> list[dict]:
@@ -34,6 +42,7 @@ def levels() -> list[dict]:
                 "gate": float(row[5]),
                 "route": [],
                 "moving": [],
+                "crumbles": [],
                 "camps": [],
             }
             result.append(current)
@@ -49,6 +58,8 @@ def levels() -> list[dict]:
             current["route"].append((row[1], x, y))
         elif row[0] == "PLATFORM" and row[1] == "moving":
             current["moving"].append(tuple(map(float, row[2:8])))
+        elif row[0] == "PLATFORM" and row[1] == "crumble":
+            current["crumbles"].append(tuple(map(float, row[2:6])))
     return result
 
 
@@ -77,30 +88,45 @@ class CampaignTerminal(Terminal):
 
     def read_output(self, connection) -> None:
         try:
+            pending_capture: tuple[str, float] | None = None
+            incomplete_frame = self.pending_output
             while True:
                 if connection.poll():
                     action, label = connection.recv()
                     if action == "stop":
                         return
                     if action == "save":
-                        state = super().save(label)
-                        connection.send(("saved", (label, state)))
+                        # Telemetry is written during update, before tui4j has
+                        # emitted that frame. Keep decoding the real output
+                        # before recording the corresponding presentation.
+                        pending_capture = (label, time.monotonic() + 0.15)
                 readable, _, _ = select.select([self.child.child_fd], [], [], 0.01)
-                if not readable:
-                    continue
-                try:
-                    raw = os.read(self.child.child_fd, 16384)
-                except OSError as error:
-                    if error.errno == errno.EIO:
+                if readable:
+                    try:
+                        raw = os.read(self.child.child_fd, 16384)
+                    except OSError as error:
+                        if error.errno == errno.EIO:
+                            return
+                        raise
+                    if not raw:
                         return
-                    raise
-                if not raw:
-                    return
-                data = self.child._decoder.decode(raw, final=False)
-                connection.send(("data", data))
-                self.stream.feed(data)
-                if "\x1b[6n" in data:
-                    self.child.send("\x1b[1;1R")
+                    data = self.child._decoder.decode(raw, final=False)
+                    connection.send(("data", data))
+                    incomplete_frame += data
+                    # A frame can span several PTY reads. Only publish complete
+                    # tui4j frames, whose final sequence restores autowrap and
+                    # positions the cursor after the last rendered line.
+                    while end := FRAME_END.search(incomplete_frame):
+                        self.stream.feed(incomplete_frame[: end.end()])
+                        self.complete_offset += end.end()
+                        incomplete_frame = incomplete_frame[end.end() :]
+                    if "\x1b[6n" in data:
+                        self.child.send("\x1b[1;1R")
+                if pending_capture and time.monotonic() >= pending_capture[1]:
+                    label = pending_capture[0]
+                    state = super().save(label)
+                    connection.send(("saved", (label, state)))
+                    pending_capture = None
         except (OSError, ValueError, EOFError, pexpect.ExceptionPexpect) as error:
             connection.send(("error", repr(error)))
         finally:
@@ -176,9 +202,15 @@ class Campaign:
     def __init__(self):
         self.terminal = CampaignTerminal()
         self.output = self.terminal.directory
+        self.artifact_sha256 = hashlib.sha256(
+            (ROOT / "build/libs/emberwood-tui.jar").read_bytes()
+        ).hexdigest()
+        (self.output / "artifact.sha256").write_text(
+            f"{self.artifact_sha256}  build/libs/emberwood-tui.jar\n"
+        )
         self.files = ExitStack()
         self.archive = self.files.enter_context(
-            gzip.open(self.output / "complete-terminal.ansi.gz", "wb")  # noqa: SIM115 - ExitStack owns stream
+            gzip.open(self.output / "complete-terminal.ansi.gz", "wb", compresslevel=1)  # noqa: SIM115 - ExitStack owns stream
         )
         self.commands = self.files.enter_context(
             (self.output / "commands.jsonl").open("w")
@@ -218,6 +250,7 @@ class Campaign:
         raise TimeoutError(f"No expected response after {timeout}s: {self.state}")
 
     def key(self, key: str) -> None:
+        previous_count = self.state.get("keyCount", 0)
         self.terminal.child.send(key)
         self.commands.write(
             json.dumps(
@@ -230,6 +263,7 @@ class Campaign:
             + "\n"
         )
         self.commands.flush()
+        self.wait(lambda state: state.get("keyCount", 0) > previous_count, 2)
 
     def steer(self, target: float | None) -> None:
         distance = 0 if target is None else target - self.state["x"]
@@ -249,14 +283,36 @@ class Campaign:
 
     def capture(self, name: str) -> None:
         self.poll()
-        self.terminal.save(name)
+        expected = None
+        if name.endswith("-complete"):
+            expected = (
+                "All twenty trails cleared!"
+                if self.state["state"] == "WON"
+                else "Trail cleared!"
+            )
+        elif match := re.fullmatch(r"level-\d+-boss-([12])", name):
+            expected = f": {match[1]}/3 -"
+        elif name == "victory":
+            expected = "All twenty trails cleared!"
+        deadline = time.monotonic() + 3
+        while True:
+            self.terminal.save(name)
+            if (
+                expected is None
+                or expected in (self.output / f"{name}.txt").read_text()
+            ):
+                break
+            if time.monotonic() >= deadline:
+                raise AssertionError(
+                    f"Rendered capture {name} never showed {expected!r}"
+                )
         self.event(name)
 
     def healthy(self) -> bool:
         if self.state["state"] in ("WON", "CHAPTER_COMPLETE"):
             return False
         if self.state["state"] != "PLAYING":
-            raise AssertionError(f"Unexpected {self.state['state']}: {self.state}")
+            raise NavigationError(f"Unexpected {self.state['state']}: {self.state}")
         return True
 
     def walk(self, target: float) -> None:
@@ -269,12 +325,21 @@ class Campaign:
             if abs(self.state["x"] - target) < 18 and abs(self.state["vx"]) < 50:
                 return
             if self.state["elapsed"] - started > 5:
-                raise AssertionError(f"Walk to {target} stuck: {self.state}")
+                raise NavigationError(f"Walk to {target} stuck: {self.state}")
 
     def follow(self, step: tuple[str, float, float], level: dict) -> None:
         kind, target_x, target_y = step
         if kind == "walk":
             self.walk(target_x)
+            return
+        # A checkpoint may already be the next route target. Do not queue a
+        # jump and then accept its starting grounded frame as a landing.
+        if (
+            kind == "jump"
+            and self.state["grounded"]
+            and abs(self.state["x"] - target_x) < 18
+            and abs(self.state["y"] - target_y) < 8
+        ):
             return
         if kind != "bounce":
             self.steer(None)
@@ -291,10 +356,13 @@ class Campaign:
             and target_y < self.state["y"]
             and abs(target_x - launch_x) < 120
         )
-        started = self.state["elapsed"]
-        second_delay = 0.48 if abs(target_x - launch_x) > 260 else 20 / 60
+        second_delay = 0.48 if abs(target_x - launch_x) > 260 else 0.28
         if kind != "bounce":
             self.key(" ")
+            self.wait(
+                lambda state: not state["grounded"] or state["state"] != "PLAYING", 2
+            )
+        started = self.state["elapsed"]
         second_jump = False
         while True:
             self.poll()
@@ -324,7 +392,7 @@ class Campaign:
             ):
                 return
             if age > 4:
-                raise AssertionError(f"Route step {step} stuck: {self.state}")
+                raise NavigationError(f"Route step {step} stuck: {self.state}")
 
     def boss(self) -> None:
         arena = self.state.get(
@@ -341,7 +409,7 @@ class Campaign:
         while self.state["bossPhase"] != "defeated":
             self.poll()
             if not self.healthy():
-                raise AssertionError("Guardian exited without defeat")
+                raise NavigationError("Guardian exited without defeat")
             phase = self.state["bossPhase"]
             if phase != previous_phase:
                 if phase == "warning":
@@ -374,7 +442,7 @@ class Campaign:
                     f"level-{self.state['stage'] + 1:02d}-boss-{previous_health}"
                 )
             if self.state["elapsed"] - started > 45:
-                raise AssertionError(f"Guardian timed out: {self.state}")
+                raise NavigationError(f"Guardian timed out: {self.state}")
         self.steer(None)
 
     def run(self) -> None:
@@ -403,12 +471,60 @@ class Campaign:
                         if capture_mechanic:
                             self.capture(f"mechanic-{step[0]}-after")
                             self.captured_mechanics.add(step[0])
+                            if step[0] == "moving":
+                                self.steer(None)
+                                self.wait(lambda state: abs(state["vx"]) < 0.01)
+                                self.capture("mechanic-moving-carry-before")
+                                before = self.poll().copy()
+                                self.wait(
+                                    lambda state, started=before["elapsed"]: (
+                                        state["elapsed"] - started >= 0.5
+                                    )
+                                )
+                                after = self.state
+                                platform = next(
+                                    p
+                                    for p in level["moving"]
+                                    if abs(p[0] - step[1]) < 2
+                                )
+                                expected = platform[4] * (
+                                    math.sin(after["levelAge"] * 1.35)
+                                    - math.sin(before["levelAge"] * 1.35)
+                                )
+                                assert after["grounded"] and after["direction"] == 0
+                                assert abs(after["x"] - before["x"] - expected) < 1
+                                self.capture("mechanic-moving-carry-after")
+                        on_crumble = any(
+                            px <= step[1] <= px + width and abs(py - step[2]) < 2
+                            for px, py, width, _height in level["crumbles"]
+                        )
+                        if on_crumble and "crumble" not in self.captured_mechanics:
+                            self.captured_mechanics.add("crumble")
+                            self.steer(None)
+                            self.capture("mechanic-crumble-before")
+                            self.wait(
+                                lambda state, surface=step[2]: (
+                                    not state["grounded"] and state["y"] > surface + 20
+                                )
+                            )
+                            self.capture("mechanic-crumble-collapsed")
+                            self.wait(lambda state: state["state"] == "RESPAWNING")
+                            self.capture("mechanic-crumble-natural-fall")
+                            raise NavigationError(
+                                "Intentional crumble fall: verify natural camp recovery"
+                            )
+                        if (
+                            on_crumble
+                            and "crumble-restored" not in self.captured_mechanics
+                        ):
+                            self.captured_mechanics.add("crumble-restored")
+                            self.capture("mechanic-crumble-restored")
                         step_index += 1
                     if (index + 1) % 3 == 0:
                         self.boss()
                         self.walk(level["gate"])
                     break
-                except AssertionError:
+                except NavigationError:
                     if (
                         self.state["state"] not in {"PLAYING", "RESPAWNING"}
                         or retries >= 8
@@ -462,9 +578,20 @@ class Campaign:
                 )
         assert self.state["state"] == "WON", self.state
         self.capture("victory")
+        gems = re.search(
+            r"(\d+)/(\d+) gems \|", (self.output / "victory.txt").read_text()
+        )
+        assert gems is not None, "Victory screen must display the real gem totals"
         result = {
             "status": "passed",
+            "artifact_sha256": self.artifact_sha256,
             "seconds_real": time.monotonic() - self.start_real,
+            "chapters_completed": 20,
+            "guardians_defeated": 6,
+            "acorns_collected": 60,
+            "fireflies_found": 20,
+            "gems_collected": int(gems[1]),
+            "gems_available": int(gems[2]),
             "state": self.state,
         }
         (self.output / "result.json").write_text(json.dumps(result, indent=2) + "\n")
@@ -475,6 +602,9 @@ class Campaign:
         for chunk in self.terminal.output_chunks():
             self.archive.write(chunk.encode("utf-8"))
         self.files.close()
+        # Terminal.save's convenience file contains only startup in this
+        # multiprocess reader. The complete, lossless stream is the gzip file.
+        (self.output / "terminal.ansi").unlink(missing_ok=True)
 
 
 def main() -> None:

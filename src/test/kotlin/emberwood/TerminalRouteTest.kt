@@ -6,7 +6,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
-/** These commands pass through the actual ANSI adapter; no direct InputFrame injection. */
+/** Model-level route exercise of the terminal command adapter; separate PTY tests prove ANSI input. */
 class TerminalRouteTest {
     @Test
     fun everyOriginalRouteAndGuardianWorksWithTerminalCommands() {

@@ -303,6 +303,18 @@ def main() -> None:
         )
         data = prefix / "share/emberwood-tui"
         assert (data / "build/libs/emberwood-tui.jar").stat().st_size > 10000
+        notices = json.loads((ROOT / "packaging/licenses/sources.json").read_text())
+        for notice in notices:
+            installed = data / "packaging/licenses" / notice["file"]
+            assert (
+                hashlib.sha256(installed.read_bytes()).hexdigest() == notice["sha256"]
+            )
+        assert (data / ".gitattributes").read_bytes() == (
+            ROOT / ".gitattributes"
+        ).read_bytes()
+        evidence.append(
+            f"All {len(notices)} runtime license/notice files and .gitattributes install byte-for-byte unchanged."
+        )
         if platform.system() == "Linux":
             desktop = prefix / "share/applications/emberwood-terminal.desktop"
             text = desktop.read_text()
