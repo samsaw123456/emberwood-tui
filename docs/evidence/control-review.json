@@ -1,0 +1,2627 @@
+{
+  "reviewed_on": "2026-11-15",
+  "platform": "Linux x86-64",
+  "jar_sha256": "856921d9a634cae6bb996717a1a1ff2417a66bfe60f90548a35e549e8cb96abf",
+  "passed_inventory_rows": 169,
+  "failed_inventory_rows": 0,
+  "unverified_inventory_rows": 0,
+  "reviewed_capture_count": 468,
+  "reviewed_contact_page_count": 32,
+  "complete_audit_seconds": 881.41,
+  "eight_recovery_rechecks_seconds": 112.01,
+  "method": "Both reviewers opened every assigned contact image. ansi_controls reviewed pages1\u201316; campaign reviewed17\u201332. After two early selection snapshots were recovered from retained ANSI, ansi_controls reopened corrected full-size captures and re-reviewed pages27\u201328. Every current PNG hash matches a reviewed image.",
+  "unresolved_visual_findings": [],
+  "resolved_evidence_findings": [
+    {
+      "kind": "alternate-screen decoding",
+      "count": 14,
+      "record": "build/ansi-audit/exit-replay.json"
+    },
+    {
+      "kind": "omitted equipment removal capture",
+      "count": 13,
+      "record": "build/ansi-audit/equipment-removal-replay.json"
+    },
+    {
+      "kind": "early selection paint",
+      "count": 2,
+      "record": "build/ansi-audit/selection-replay.json",
+      "resolution": "Actual complete pre-equip selection paints recovered; both full-size images and affected contact pages inspected."
+    }
+  ],
+  "pages": [
+    {
+      "path": "build/ansi-audit/contact-sheets/controls-01.png",
+      "sha256": "f5b1df1ef436c57a859105cb36637a7ed2a1db8756fc52adc842e47f54dbf16a",
+      "reviewer": "ansi_controls",
+      "captures": [
+        {
+          "path": "build/ansi-audit/playing-a/before.png",
+          "sha256": "a0bf74884b40c3c535ab5ac4bcf01502440147b375467c619be75f9967e5e7cd",
+          "ansi_complete_character_offset": 166803
+        },
+        {
+          "path": "build/ansi-audit/playing-a/during.png",
+          "sha256": "503b8313e492f4c2a2a4fec32e60effc09520515ed7c691e443d393a66a5a25d",
+          "ansi_complete_character_offset": 222350
+        },
+        {
+          "path": "build/ansi-audit/playing-a/stopped.png",
+          "sha256": "8f3d9b1d8281a774328bbca848c96cfb6909447f45f0738422f9af324e49c405",
+          "ansi_complete_character_offset": 285030
+        },
+        {
+          "path": "build/ansi-audit/playing-a/after.png",
+          "sha256": "8f3d9b1d8281a774328bbca848c96cfb6909447f45f0738422f9af324e49c405",
+          "ansi_complete_character_offset": 285030
+        },
+        {
+          "path": "build/ansi-audit/playing-left/before.png",
+          "sha256": "43d2c6cf8bd7081db3de8952d3f5be17d5588f3ac13ffa8c5e235ea2fa1de518",
+          "ansi_complete_character_offset": 162931
+        },
+        {
+          "path": "build/ansi-audit/playing-left/during.png",
+          "sha256": "53615968029c184603849409be2be5d427e11a8e65e43f71e2c899aa9ab29657",
+          "ansi_complete_character_offset": 211840
+        },
+        {
+          "path": "build/ansi-audit/playing-left/stopped.png",
+          "sha256": "179b96a3c5420a03b69e50edf5eee9759a782b7873aea06cdb09ab40bcd496e5",
+          "ansi_complete_character_offset": 276078
+        },
+        {
+          "path": "build/ansi-audit/playing-left/after.png",
+          "sha256": "179b96a3c5420a03b69e50edf5eee9759a782b7873aea06cdb09ab40bcd496e5",
+          "ansi_complete_character_offset": 276078
+        },
+        {
+          "path": "build/ansi-audit/playing-d/before.png",
+          "sha256": "365da272669cb6329ab3803490b46fa730ce39274dbc23b00459f7477fd96e90",
+          "ansi_complete_character_offset": 155002
+        },
+        {
+          "path": "build/ansi-audit/playing-d/during.png",
+          "sha256": "146b371a029f10d7bd287c0d4a7bb58cc51db73e01bc970d6db61da2c3f5a795",
+          "ansi_complete_character_offset": 209660
+        },
+        {
+          "path": "build/ansi-audit/playing-d/stopped.png",
+          "sha256": "8444a6f93006ea6313fe4af1c48b1623be588e14ad5a385770a110d3286ec94f",
+          "ansi_complete_character_offset": 269947
+        },
+        {
+          "path": "build/ansi-audit/playing-d/after.png",
+          "sha256": "8444a6f93006ea6313fe4af1c48b1623be588e14ad5a385770a110d3286ec94f",
+          "ansi_complete_character_offset": 269947
+        },
+        {
+          "path": "build/ansi-audit/playing-right/before.png",
+          "sha256": "34b60bbe38b925a9b5841ff9d10f7d420f459748b7810e4279f65789247b6cfc",
+          "ansi_complete_character_offset": 168338
+        },
+        {
+          "path": "build/ansi-audit/playing-right/during.png",
+          "sha256": "bc95a3d5b2693400a8946f1feab29236944e7ff0bd805f9c75d9056e8f0ab295",
+          "ansi_complete_character_offset": 241821
+        },
+        {
+          "path": "build/ansi-audit/playing-right/stopped.png",
+          "sha256": "0630cfbb3b78460e491ce81ffecf1ac2003590ac11509e6716b0ae3adaf2bd19",
+          "ansi_complete_character_offset": 305464
+        }
+      ]
+    },
+    {
+      "path": "build/ansi-audit/contact-sheets/controls-02.png",
+      "sha256": "03afe60f3f9e75b90a2ab12a67ed253656476662c18757a9e6a331f361475b28",
+      "reviewer": "ansi_controls",
+      "captures": [
+        {
+          "path": "build/ansi-audit/playing-right/after.png",
+          "sha256": "0630cfbb3b78460e491ce81ffecf1ac2003590ac11509e6716b0ae3adaf2bd19",
+          "ansi_complete_character_offset": 305464
+        },
+        {
+          "path": "build/ansi-audit/playing-a-reduced-motion/before.png",
+          "sha256": "34b60bbe38b925a9b5841ff9d10f7d420f459748b7810e4279f65789247b6cfc",
+          "ansi_complete_character_offset": 165616
+        },
+        {
+          "path": "build/ansi-audit/playing-a-reduced-motion/reduced-before-movement.png",
+          "sha256": "2a0a13842d013b36077ede0a814ccdd426a26f074da2d5550c2916f6c67ea719",
+          "ansi_complete_character_offset": 211898
+        },
+        {
+          "path": "build/ansi-audit/playing-a-reduced-motion/during.png",
+          "sha256": "009459c5a35f57f0cfe1995a446cdd6b062c7c96bc33156d93c4c0b3ab715586",
+          "ansi_complete_character_offset": 260161
+        },
+        {
+          "path": "build/ansi-audit/playing-a-reduced-motion/stopped.png",
+          "sha256": "0ff352db1098259129ee685bb8700468476b1bd04339cf99e44fd9aa40d165d5",
+          "ansi_complete_character_offset": 317211
+        },
+        {
+          "path": "build/ansi-audit/playing-a-reduced-motion/after.png",
+          "sha256": "84356ccc5716fa968e795bb95e8cbb795a99c6987855a0bb1ca7e49330ecd8f7",
+          "ansi_complete_character_offset": 347318
+        },
+        {
+          "path": "build/ansi-audit/playing-left-reduced-motion/before.png",
+          "sha256": "3ec418dec47771706b3477b859d3a2b059f0076c06d22da53f07b5dd0295835e",
+          "ansi_complete_character_offset": 157939
+        },
+        {
+          "path": "build/ansi-audit/playing-left-reduced-motion/reduced-before-movement.png",
+          "sha256": "4c15420309c860a1a667280705aa6006ce6126f23f4afaabc04077778817aaf9",
+          "ansi_complete_character_offset": 199742
+        },
+        {
+          "path": "build/ansi-audit/playing-left-reduced-motion/during.png",
+          "sha256": "ada12c9698d3a921524926559e895f6a10e882b29e9647c43e78b98dd8503349",
+          "ansi_complete_character_offset": 258890
+        },
+        {
+          "path": "build/ansi-audit/playing-left-reduced-motion/stopped.png",
+          "sha256": "0ec740e2255c5b63ae16a5806f38d17f1e9257cfb46543cdc432651183b31d7c",
+          "ansi_complete_character_offset": 316485
+        },
+        {
+          "path": "build/ansi-audit/playing-left-reduced-motion/after.png",
+          "sha256": "c57b2dcaf5388a437439abd12c09a8668b1bb6540488f4dba8b9ea2c0e759461",
+          "ansi_complete_character_offset": 352757
+        },
+        {
+          "path": "build/ansi-audit/playing-d-reduced-motion/before.png",
+          "sha256": "43d2c6cf8bd7081db3de8952d3f5be17d5588f3ac13ffa8c5e235ea2fa1de518",
+          "ansi_complete_character_offset": 158141
+        },
+        {
+          "path": "build/ansi-audit/playing-d-reduced-motion/reduced-before-movement.png",
+          "sha256": "2a0a13842d013b36077ede0a814ccdd426a26f074da2d5550c2916f6c67ea719",
+          "ansi_complete_character_offset": 203445
+        },
+        {
+          "path": "build/ansi-audit/playing-d-reduced-motion/during.png",
+          "sha256": "988f4470365410a591f198ed9844bc8ce7cbe9bda868060641d241d0a26d63ef",
+          "ansi_complete_character_offset": 245656
+        },
+        {
+          "path": "build/ansi-audit/playing-d-reduced-motion/stopped.png",
+          "sha256": "9f283025442950fe7693b62974e9e6879796b92b5d0e48aa51a0c968bf5cc8cb",
+          "ansi_complete_character_offset": 310549
+        }
+      ]
+    },
+    {
+      "path": "build/ansi-audit/contact-sheets/controls-03.png",
+      "sha256": "22a5cee9ec691f91fc0345076e5b7f2fdb55bcc833afe0e58ba038e79b8c4319",
+      "reviewer": "ansi_controls",
+      "captures": [
+        {
+          "path": "build/ansi-audit/playing-d-reduced-motion/after.png",
+          "sha256": "84a1780b4b20dcd293d4441a6da54cc60ff1632a1697422a8f6cc257fee2c41d",
+          "ansi_complete_character_offset": 342287
+        },
+        {
+          "path": "build/ansi-audit/playing-right-reduced-motion/before.png",
+          "sha256": "d1ade55ee3267dafe3603aee8bf5d254312394586aa1488070f18f9c46774d8a",
+          "ansi_complete_character_offset": 172566
+        },
+        {
+          "path": "build/ansi-audit/playing-right-reduced-motion/reduced-before-movement.png",
+          "sha256": "2a0a13842d013b36077ede0a814ccdd426a26f074da2d5550c2916f6c67ea719",
+          "ansi_complete_character_offset": 215295
+        },
+        {
+          "path": "build/ansi-audit/playing-right-reduced-motion/during.png",
+          "sha256": "607d0a8f2b0651063c55a319076ff572d36b583fdc0a589501520e9409c22d90",
+          "ansi_complete_character_offset": 274668
+        },
+        {
+          "path": "build/ansi-audit/playing-right-reduced-motion/stopped.png",
+          "sha256": "d83042624c0418959a50d62c29be3f139c5e456e95f20d1e0981715faafe966b",
+          "ansi_complete_character_offset": 346092
+        },
+        {
+          "path": "build/ansi-audit/playing-right-reduced-motion/after.png",
+          "sha256": "683212a15418f41c7ad5cdb8fe5b74ee47309136c4a2b6edc93346efcbc80312",
+          "ansi_complete_character_offset": 382717
+        },
+        {
+          "path": "build/ansi-audit/playing-s/before.png",
+          "sha256": "d1ade55ee3267dafe3603aee8bf5d254312394586aa1488070f18f9c46774d8a",
+          "ansi_complete_character_offset": 172566
+        },
+        {
+          "path": "build/ansi-audit/playing-s/moving.png",
+          "sha256": "f9c434ffae0feade81b91c7a2a46e56801f1d08d3dacf74c7f183ef9703da00a",
+          "ansi_complete_character_offset": 227182
+        },
+        {
+          "path": "build/ansi-audit/playing-s/stopped.png",
+          "sha256": "a329b0a83db0897d71f46e4e30c2d3cf10269053da4c576d5f0807ed1062fbc3",
+          "ansi_complete_character_offset": 279947
+        },
+        {
+          "path": "build/ansi-audit/playing-s/after.png",
+          "sha256": "efc49ed9bc91f8faf2e306e0deaf05e7289916219422a2cf3e21174094dbfb4a",
+          "ansi_complete_character_offset": 317636
+        },
+        {
+          "path": "build/ansi-audit/playing-down/before.png",
+          "sha256": "987471337c1d41b1fed701da3ab7a35c4f279b5bf323f9dc3969cbf2f1c0aca6",
+          "ansi_complete_character_offset": 161849
+        },
+        {
+          "path": "build/ansi-audit/playing-down/moving.png",
+          "sha256": "f9c434ffae0feade81b91c7a2a46e56801f1d08d3dacf74c7f183ef9703da00a",
+          "ansi_complete_character_offset": 222723
+        },
+        {
+          "path": "build/ansi-audit/playing-down/stopped.png",
+          "sha256": "c3215fcc5007889c4ef1352808f504ebd2759d0dcce284c2005a9b3aa620ff13",
+          "ansi_complete_character_offset": 262989
+        },
+        {
+          "path": "build/ansi-audit/playing-down/after.png",
+          "sha256": "c65de3e49b50281138dad6ac531f6232a5a5dae4184fc6c10a8d10b5f1d000bd",
+          "ansi_complete_character_offset": 305917
+        },
+        {
+          "path": "build/ansi-audit/playing-space/before.png",
+          "sha256": "a0bf74884b40c3c535ab5ac4bcf01502440147b375467c619be75f9967e5e7cd",
+          "ansi_complete_character_offset": 171495
+        }
+      ]
+    },
+    {
+      "path": "build/ansi-audit/contact-sheets/controls-04.png",
+      "sha256": "20c21c33868dc2511eb4400ae5abec3ba0120dc3d626710fa7f91796f70fbfb2",
+      "reviewer": "ansi_controls",
+      "captures": [
+        {
+          "path": "build/ansi-audit/playing-space/first-jump.png",
+          "sha256": "807c1203e7feba3b1c00758623380fe48d63d3b2da846ee02dae927dcb695375",
+          "ansi_complete_character_offset": 204978
+        },
+        {
+          "path": "build/ansi-audit/playing-space/double-jump.png",
+          "sha256": "a18aa83437d7a4fd7622e28d1d0978d20d9a0472f50722d1136f6590227ff8e8",
+          "ansi_complete_character_offset": 260660
+        },
+        {
+          "path": "build/ansi-audit/playing-space/after.png",
+          "sha256": "ae9faca7d48161cf92c2186851735448804b21634792c22f5a95f937a1f6b994",
+          "ansi_complete_character_offset": 411774
+        },
+        {
+          "path": "build/ansi-audit/playing-w/before.png",
+          "sha256": "43d2c6cf8bd7081db3de8952d3f5be17d5588f3ac13ffa8c5e235ea2fa1de518",
+          "ansi_complete_character_offset": 164003
+        },
+        {
+          "path": "build/ansi-audit/playing-w/first-jump.png",
+          "sha256": "40224b556255519deded60b5d7a94bfc7dab40cb378db2d22d119daa6478d9ba",
+          "ansi_complete_character_offset": 215100
+        },
+        {
+          "path": "build/ansi-audit/playing-w/double-jump.png",
+          "sha256": "7c966a9e4481dc8edab95033049149e2a709516915dc88b87c115598ba24e51f",
+          "ansi_complete_character_offset": 263179
+        },
+        {
+          "path": "build/ansi-audit/playing-w/after.png",
+          "sha256": "901daec6578a9a414b307b38645b66620feb4fc81f715cc6b5b19984a69ed2ab",
+          "ansi_complete_character_offset": 403444
+        },
+        {
+          "path": "build/ansi-audit/playing-up/before.png",
+          "sha256": "d1ade55ee3267dafe3603aee8bf5d254312394586aa1488070f18f9c46774d8a",
+          "ansi_complete_character_offset": 170171
+        },
+        {
+          "path": "build/ansi-audit/playing-up/first-jump.png",
+          "sha256": "4872d104fb37ae4163ce589991cdded258737c66e1378f6badddc633266477c1",
+          "ansi_complete_character_offset": 225425
+        },
+        {
+          "path": "build/ansi-audit/playing-up/double-jump.png",
+          "sha256": "966dc2936acfdc8fc6315aeb22ce56f250500742e03dd50bba453146392f09c5",
+          "ansi_complete_character_offset": 315072
+        },
+        {
+          "path": "build/ansi-audit/playing-up/after.png",
+          "sha256": "e87124d5152f8c1653c78ffdedce1325b2c22f4f171ef79de6131ea0974a5155",
+          "ansi_complete_character_offset": 463510
+        },
+        {
+          "path": "build/ansi-audit/playing-x/before.png",
+          "sha256": "34b60bbe38b925a9b5841ff9d10f7d420f459748b7810e4279f65789247b6cfc",
+          "ansi_complete_character_offset": 167014
+        },
+        {
+          "path": "build/ansi-audit/playing-x/dash.png",
+          "sha256": "e48699aedf061ccc7d801439d6d4f255c466409e0675069dd9e503e62c3cc3c3",
+          "ansi_complete_character_offset": 203324
+        },
+        {
+          "path": "build/ansi-audit/playing-x/repeat-during-cooldown.png",
+          "sha256": "2047e25df8a02b5c1dce36ad43052fad356017c3764195fc7c1ea862eca22a69",
+          "ansi_complete_character_offset": 236621
+        },
+        {
+          "path": "build/ansi-audit/playing-x/facing-left.png",
+          "sha256": "e9ffc5f9aa54805a9796ff8941daa753756852edc11b932b8d17bdf239c91d23",
+          "ansi_complete_character_offset": 302778
+        }
+      ]
+    },
+    {
+      "path": "build/ansi-audit/contact-sheets/controls-05.png",
+      "sha256": "8cde77a8588d059e4163296f51a9816af74e07b29e97e4a6b838b1a893f0ba5c",
+      "reviewer": "ansi_controls",
+      "captures": [
+        {
+          "path": "build/ansi-audit/playing-x/left-dash.png",
+          "sha256": "face5b8fdfb2e4ed169ba08707203ce1c1f1227d01be5b7279b8a5bf9705ca97",
+          "ansi_complete_character_offset": 335963
+        },
+        {
+          "path": "build/ansi-audit/playing-x/after.png",
+          "sha256": "73326c9c98a9886a7eac5a97b394242293184cbd49a66e718d2a3c222145deab",
+          "ansi_complete_character_offset": 377014
+        },
+        {
+          "path": "build/ansi-audit/playing-j/before.png",
+          "sha256": "7e5b57b01e8fe64e2de24193d6de79c6ae086e428f3e94c26c7e165c218d1dda",
+          "ansi_complete_character_offset": 172893
+        },
+        {
+          "path": "build/ansi-audit/playing-j/shot.png",
+          "sha256": "39516ea05d8cbf5915e6b72f33caa50280642dea9eb3dc3908f4e0b68a9bd737",
+          "ansi_complete_character_offset": 213279
+        },
+        {
+          "path": "build/ansi-audit/playing-j/after.png",
+          "sha256": "c31d3c583ea89a2eb67bbac860dc367ee9ed27667f18f60c0b1b3b745d171021",
+          "ansi_complete_character_offset": 298252
+        },
+        {
+          "path": "build/ansi-audit/playing-j-repeated/before.png",
+          "sha256": "a0bf74884b40c3c535ab5ac4bcf01502440147b375467c619be75f9967e5e7cd",
+          "ansi_complete_character_offset": 171941
+        },
+        {
+          "path": "build/ansi-audit/playing-j-repeated/repeat-burst.png",
+          "sha256": "06f66636a841d486e516fccc0c8803b5bdc5102eb0bb320518a67c8391560b72",
+          "ansi_complete_character_offset": 214876
+        },
+        {
+          "path": "build/ansi-audit/playing-j-repeated/recovered-shot.png",
+          "sha256": "a2b944f6d2636afa2685fca0237e8438bf42126b9f18b891b645339eff09cb92",
+          "ansi_complete_character_offset": 319023
+        },
+        {
+          "path": "build/ansi-audit/playing-j-repeated/after.png",
+          "sha256": "a2b944f6d2636afa2685fca0237e8438bf42126b9f18b891b645339eff09cb92",
+          "ansi_complete_character_offset": 319023
+        },
+        {
+          "path": "build/ansi-audit/no-weapon-j/before.png",
+          "sha256": "dc382b45a01e13e6b47a3a732aff6cd6cd421d501464ae8ef6df0d3bda2968d8",
+          "ansi_complete_character_offset": 167641
+        },
+        {
+          "path": "build/ansi-audit/no-weapon-j/shot.png",
+          "sha256": "d4d5430646a30339637ea3705f1fb730e3771700f05b8912b82cbab981a8ae1c",
+          "ansi_complete_character_offset": 202385
+        },
+        {
+          "path": "build/ansi-audit/no-weapon-j/after.png",
+          "sha256": "75ac791c9d03992737066d933bae47ed74f1214f3ff125ee2bb32d2662d89a0d",
+          "ansi_complete_character_offset": 215413
+        },
+        {
+          "path": "build/ansi-audit/playing-r/before.png",
+          "sha256": "43d2c6cf8bd7081db3de8952d3f5be17d5588f3ac13ffa8c5e235ea2fa1de518",
+          "ansi_complete_character_offset": 166783
+        },
+        {
+          "path": "build/ansi-audit/playing-r/returning.png",
+          "sha256": "b20435229574491bb8fab280ab6d705b058e90c7ea5f678163584c8d10415300",
+          "ansi_complete_character_offset": 227138
+        },
+        {
+          "path": "build/ansi-audit/playing-r/after.png",
+          "sha256": "4af6cf2f2f8aebc6a47fa6fa5d364cb68a3f269b4e9d9f67a0c1affd34808d6c",
+          "ansi_complete_character_offset": 278976
+        }
+      ]
+    },
+    {
+      "path": "build/ansi-audit/contact-sheets/controls-06.png",
+      "sha256": "57e47bedf3fa4c5324c501af4c0762734e0244588c9833001780e0efce1a519b",
+      "reviewer": "ansi_controls",
+      "captures": [
+        {
+          "path": "build/ansi-audit/playing-p/before.png",
+          "sha256": "987471337c1d41b1fed701da3ab7a35c4f279b5bf323f9dc3969cbf2f1c0aca6",
+          "ansi_complete_character_offset": 165606
+        },
+        {
+          "path": "build/ansi-audit/playing-p/after.png",
+          "sha256": "a1a30d7ea7406d3403443c6b20da72d2c142871d48653073500ce40236f971f8",
+          "ansi_complete_character_offset": 244612
+        },
+        {
+          "path": "build/ansi-audit/playing-esc/before.png",
+          "sha256": "09e05ece91f7bd749982a6881d908afc0bc3b3704efb4895638c2a9cd923c23d",
+          "ansi_complete_character_offset": 177585
+        },
+        {
+          "path": "build/ansi-audit/playing-esc/after.png",
+          "sha256": "bb5a75e1b01e22fd13a0953c0e9fbbe678c9a754c7b8e9966d9afff0a79dc572",
+          "ansi_complete_character_offset": 251048
+        },
+        {
+          "path": "build/ansi-audit/respawning-p/before.png",
+          "sha256": "6e8ea3ee43a8d711f1148d76247e40038ba4f730148cbc397c7e54081ed103f5",
+          "ansi_complete_character_offset": 154420
+        },
+        {
+          "path": "build/ansi-audit/respawning-p/paused-return.png",
+          "sha256": "1e1dd641f3a371f7ce486b831837908b4b18df6a96ab15094020863b20c434bb",
+          "ansi_complete_character_offset": 197180
+        },
+        {
+          "path": "build/ansi-audit/respawning-p/resumed-return.png",
+          "sha256": "6e8ea3ee43a8d711f1148d76247e40038ba4f730148cbc397c7e54081ed103f5",
+          "ansi_complete_character_offset": 243789
+        },
+        {
+          "path": "build/ansi-audit/respawning-p/after.png",
+          "sha256": "e2de017373d0127a0fe930b88b2e9b18dc6159c7c29c993b3d3d725392c902dc",
+          "ansi_complete_character_offset": 259496
+        },
+        {
+          "path": "build/ansi-audit/respawning-esc/before.png",
+          "sha256": "6e8ea3ee43a8d711f1148d76247e40038ba4f730148cbc397c7e54081ed103f5",
+          "ansi_complete_character_offset": 154800
+        },
+        {
+          "path": "build/ansi-audit/respawning-esc/paused-return.png",
+          "sha256": "1e1dd641f3a371f7ce486b831837908b4b18df6a96ab15094020863b20c434bb",
+          "ansi_complete_character_offset": 197560
+        },
+        {
+          "path": "build/ansi-audit/respawning-esc/resumed-return.png",
+          "sha256": "6e8ea3ee43a8d711f1148d76247e40038ba4f730148cbc397c7e54081ed103f5",
+          "ansi_complete_character_offset": 244169
+        },
+        {
+          "path": "build/ansi-audit/respawning-esc/after.png",
+          "sha256": "db6b4d9c08bb74a645842d667176f1d3bf194b84dea67a01bb6b7d225f05f052",
+          "ansi_complete_character_offset": 259875
+        },
+        {
+          "path": "build/ansi-audit/paused-p/before.png",
+          "sha256": "0e09d34e2e0309f3989c68e82bea5945a2b3a05f87d3dc55ca355dbd1fc93786",
+          "ansi_complete_character_offset": 107582
+        },
+        {
+          "path": "build/ansi-audit/paused-p/after.png",
+          "sha256": "0a9a9d99d866f05cbbaefefc3e7f7017f1fb110054c1cde807e61a88006d1e5d",
+          "ansi_complete_character_offset": 160305
+        },
+        {
+          "path": "build/ansi-audit/paused-esc/before.png",
+          "sha256": "0e09d34e2e0309f3989c68e82bea5945a2b3a05f87d3dc55ca355dbd1fc93786",
+          "ansi_complete_character_offset": 107582
+        }
+      ]
+    },
+    {
+      "path": "build/ansi-audit/contact-sheets/controls-07.png",
+      "sha256": "3d6d0475abcd1dd254d5cf278c03ee9db9b56ec1a5553f85c793eb0f31a6d48a",
+      "reviewer": "ansi_controls",
+      "captures": [
+        {
+          "path": "build/ansi-audit/paused-esc/after.png",
+          "sha256": "89785ac210cb2352d374a1216fa72cda686c99c1b2f8e2da69f2a1a4893a92ed",
+          "ansi_complete_character_offset": 154070
+        },
+        {
+          "path": "build/ansi-audit/paused-up/before.png",
+          "sha256": "0e09d34e2e0309f3989c68e82bea5945a2b3a05f87d3dc55ca355dbd1fc93786",
+          "ansi_complete_character_offset": 107582
+        },
+        {
+          "path": "build/ansi-audit/paused-up/selected-before-up.png",
+          "sha256": "37f4c1fed60028047dd00c8d04af3ecf9cf673ce112ab14988c1fc42853da25f",
+          "ansi_complete_character_offset": 108106
+        },
+        {
+          "path": "build/ansi-audit/paused-up/after.png",
+          "sha256": "0e09d34e2e0309f3989c68e82bea5945a2b3a05f87d3dc55ca355dbd1fc93786",
+          "ansi_complete_character_offset": 108630
+        },
+        {
+          "path": "build/ansi-audit/paused-down/before.png",
+          "sha256": "0e09d34e2e0309f3989c68e82bea5945a2b3a05f87d3dc55ca355dbd1fc93786",
+          "ansi_complete_character_offset": 107582
+        },
+        {
+          "path": "build/ansi-audit/paused-down/after.png",
+          "sha256": "37f4c1fed60028047dd00c8d04af3ecf9cf673ce112ab14988c1fc42853da25f",
+          "ansi_complete_character_offset": 108106
+        },
+        {
+          "path": "build/ansi-audit/paused-tab/before.png",
+          "sha256": "0e09d34e2e0309f3989c68e82bea5945a2b3a05f87d3dc55ca355dbd1fc93786",
+          "ansi_complete_character_offset": 107582
+        },
+        {
+          "path": "build/ansi-audit/paused-tab/after.png",
+          "sha256": "37f4c1fed60028047dd00c8d04af3ecf9cf673ce112ab14988c1fc42853da25f",
+          "ansi_complete_character_offset": 108106
+        },
+        {
+          "path": "build/ansi-audit/paused-enter/before.png",
+          "sha256": "0e09d34e2e0309f3989c68e82bea5945a2b3a05f87d3dc55ca355dbd1fc93786",
+          "ansi_complete_character_offset": 107582
+        },
+        {
+          "path": "build/ansi-audit/paused-enter/unequipped.png",
+          "sha256": "f0a8d61326162bbf0c194c603f6b999f4ccb9c8f3a503acaf6ad25d763f664a1",
+          "ansi_complete_character_offset": 112262
+        },
+        {
+          "path": "build/ansi-audit/paused-enter/after.png",
+          "sha256": "0e09d34e2e0309f3989c68e82bea5945a2b3a05f87d3dc55ca355dbd1fc93786",
+          "ansi_complete_character_offset": 117017
+        },
+        {
+          "path": "build/ansi-audit/locked-pause-enter/before.png",
+          "sha256": "6228a4767d9e7a2b69f6c8bd0837db7d0325c2e040538b7e5bb33d89c61d8bf9",
+          "ansi_complete_character_offset": 107252
+        },
+        {
+          "path": "build/ansi-audit/locked-pause-enter/after.png",
+          "sha256": "6228a4767d9e7a2b69f6c8bd0837db7d0325c2e040538b7e5bb33d89c61d8bf9",
+          "ansi_complete_character_offset": 107252
+        },
+        {
+          "path": "build/ansi-audit/title-enter/before.png",
+          "sha256": "e5c53c45fe1df2dcfadcd0e5d340159942d244b2092646af18ecbf3653eb0410",
+          "ansi_complete_character_offset": 107141
+        },
+        {
+          "path": "build/ansi-audit/title-enter/after.png",
+          "sha256": "3d2713dc4c74b338e23d0eceda6591602ae6e81fea8e328d0b74ffe36e209a78",
+          "ansi_complete_character_offset": 153587
+        }
+      ]
+    },
+    {
+      "path": "build/ansi-audit/contact-sheets/controls-08.png",
+      "sha256": "100e71033029990faaecca9c93c567a469e00d10d36f5c43c54b8697b3bd5f23",
+      "reviewer": "ansi_controls",
+      "captures": [
+        {
+          "path": "build/ansi-audit/complete-enter/before.png",
+          "sha256": "d85d4d17bc151a69e49380903e4a484f922f86e165a00fe4902cfe6f23bc25bf",
+          "ansi_complete_character_offset": 121000
+        },
+        {
+          "path": "build/ansi-audit/complete-enter/after.png",
+          "sha256": "c611a7f41777dda22ed592ec46725e8197fa9ba18eba7199c913ed364aa1e191",
+          "ansi_complete_character_offset": 132780
+        },
+        {
+          "path": "build/ansi-audit/won-enter/before.png",
+          "sha256": "cc7486b723bdc1ccb9db13ffa9fd0a1fd9f1e8d71d2e884865c0f0ae2af07957",
+          "ansi_complete_character_offset": 123477
+        },
+        {
+          "path": "build/ansi-audit/won-enter/after.png",
+          "sha256": "3d2713dc4c74b338e23d0eceda6591602ae6e81fea8e328d0b74ffe36e209a78",
+          "ansi_complete_character_offset": 168438
+        },
+        {
+          "path": "build/ansi-audit/title-a-disabled/before.png",
+          "sha256": "e5c53c45fe1df2dcfadcd0e5d340159942d244b2092646af18ecbf3653eb0410",
+          "ansi_complete_character_offset": 107141
+        },
+        {
+          "path": "build/ansi-audit/title-a-disabled/after.png",
+          "sha256": "e5c53c45fe1df2dcfadcd0e5d340159942d244b2092646af18ecbf3653eb0410",
+          "ansi_complete_character_offset": 107141
+        },
+        {
+          "path": "build/ansi-audit/title-d-disabled/before.png",
+          "sha256": "e5c53c45fe1df2dcfadcd0e5d340159942d244b2092646af18ecbf3653eb0410",
+          "ansi_complete_character_offset": 107141
+        },
+        {
+          "path": "build/ansi-audit/title-d-disabled/after.png",
+          "sha256": "e5c53c45fe1df2dcfadcd0e5d340159942d244b2092646af18ecbf3653eb0410",
+          "ansi_complete_character_offset": 107141
+        },
+        {
+          "path": "build/ansi-audit/title-down-disabled/before.png",
+          "sha256": "e5c53c45fe1df2dcfadcd0e5d340159942d244b2092646af18ecbf3653eb0410",
+          "ansi_complete_character_offset": 107141
+        },
+        {
+          "path": "build/ansi-audit/title-down-disabled/after.png",
+          "sha256": "e5c53c45fe1df2dcfadcd0e5d340159942d244b2092646af18ecbf3653eb0410",
+          "ansi_complete_character_offset": 107141
+        },
+        {
+          "path": "build/ansi-audit/title-esc-disabled/before.png",
+          "sha256": "e5c53c45fe1df2dcfadcd0e5d340159942d244b2092646af18ecbf3653eb0410",
+          "ansi_complete_character_offset": 107141
+        },
+        {
+          "path": "build/ansi-audit/title-esc-disabled/after.png",
+          "sha256": "e5c53c45fe1df2dcfadcd0e5d340159942d244b2092646af18ecbf3653eb0410",
+          "ansi_complete_character_offset": 107141
+        },
+        {
+          "path": "build/ansi-audit/title-j-disabled/before.png",
+          "sha256": "e5c53c45fe1df2dcfadcd0e5d340159942d244b2092646af18ecbf3653eb0410",
+          "ansi_complete_character_offset": 107141
+        },
+        {
+          "path": "build/ansi-audit/title-j-disabled/after.png",
+          "sha256": "e5c53c45fe1df2dcfadcd0e5d340159942d244b2092646af18ecbf3653eb0410",
+          "ansi_complete_character_offset": 107141
+        },
+        {
+          "path": "build/ansi-audit/title-left-disabled/before.png",
+          "sha256": "e5c53c45fe1df2dcfadcd0e5d340159942d244b2092646af18ecbf3653eb0410",
+          "ansi_complete_character_offset": 107141
+        }
+      ]
+    },
+    {
+      "path": "build/ansi-audit/contact-sheets/controls-09.png",
+      "sha256": "558ab5b2abcbbe1cb98e1482fb3dffc29755c458489f59975524e847160d76cc",
+      "reviewer": "ansi_controls",
+      "captures": [
+        {
+          "path": "build/ansi-audit/title-left-disabled/after.png",
+          "sha256": "e5c53c45fe1df2dcfadcd0e5d340159942d244b2092646af18ecbf3653eb0410",
+          "ansi_complete_character_offset": 107141
+        },
+        {
+          "path": "build/ansi-audit/title-p-disabled/before.png",
+          "sha256": "e5c53c45fe1df2dcfadcd0e5d340159942d244b2092646af18ecbf3653eb0410",
+          "ansi_complete_character_offset": 107141
+        },
+        {
+          "path": "build/ansi-audit/title-p-disabled/after.png",
+          "sha256": "e5c53c45fe1df2dcfadcd0e5d340159942d244b2092646af18ecbf3653eb0410",
+          "ansi_complete_character_offset": 107141
+        },
+        {
+          "path": "build/ansi-audit/title-r-disabled/before.png",
+          "sha256": "e5c53c45fe1df2dcfadcd0e5d340159942d244b2092646af18ecbf3653eb0410",
+          "ansi_complete_character_offset": 107141
+        },
+        {
+          "path": "build/ansi-audit/title-r-disabled/after.png",
+          "sha256": "e5c53c45fe1df2dcfadcd0e5d340159942d244b2092646af18ecbf3653eb0410",
+          "ansi_complete_character_offset": 107141
+        },
+        {
+          "path": "build/ansi-audit/title-right-disabled/before.png",
+          "sha256": "e5c53c45fe1df2dcfadcd0e5d340159942d244b2092646af18ecbf3653eb0410",
+          "ansi_complete_character_offset": 107141
+        },
+        {
+          "path": "build/ansi-audit/title-right-disabled/after.png",
+          "sha256": "e5c53c45fe1df2dcfadcd0e5d340159942d244b2092646af18ecbf3653eb0410",
+          "ansi_complete_character_offset": 107141
+        },
+        {
+          "path": "build/ansi-audit/title-s-disabled/before.png",
+          "sha256": "e5c53c45fe1df2dcfadcd0e5d340159942d244b2092646af18ecbf3653eb0410",
+          "ansi_complete_character_offset": 107141
+        },
+        {
+          "path": "build/ansi-audit/title-s-disabled/after.png",
+          "sha256": "e5c53c45fe1df2dcfadcd0e5d340159942d244b2092646af18ecbf3653eb0410",
+          "ansi_complete_character_offset": 107141
+        },
+        {
+          "path": "build/ansi-audit/title-space-disabled/before.png",
+          "sha256": "e5c53c45fe1df2dcfadcd0e5d340159942d244b2092646af18ecbf3653eb0410",
+          "ansi_complete_character_offset": 107141
+        },
+        {
+          "path": "build/ansi-audit/title-space-disabled/after.png",
+          "sha256": "e5c53c45fe1df2dcfadcd0e5d340159942d244b2092646af18ecbf3653eb0410",
+          "ansi_complete_character_offset": 107141
+        },
+        {
+          "path": "build/ansi-audit/title-tab-disabled/before.png",
+          "sha256": "e5c53c45fe1df2dcfadcd0e5d340159942d244b2092646af18ecbf3653eb0410",
+          "ansi_complete_character_offset": 107141
+        },
+        {
+          "path": "build/ansi-audit/title-tab-disabled/after.png",
+          "sha256": "e5c53c45fe1df2dcfadcd0e5d340159942d244b2092646af18ecbf3653eb0410",
+          "ansi_complete_character_offset": 107141
+        },
+        {
+          "path": "build/ansi-audit/title-up-disabled/before.png",
+          "sha256": "e5c53c45fe1df2dcfadcd0e5d340159942d244b2092646af18ecbf3653eb0410",
+          "ansi_complete_character_offset": 107141
+        },
+        {
+          "path": "build/ansi-audit/title-up-disabled/after.png",
+          "sha256": "e5c53c45fe1df2dcfadcd0e5d340159942d244b2092646af18ecbf3653eb0410",
+          "ansi_complete_character_offset": 107141
+        }
+      ]
+    },
+    {
+      "path": "build/ansi-audit/contact-sheets/controls-10.png",
+      "sha256": "66444ded769f962c4365df5873990c2ee40f398bbedd83315b449aa24bdf4c5d",
+      "reviewer": "ansi_controls",
+      "captures": [
+        {
+          "path": "build/ansi-audit/title-w-disabled/before.png",
+          "sha256": "e5c53c45fe1df2dcfadcd0e5d340159942d244b2092646af18ecbf3653eb0410",
+          "ansi_complete_character_offset": 107141
+        },
+        {
+          "path": "build/ansi-audit/title-w-disabled/after.png",
+          "sha256": "e5c53c45fe1df2dcfadcd0e5d340159942d244b2092646af18ecbf3653eb0410",
+          "ansi_complete_character_offset": 107141
+        },
+        {
+          "path": "build/ansi-audit/title-x-disabled/before.png",
+          "sha256": "e5c53c45fe1df2dcfadcd0e5d340159942d244b2092646af18ecbf3653eb0410",
+          "ansi_complete_character_offset": 107141
+        },
+        {
+          "path": "build/ansi-audit/title-x-disabled/after.png",
+          "sha256": "e5c53c45fe1df2dcfadcd0e5d340159942d244b2092646af18ecbf3653eb0410",
+          "ansi_complete_character_offset": 107141
+        },
+        {
+          "path": "build/ansi-audit/title-m/before.png",
+          "sha256": "e5c53c45fe1df2dcfadcd0e5d340159942d244b2092646af18ecbf3653eb0410",
+          "ansi_complete_character_offset": 107141
+        },
+        {
+          "path": "build/ansi-audit/title-m/toggled.png",
+          "sha256": "95f36a179f2abc88965bd0b70575e2c85a58099ac70a6b994fae3f53ec26afcc",
+          "ansi_complete_character_offset": 107328
+        },
+        {
+          "path": "build/ansi-audit/title-m/after.png",
+          "sha256": "e5c53c45fe1df2dcfadcd0e5d340159942d244b2092646af18ecbf3653eb0410",
+          "ansi_complete_character_offset": 107515
+        },
+        {
+          "path": "build/ansi-audit/title-g/before.png",
+          "sha256": "e5c53c45fe1df2dcfadcd0e5d340159942d244b2092646af18ecbf3653eb0410",
+          "ansi_complete_character_offset": 107515
+        },
+        {
+          "path": "build/ansi-audit/title-g/toggled.png",
+          "sha256": "d22fde9bef8a69727211642ed1e484af8d4d43c65d6d891d0dbaa5bbfe8fd8e1",
+          "ansi_complete_character_offset": 112047
+        },
+        {
+          "path": "build/ansi-audit/title-g/after.png",
+          "sha256": "e5c53c45fe1df2dcfadcd0e5d340159942d244b2092646af18ecbf3653eb0410",
+          "ansi_complete_character_offset": 116524
+        },
+        {
+          "path": "build/ansi-audit/title-q/before.png",
+          "sha256": "e5c53c45fe1df2dcfadcd0e5d340159942d244b2092646af18ecbf3653eb0410",
+          "ansi_complete_character_offset": 107141
+        },
+        {
+          "path": "build/ansi-audit/title-q/after.png",
+          "sha256": "e548f48385bb1dc586dd1fccbd65545dc778579c5aa18feaa124bb217f9c4247",
+          "ansi_complete_character_offset": 107213,
+          "replayed_from_retained_raw": true
+        },
+        {
+          "path": "build/ansi-audit/title-ctrl-c/before.png",
+          "sha256": "e5c53c45fe1df2dcfadcd0e5d340159942d244b2092646af18ecbf3653eb0410",
+          "ansi_complete_character_offset": 107141
+        },
+        {
+          "path": "build/ansi-audit/title-ctrl-c/after.png",
+          "sha256": "e548f48385bb1dc586dd1fccbd65545dc778579c5aa18feaa124bb217f9c4247",
+          "ansi_complete_character_offset": 107213,
+          "replayed_from_retained_raw": true
+        },
+        {
+          "path": "build/ansi-audit/playing-enter-disabled/before.png",
+          "sha256": "a0bf74884b40c3c535ab5ac4bcf01502440147b375467c619be75f9967e5e7cd",
+          "ansi_complete_character_offset": 173399
+        }
+      ]
+    },
+    {
+      "path": "build/ansi-audit/contact-sheets/controls-11.png",
+      "sha256": "d7c9763140918581167ece2bb67e61fb501187102256179863358dbaf005832b",
+      "reviewer": "ansi_controls",
+      "captures": [
+        {
+          "path": "build/ansi-audit/playing-enter-disabled/after.png",
+          "sha256": "76ab4061fec1f20d3da5c1f2ed283a016cb6f13577b150b20101c86b967c70b8",
+          "ansi_complete_character_offset": 209438
+        },
+        {
+          "path": "build/ansi-audit/playing-tab-disabled/before.png",
+          "sha256": "76ab4061fec1f20d3da5c1f2ed283a016cb6f13577b150b20101c86b967c70b8",
+          "ansi_complete_character_offset": 209438
+        },
+        {
+          "path": "build/ansi-audit/playing-tab-disabled/after.png",
+          "sha256": "db863a4ba398eaa2576fef1ccb26f100c2b6629f6c5df2d464eb973c8e4615b7",
+          "ansi_complete_character_offset": 235961
+        },
+        {
+          "path": "build/ansi-audit/playing-m/before.png",
+          "sha256": "db863a4ba398eaa2576fef1ccb26f100c2b6629f6c5df2d464eb973c8e4615b7",
+          "ansi_complete_character_offset": 235961
+        },
+        {
+          "path": "build/ansi-audit/playing-m/toggled.png",
+          "sha256": "921ef8729881d40ff563c41ff9a44a0d3c439c110247a279cbdfce238fa76a48",
+          "ansi_complete_character_offset": 276457
+        },
+        {
+          "path": "build/ansi-audit/playing-m/after.png",
+          "sha256": "179aa1566461238d68ad1bf1a1e183dfc12b645be00920b83c1090293d926337",
+          "ansi_complete_character_offset": 317943
+        },
+        {
+          "path": "build/ansi-audit/playing-g/before.png",
+          "sha256": "179aa1566461238d68ad1bf1a1e183dfc12b645be00920b83c1090293d926337",
+          "ansi_complete_character_offset": 317943
+        },
+        {
+          "path": "build/ansi-audit/playing-g/toggled.png",
+          "sha256": "e8dfe80d1e9b8d78f46f083c12d820c6824da8cbfeef7a593fb7a9829f36e7a9",
+          "ansi_complete_character_offset": 357224
+        },
+        {
+          "path": "build/ansi-audit/playing-g/after.png",
+          "sha256": "4c20653efcd818ddb11f293fb18268a3ca1b601f21a193fa22b89f8b801be75e",
+          "ansi_complete_character_offset": 394145
+        },
+        {
+          "path": "build/ansi-audit/playing-q/before.png",
+          "sha256": "7e5b57b01e8fe64e2de24193d6de79c6ae086e428f3e94c26c7e165c218d1dda",
+          "ansi_complete_character_offset": 172004
+        },
+        {
+          "path": "build/ansi-audit/playing-q/after.png",
+          "sha256": "e548f48385bb1dc586dd1fccbd65545dc778579c5aa18feaa124bb217f9c4247",
+          "ansi_complete_character_offset": 198301,
+          "replayed_from_retained_raw": true
+        },
+        {
+          "path": "build/ansi-audit/playing-ctrl-c/before.png",
+          "sha256": "7e5b57b01e8fe64e2de24193d6de79c6ae086e428f3e94c26c7e165c218d1dda",
+          "ansi_complete_character_offset": 170498
+        },
+        {
+          "path": "build/ansi-audit/playing-ctrl-c/after.png",
+          "sha256": "e548f48385bb1dc586dd1fccbd65545dc778579c5aa18feaa124bb217f9c4247",
+          "ansi_complete_character_offset": 192934,
+          "replayed_from_retained_raw": true
+        },
+        {
+          "path": "build/ansi-audit/paused-a-disabled/before.png",
+          "sha256": "0e09d34e2e0309f3989c68e82bea5945a2b3a05f87d3dc55ca355dbd1fc93786",
+          "ansi_complete_character_offset": 107582
+        },
+        {
+          "path": "build/ansi-audit/paused-a-disabled/after.png",
+          "sha256": "0e09d34e2e0309f3989c68e82bea5945a2b3a05f87d3dc55ca355dbd1fc93786",
+          "ansi_complete_character_offset": 107582
+        }
+      ]
+    },
+    {
+      "path": "build/ansi-audit/contact-sheets/controls-12.png",
+      "sha256": "bd50584deceb66491fc2a6220339c103d7382132780782eb3c2a0ed9407429ef",
+      "reviewer": "ansi_controls",
+      "captures": [
+        {
+          "path": "build/ansi-audit/paused-d-disabled/before.png",
+          "sha256": "0e09d34e2e0309f3989c68e82bea5945a2b3a05f87d3dc55ca355dbd1fc93786",
+          "ansi_complete_character_offset": 107582
+        },
+        {
+          "path": "build/ansi-audit/paused-d-disabled/after.png",
+          "sha256": "0e09d34e2e0309f3989c68e82bea5945a2b3a05f87d3dc55ca355dbd1fc93786",
+          "ansi_complete_character_offset": 107582
+        },
+        {
+          "path": "build/ansi-audit/paused-j-disabled/before.png",
+          "sha256": "0e09d34e2e0309f3989c68e82bea5945a2b3a05f87d3dc55ca355dbd1fc93786",
+          "ansi_complete_character_offset": 107582
+        },
+        {
+          "path": "build/ansi-audit/paused-j-disabled/after.png",
+          "sha256": "0e09d34e2e0309f3989c68e82bea5945a2b3a05f87d3dc55ca355dbd1fc93786",
+          "ansi_complete_character_offset": 107582
+        },
+        {
+          "path": "build/ansi-audit/paused-left-disabled/before.png",
+          "sha256": "0e09d34e2e0309f3989c68e82bea5945a2b3a05f87d3dc55ca355dbd1fc93786",
+          "ansi_complete_character_offset": 107582
+        },
+        {
+          "path": "build/ansi-audit/paused-left-disabled/after.png",
+          "sha256": "0e09d34e2e0309f3989c68e82bea5945a2b3a05f87d3dc55ca355dbd1fc93786",
+          "ansi_complete_character_offset": 107582
+        },
+        {
+          "path": "build/ansi-audit/paused-r-disabled/before.png",
+          "sha256": "0e09d34e2e0309f3989c68e82bea5945a2b3a05f87d3dc55ca355dbd1fc93786",
+          "ansi_complete_character_offset": 107582
+        },
+        {
+          "path": "build/ansi-audit/paused-r-disabled/after.png",
+          "sha256": "0e09d34e2e0309f3989c68e82bea5945a2b3a05f87d3dc55ca355dbd1fc93786",
+          "ansi_complete_character_offset": 107582
+        },
+        {
+          "path": "build/ansi-audit/paused-right-disabled/before.png",
+          "sha256": "0e09d34e2e0309f3989c68e82bea5945a2b3a05f87d3dc55ca355dbd1fc93786",
+          "ansi_complete_character_offset": 107582
+        },
+        {
+          "path": "build/ansi-audit/paused-right-disabled/after.png",
+          "sha256": "0e09d34e2e0309f3989c68e82bea5945a2b3a05f87d3dc55ca355dbd1fc93786",
+          "ansi_complete_character_offset": 107582
+        },
+        {
+          "path": "build/ansi-audit/paused-s-disabled/before.png",
+          "sha256": "0e09d34e2e0309f3989c68e82bea5945a2b3a05f87d3dc55ca355dbd1fc93786",
+          "ansi_complete_character_offset": 107582
+        },
+        {
+          "path": "build/ansi-audit/paused-s-disabled/after.png",
+          "sha256": "0e09d34e2e0309f3989c68e82bea5945a2b3a05f87d3dc55ca355dbd1fc93786",
+          "ansi_complete_character_offset": 107582
+        },
+        {
+          "path": "build/ansi-audit/paused-space-disabled/before.png",
+          "sha256": "0e09d34e2e0309f3989c68e82bea5945a2b3a05f87d3dc55ca355dbd1fc93786",
+          "ansi_complete_character_offset": 107582
+        },
+        {
+          "path": "build/ansi-audit/paused-space-disabled/after.png",
+          "sha256": "0e09d34e2e0309f3989c68e82bea5945a2b3a05f87d3dc55ca355dbd1fc93786",
+          "ansi_complete_character_offset": 107582
+        },
+        {
+          "path": "build/ansi-audit/paused-w-disabled/before.png",
+          "sha256": "0e09d34e2e0309f3989c68e82bea5945a2b3a05f87d3dc55ca355dbd1fc93786",
+          "ansi_complete_character_offset": 107582
+        }
+      ]
+    },
+    {
+      "path": "build/ansi-audit/contact-sheets/controls-13.png",
+      "sha256": "13e41aa858f771421580c553fcf7ac4993e2746d39e54154dd664cac558cb5a6",
+      "reviewer": "ansi_controls",
+      "captures": [
+        {
+          "path": "build/ansi-audit/paused-w-disabled/after.png",
+          "sha256": "0e09d34e2e0309f3989c68e82bea5945a2b3a05f87d3dc55ca355dbd1fc93786",
+          "ansi_complete_character_offset": 107582
+        },
+        {
+          "path": "build/ansi-audit/paused-x-disabled/before.png",
+          "sha256": "0e09d34e2e0309f3989c68e82bea5945a2b3a05f87d3dc55ca355dbd1fc93786",
+          "ansi_complete_character_offset": 107582
+        },
+        {
+          "path": "build/ansi-audit/paused-x-disabled/after.png",
+          "sha256": "0e09d34e2e0309f3989c68e82bea5945a2b3a05f87d3dc55ca355dbd1fc93786",
+          "ansi_complete_character_offset": 107582
+        },
+        {
+          "path": "build/ansi-audit/paused-m/before.png",
+          "sha256": "0e09d34e2e0309f3989c68e82bea5945a2b3a05f87d3dc55ca355dbd1fc93786",
+          "ansi_complete_character_offset": 107582
+        },
+        {
+          "path": "build/ansi-audit/paused-m/toggled.png",
+          "sha256": "e0e8b12ef454a2a68e43627d5f45c8db50fe94e5b6456a2acc5e521f15b9b943",
+          "ansi_complete_character_offset": 107769
+        },
+        {
+          "path": "build/ansi-audit/paused-m/after.png",
+          "sha256": "0e09d34e2e0309f3989c68e82bea5945a2b3a05f87d3dc55ca355dbd1fc93786",
+          "ansi_complete_character_offset": 107956
+        },
+        {
+          "path": "build/ansi-audit/paused-g/before.png",
+          "sha256": "0e09d34e2e0309f3989c68e82bea5945a2b3a05f87d3dc55ca355dbd1fc93786",
+          "ansi_complete_character_offset": 107956
+        },
+        {
+          "path": "build/ansi-audit/paused-g/toggled.png",
+          "sha256": "b4cf8619cb0f6607c2501ff5dc8edd419fdff2c47c71818413f7d3e559474ae9",
+          "ansi_complete_character_offset": 117741
+        },
+        {
+          "path": "build/ansi-audit/paused-g/after.png",
+          "sha256": "0e09d34e2e0309f3989c68e82bea5945a2b3a05f87d3dc55ca355dbd1fc93786",
+          "ansi_complete_character_offset": 127534
+        },
+        {
+          "path": "build/ansi-audit/paused-q/before.png",
+          "sha256": "0e09d34e2e0309f3989c68e82bea5945a2b3a05f87d3dc55ca355dbd1fc93786",
+          "ansi_complete_character_offset": 107582
+        },
+        {
+          "path": "build/ansi-audit/paused-q/after.png",
+          "sha256": "e548f48385bb1dc586dd1fccbd65545dc778579c5aa18feaa124bb217f9c4247",
+          "ansi_complete_character_offset": 107654,
+          "replayed_from_retained_raw": true
+        },
+        {
+          "path": "build/ansi-audit/paused-ctrl-c/before.png",
+          "sha256": "0e09d34e2e0309f3989c68e82bea5945a2b3a05f87d3dc55ca355dbd1fc93786",
+          "ansi_complete_character_offset": 107582
+        },
+        {
+          "path": "build/ansi-audit/paused-ctrl-c/after.png",
+          "sha256": "e548f48385bb1dc586dd1fccbd65545dc778579c5aa18feaa124bb217f9c4247",
+          "ansi_complete_character_offset": 107654,
+          "replayed_from_retained_raw": true
+        },
+        {
+          "path": "build/ansi-audit/respawning-a-disabled/before.png",
+          "sha256": "6e8ea3ee43a8d711f1148d76247e40038ba4f730148cbc397c7e54081ed103f5",
+          "ansi_complete_character_offset": 152137
+        },
+        {
+          "path": "build/ansi-audit/respawning-a-disabled/after.png",
+          "sha256": "6e8ea3ee43a8d711f1148d76247e40038ba4f730148cbc397c7e54081ed103f5",
+          "ansi_complete_character_offset": 152137
+        }
+      ]
+    },
+    {
+      "path": "build/ansi-audit/contact-sheets/controls-14.png",
+      "sha256": "df6f97db9c85e4ca63772f53ebfa3c5b5282a26ec925120f95d752d54cf05a9e",
+      "reviewer": "ansi_controls",
+      "captures": [
+        {
+          "path": "build/ansi-audit/respawning-d-disabled/before.png",
+          "sha256": "6e8ea3ee43a8d711f1148d76247e40038ba4f730148cbc397c7e54081ed103f5",
+          "ansi_complete_character_offset": 154231
+        },
+        {
+          "path": "build/ansi-audit/respawning-d-disabled/after.png",
+          "sha256": "6e8ea3ee43a8d711f1148d76247e40038ba4f730148cbc397c7e54081ed103f5",
+          "ansi_complete_character_offset": 154231
+        },
+        {
+          "path": "build/ansi-audit/respawning-down-disabled/before.png",
+          "sha256": "6e8ea3ee43a8d711f1148d76247e40038ba4f730148cbc397c7e54081ed103f5",
+          "ansi_complete_character_offset": 151622
+        },
+        {
+          "path": "build/ansi-audit/respawning-down-disabled/after.png",
+          "sha256": "6e8ea3ee43a8d711f1148d76247e40038ba4f730148cbc397c7e54081ed103f5",
+          "ansi_complete_character_offset": 151622
+        },
+        {
+          "path": "build/ansi-audit/respawning-enter-disabled/before.png",
+          "sha256": "6e8ea3ee43a8d711f1148d76247e40038ba4f730148cbc397c7e54081ed103f5",
+          "ansi_complete_character_offset": 153383
+        },
+        {
+          "path": "build/ansi-audit/respawning-enter-disabled/after.png",
+          "sha256": "6e8ea3ee43a8d711f1148d76247e40038ba4f730148cbc397c7e54081ed103f5",
+          "ansi_complete_character_offset": 153383
+        },
+        {
+          "path": "build/ansi-audit/respawning-j-disabled/before.png",
+          "sha256": "6e8ea3ee43a8d711f1148d76247e40038ba4f730148cbc397c7e54081ed103f5",
+          "ansi_complete_character_offset": 146871
+        },
+        {
+          "path": "build/ansi-audit/respawning-j-disabled/after.png",
+          "sha256": "6e8ea3ee43a8d711f1148d76247e40038ba4f730148cbc397c7e54081ed103f5",
+          "ansi_complete_character_offset": 146871
+        },
+        {
+          "path": "build/ansi-audit/respawning-left-disabled/before.png",
+          "sha256": "6e8ea3ee43a8d711f1148d76247e40038ba4f730148cbc397c7e54081ed103f5",
+          "ansi_complete_character_offset": 153893
+        },
+        {
+          "path": "build/ansi-audit/respawning-left-disabled/after.png",
+          "sha256": "6e8ea3ee43a8d711f1148d76247e40038ba4f730148cbc397c7e54081ed103f5",
+          "ansi_complete_character_offset": 153893
+        },
+        {
+          "path": "build/ansi-audit/respawning-r-disabled/before.png",
+          "sha256": "6e8ea3ee43a8d711f1148d76247e40038ba4f730148cbc397c7e54081ed103f5",
+          "ansi_complete_character_offset": 154720
+        },
+        {
+          "path": "build/ansi-audit/respawning-r-disabled/after.png",
+          "sha256": "6e8ea3ee43a8d711f1148d76247e40038ba4f730148cbc397c7e54081ed103f5",
+          "ansi_complete_character_offset": 154720
+        },
+        {
+          "path": "build/ansi-audit/respawning-right-disabled/before.png",
+          "sha256": "6e8ea3ee43a8d711f1148d76247e40038ba4f730148cbc397c7e54081ed103f5",
+          "ansi_complete_character_offset": 166943
+        },
+        {
+          "path": "build/ansi-audit/respawning-right-disabled/after.png",
+          "sha256": "6e8ea3ee43a8d711f1148d76247e40038ba4f730148cbc397c7e54081ed103f5",
+          "ansi_complete_character_offset": 166943
+        },
+        {
+          "path": "build/ansi-audit/respawning-s-disabled/before.png",
+          "sha256": "0c8768045441ce8920142bef8443c1fffef00a7e717ee0c4af66517fd34ca576",
+          "ansi_complete_character_offset": 131620
+        }
+      ]
+    },
+    {
+      "path": "build/ansi-audit/contact-sheets/controls-15.png",
+      "sha256": "917fa6409382a3aae2864c22b35f5cb2eb57d5b5f1e0406c39c138148f110101",
+      "reviewer": "ansi_controls",
+      "captures": [
+        {
+          "path": "build/ansi-audit/respawning-s-disabled/after.png",
+          "sha256": "6e8ea3ee43a8d711f1148d76247e40038ba4f730148cbc397c7e54081ed103f5",
+          "ansi_complete_character_offset": 133188
+        },
+        {
+          "path": "build/ansi-audit/respawning-space-disabled/before.png",
+          "sha256": "6e8ea3ee43a8d711f1148d76247e40038ba4f730148cbc397c7e54081ed103f5",
+          "ansi_complete_character_offset": 165496
+        },
+        {
+          "path": "build/ansi-audit/respawning-space-disabled/after.png",
+          "sha256": "6e8ea3ee43a8d711f1148d76247e40038ba4f730148cbc397c7e54081ed103f5",
+          "ansi_complete_character_offset": 165496
+        },
+        {
+          "path": "build/ansi-audit/respawning-tab-disabled/before.png",
+          "sha256": "6e8ea3ee43a8d711f1148d76247e40038ba4f730148cbc397c7e54081ed103f5",
+          "ansi_complete_character_offset": 164972
+        },
+        {
+          "path": "build/ansi-audit/respawning-tab-disabled/after.png",
+          "sha256": "6e8ea3ee43a8d711f1148d76247e40038ba4f730148cbc397c7e54081ed103f5",
+          "ansi_complete_character_offset": 164972
+        },
+        {
+          "path": "build/ansi-audit/respawning-up-disabled/before.png",
+          "sha256": "6e8ea3ee43a8d711f1148d76247e40038ba4f730148cbc397c7e54081ed103f5",
+          "ansi_complete_character_offset": 150018
+        },
+        {
+          "path": "build/ansi-audit/respawning-up-disabled/after.png",
+          "sha256": "6e8ea3ee43a8d711f1148d76247e40038ba4f730148cbc397c7e54081ed103f5",
+          "ansi_complete_character_offset": 150018
+        },
+        {
+          "path": "build/ansi-audit/respawning-w-disabled/before.png",
+          "sha256": "6e8ea3ee43a8d711f1148d76247e40038ba4f730148cbc397c7e54081ed103f5",
+          "ansi_complete_character_offset": 153137
+        },
+        {
+          "path": "build/ansi-audit/respawning-w-disabled/after.png",
+          "sha256": "6e8ea3ee43a8d711f1148d76247e40038ba4f730148cbc397c7e54081ed103f5",
+          "ansi_complete_character_offset": 153137
+        },
+        {
+          "path": "build/ansi-audit/respawning-x-disabled/before.png",
+          "sha256": "6e8ea3ee43a8d711f1148d76247e40038ba4f730148cbc397c7e54081ed103f5",
+          "ansi_complete_character_offset": 153077
+        },
+        {
+          "path": "build/ansi-audit/respawning-x-disabled/after.png",
+          "sha256": "6e8ea3ee43a8d711f1148d76247e40038ba4f730148cbc397c7e54081ed103f5",
+          "ansi_complete_character_offset": 153077
+        },
+        {
+          "path": "build/ansi-audit/respawning-m/before.png",
+          "sha256": "6e8ea3ee43a8d711f1148d76247e40038ba4f730148cbc397c7e54081ed103f5",
+          "ansi_complete_character_offset": 150687
+        },
+        {
+          "path": "build/ansi-audit/respawning-m/toggled.png",
+          "sha256": "596a3de84c0567da4a1b87e947ff180d9de3aebb09f767866087084f49c315cc",
+          "ansi_complete_character_offset": 150874
+        },
+        {
+          "path": "build/ansi-audit/respawning-m/after.png",
+          "sha256": "6e8ea3ee43a8d711f1148d76247e40038ba4f730148cbc397c7e54081ed103f5",
+          "ansi_complete_character_offset": 151061
+        },
+        {
+          "path": "build/ansi-audit/respawning-g/before.png",
+          "sha256": "6e8ea3ee43a8d711f1148d76247e40038ba4f730148cbc397c7e54081ed103f5",
+          "ansi_complete_character_offset": 145097
+        }
+      ]
+    },
+    {
+      "path": "build/ansi-audit/contact-sheets/controls-16.png",
+      "sha256": "b5520ff71876b68bec55c0ef060b02e5e792b65a3ebeb77eb517df9e22850518",
+      "reviewer": "ansi_controls",
+      "captures": [
+        {
+          "path": "build/ansi-audit/respawning-g/toggled.png",
+          "sha256": "93b75f49e54ffef6e35cb4c1584c0571d8c54b56878ae4cd1f50832b0d965b76",
+          "ansi_complete_character_offset": 153640
+        },
+        {
+          "path": "build/ansi-audit/respawning-g/after.png",
+          "sha256": "6e8ea3ee43a8d711f1148d76247e40038ba4f730148cbc397c7e54081ed103f5",
+          "ansi_complete_character_offset": 162258
+        },
+        {
+          "path": "build/ansi-audit/respawning-q/before.png",
+          "sha256": "6e8ea3ee43a8d711f1148d76247e40038ba4f730148cbc397c7e54081ed103f5",
+          "ansi_complete_character_offset": 145775
+        },
+        {
+          "path": "build/ansi-audit/respawning-q/after.png",
+          "sha256": "e548f48385bb1dc586dd1fccbd65545dc778579c5aa18feaa124bb217f9c4247",
+          "ansi_complete_character_offset": 145847,
+          "replayed_from_retained_raw": true
+        },
+        {
+          "path": "build/ansi-audit/respawning-ctrl-c/before.png",
+          "sha256": "6e8ea3ee43a8d711f1148d76247e40038ba4f730148cbc397c7e54081ed103f5",
+          "ansi_complete_character_offset": 145049
+        },
+        {
+          "path": "build/ansi-audit/respawning-ctrl-c/after.png",
+          "sha256": "e548f48385bb1dc586dd1fccbd65545dc778579c5aa18feaa124bb217f9c4247",
+          "ansi_complete_character_offset": 145121,
+          "replayed_from_retained_raw": true
+        },
+        {
+          "path": "build/ansi-audit/complete-a-disabled/before.png",
+          "sha256": "d85d4d17bc151a69e49380903e4a484f922f86e165a00fe4902cfe6f23bc25bf",
+          "ansi_complete_character_offset": 121000
+        },
+        {
+          "path": "build/ansi-audit/complete-a-disabled/after.png",
+          "sha256": "d85d4d17bc151a69e49380903e4a484f922f86e165a00fe4902cfe6f23bc25bf",
+          "ansi_complete_character_offset": 121000
+        },
+        {
+          "path": "build/ansi-audit/complete-d-disabled/before.png",
+          "sha256": "d85d4d17bc151a69e49380903e4a484f922f86e165a00fe4902cfe6f23bc25bf",
+          "ansi_complete_character_offset": 121000
+        },
+        {
+          "path": "build/ansi-audit/complete-d-disabled/after.png",
+          "sha256": "d85d4d17bc151a69e49380903e4a484f922f86e165a00fe4902cfe6f23bc25bf",
+          "ansi_complete_character_offset": 121000
+        },
+        {
+          "path": "build/ansi-audit/complete-down-disabled/before.png",
+          "sha256": "d85d4d17bc151a69e49380903e4a484f922f86e165a00fe4902cfe6f23bc25bf",
+          "ansi_complete_character_offset": 121000
+        },
+        {
+          "path": "build/ansi-audit/complete-down-disabled/after.png",
+          "sha256": "d85d4d17bc151a69e49380903e4a484f922f86e165a00fe4902cfe6f23bc25bf",
+          "ansi_complete_character_offset": 121000
+        },
+        {
+          "path": "build/ansi-audit/complete-esc-disabled/before.png",
+          "sha256": "d85d4d17bc151a69e49380903e4a484f922f86e165a00fe4902cfe6f23bc25bf",
+          "ansi_complete_character_offset": 121000
+        },
+        {
+          "path": "build/ansi-audit/complete-esc-disabled/after.png",
+          "sha256": "d85d4d17bc151a69e49380903e4a484f922f86e165a00fe4902cfe6f23bc25bf",
+          "ansi_complete_character_offset": 121000
+        },
+        {
+          "path": "build/ansi-audit/complete-j-disabled/before.png",
+          "sha256": "d85d4d17bc151a69e49380903e4a484f922f86e165a00fe4902cfe6f23bc25bf",
+          "ansi_complete_character_offset": 121000
+        }
+      ]
+    },
+    {
+      "path": "build/ansi-audit/contact-sheets/controls-17.png",
+      "sha256": "1d22d3de9c4dbb7a366022635a480a7228ea933a17bfd091e3b9f3ee248948f6",
+      "reviewer": "campaign",
+      "captures": [
+        {
+          "path": "build/ansi-audit/complete-j-disabled/after.png",
+          "sha256": "d85d4d17bc151a69e49380903e4a484f922f86e165a00fe4902cfe6f23bc25bf",
+          "ansi_complete_character_offset": 121000
+        },
+        {
+          "path": "build/ansi-audit/complete-left-disabled/before.png",
+          "sha256": "d85d4d17bc151a69e49380903e4a484f922f86e165a00fe4902cfe6f23bc25bf",
+          "ansi_complete_character_offset": 121000
+        },
+        {
+          "path": "build/ansi-audit/complete-left-disabled/after.png",
+          "sha256": "d85d4d17bc151a69e49380903e4a484f922f86e165a00fe4902cfe6f23bc25bf",
+          "ansi_complete_character_offset": 121000
+        },
+        {
+          "path": "build/ansi-audit/complete-p-disabled/before.png",
+          "sha256": "d85d4d17bc151a69e49380903e4a484f922f86e165a00fe4902cfe6f23bc25bf",
+          "ansi_complete_character_offset": 121000
+        },
+        {
+          "path": "build/ansi-audit/complete-p-disabled/after.png",
+          "sha256": "d85d4d17bc151a69e49380903e4a484f922f86e165a00fe4902cfe6f23bc25bf",
+          "ansi_complete_character_offset": 121000
+        },
+        {
+          "path": "build/ansi-audit/complete-r-disabled/before.png",
+          "sha256": "d85d4d17bc151a69e49380903e4a484f922f86e165a00fe4902cfe6f23bc25bf",
+          "ansi_complete_character_offset": 121000
+        },
+        {
+          "path": "build/ansi-audit/complete-r-disabled/after.png",
+          "sha256": "d85d4d17bc151a69e49380903e4a484f922f86e165a00fe4902cfe6f23bc25bf",
+          "ansi_complete_character_offset": 121000
+        },
+        {
+          "path": "build/ansi-audit/complete-right-disabled/before.png",
+          "sha256": "d85d4d17bc151a69e49380903e4a484f922f86e165a00fe4902cfe6f23bc25bf",
+          "ansi_complete_character_offset": 121000
+        },
+        {
+          "path": "build/ansi-audit/complete-right-disabled/after.png",
+          "sha256": "d85d4d17bc151a69e49380903e4a484f922f86e165a00fe4902cfe6f23bc25bf",
+          "ansi_complete_character_offset": 121000
+        },
+        {
+          "path": "build/ansi-audit/complete-s-disabled/before.png",
+          "sha256": "d85d4d17bc151a69e49380903e4a484f922f86e165a00fe4902cfe6f23bc25bf",
+          "ansi_complete_character_offset": 121000
+        },
+        {
+          "path": "build/ansi-audit/complete-s-disabled/after.png",
+          "sha256": "d85d4d17bc151a69e49380903e4a484f922f86e165a00fe4902cfe6f23bc25bf",
+          "ansi_complete_character_offset": 121000
+        },
+        {
+          "path": "build/ansi-audit/complete-space-disabled/before.png",
+          "sha256": "d85d4d17bc151a69e49380903e4a484f922f86e165a00fe4902cfe6f23bc25bf",
+          "ansi_complete_character_offset": 121000
+        },
+        {
+          "path": "build/ansi-audit/complete-space-disabled/after.png",
+          "sha256": "d85d4d17bc151a69e49380903e4a484f922f86e165a00fe4902cfe6f23bc25bf",
+          "ansi_complete_character_offset": 121000
+        },
+        {
+          "path": "build/ansi-audit/complete-tab-disabled/before.png",
+          "sha256": "d85d4d17bc151a69e49380903e4a484f922f86e165a00fe4902cfe6f23bc25bf",
+          "ansi_complete_character_offset": 121000
+        },
+        {
+          "path": "build/ansi-audit/complete-tab-disabled/after.png",
+          "sha256": "d85d4d17bc151a69e49380903e4a484f922f86e165a00fe4902cfe6f23bc25bf",
+          "ansi_complete_character_offset": 121000
+        }
+      ]
+    },
+    {
+      "path": "build/ansi-audit/contact-sheets/controls-18.png",
+      "sha256": "f0c22334219cc1221cab1e02b892f7af8b3454058459d15693fb8b8563ec90fc",
+      "reviewer": "campaign",
+      "captures": [
+        {
+          "path": "build/ansi-audit/complete-up-disabled/before.png",
+          "sha256": "d85d4d17bc151a69e49380903e4a484f922f86e165a00fe4902cfe6f23bc25bf",
+          "ansi_complete_character_offset": 121000
+        },
+        {
+          "path": "build/ansi-audit/complete-up-disabled/after.png",
+          "sha256": "d85d4d17bc151a69e49380903e4a484f922f86e165a00fe4902cfe6f23bc25bf",
+          "ansi_complete_character_offset": 121000
+        },
+        {
+          "path": "build/ansi-audit/complete-w-disabled/before.png",
+          "sha256": "d85d4d17bc151a69e49380903e4a484f922f86e165a00fe4902cfe6f23bc25bf",
+          "ansi_complete_character_offset": 121000
+        },
+        {
+          "path": "build/ansi-audit/complete-w-disabled/after.png",
+          "sha256": "d85d4d17bc151a69e49380903e4a484f922f86e165a00fe4902cfe6f23bc25bf",
+          "ansi_complete_character_offset": 121000
+        },
+        {
+          "path": "build/ansi-audit/complete-x-disabled/before.png",
+          "sha256": "d85d4d17bc151a69e49380903e4a484f922f86e165a00fe4902cfe6f23bc25bf",
+          "ansi_complete_character_offset": 121000
+        },
+        {
+          "path": "build/ansi-audit/complete-x-disabled/after.png",
+          "sha256": "d85d4d17bc151a69e49380903e4a484f922f86e165a00fe4902cfe6f23bc25bf",
+          "ansi_complete_character_offset": 121000
+        },
+        {
+          "path": "build/ansi-audit/complete-m/before.png",
+          "sha256": "d85d4d17bc151a69e49380903e4a484f922f86e165a00fe4902cfe6f23bc25bf",
+          "ansi_complete_character_offset": 121000
+        },
+        {
+          "path": "build/ansi-audit/complete-m/toggled.png",
+          "sha256": "4edded0b24545eacccb0f34cc83581a0fc2dfbdedae487dc0c8a00cdc30694bd",
+          "ansi_complete_character_offset": 121187
+        },
+        {
+          "path": "build/ansi-audit/complete-m/after.png",
+          "sha256": "d85d4d17bc151a69e49380903e4a484f922f86e165a00fe4902cfe6f23bc25bf",
+          "ansi_complete_character_offset": 121374
+        },
+        {
+          "path": "build/ansi-audit/complete-g/before.png",
+          "sha256": "d85d4d17bc151a69e49380903e4a484f922f86e165a00fe4902cfe6f23bc25bf",
+          "ansi_complete_character_offset": 121374
+        },
+        {
+          "path": "build/ansi-audit/complete-g/toggled.png",
+          "sha256": "732100adeb8dea601f8a6c9125fb84607c56c8a886821163901fffb457bf6c23",
+          "ansi_complete_character_offset": 129765
+        },
+        {
+          "path": "build/ansi-audit/complete-g/after.png",
+          "sha256": "d85d4d17bc151a69e49380903e4a484f922f86e165a00fe4902cfe6f23bc25bf",
+          "ansi_complete_character_offset": 138231
+        },
+        {
+          "path": "build/ansi-audit/complete-q/before.png",
+          "sha256": "d85d4d17bc151a69e49380903e4a484f922f86e165a00fe4902cfe6f23bc25bf",
+          "ansi_complete_character_offset": 121000
+        },
+        {
+          "path": "build/ansi-audit/complete-q/after.png",
+          "sha256": "e548f48385bb1dc586dd1fccbd65545dc778579c5aa18feaa124bb217f9c4247",
+          "ansi_complete_character_offset": 121072,
+          "replayed_from_retained_raw": true
+        },
+        {
+          "path": "build/ansi-audit/complete-ctrl-c/before.png",
+          "sha256": "d85d4d17bc151a69e49380903e4a484f922f86e165a00fe4902cfe6f23bc25bf",
+          "ansi_complete_character_offset": 121000
+        }
+      ]
+    },
+    {
+      "path": "build/ansi-audit/contact-sheets/controls-19.png",
+      "sha256": "b2bff5c99e2a5295825fcdba303116f3d60c33f26f0e0df61f8aa6837a8845b2",
+      "reviewer": "campaign",
+      "captures": [
+        {
+          "path": "build/ansi-audit/complete-ctrl-c/after.png",
+          "sha256": "e548f48385bb1dc586dd1fccbd65545dc778579c5aa18feaa124bb217f9c4247",
+          "ansi_complete_character_offset": 121072,
+          "replayed_from_retained_raw": true
+        },
+        {
+          "path": "build/ansi-audit/won-a-disabled/before.png",
+          "sha256": "cc7486b723bdc1ccb9db13ffa9fd0a1fd9f1e8d71d2e884865c0f0ae2af07957",
+          "ansi_complete_character_offset": 123477
+        },
+        {
+          "path": "build/ansi-audit/won-a-disabled/after.png",
+          "sha256": "cc7486b723bdc1ccb9db13ffa9fd0a1fd9f1e8d71d2e884865c0f0ae2af07957",
+          "ansi_complete_character_offset": 123477
+        },
+        {
+          "path": "build/ansi-audit/won-d-disabled/before.png",
+          "sha256": "cc7486b723bdc1ccb9db13ffa9fd0a1fd9f1e8d71d2e884865c0f0ae2af07957",
+          "ansi_complete_character_offset": 123477
+        },
+        {
+          "path": "build/ansi-audit/won-d-disabled/after.png",
+          "sha256": "cc7486b723bdc1ccb9db13ffa9fd0a1fd9f1e8d71d2e884865c0f0ae2af07957",
+          "ansi_complete_character_offset": 123477
+        },
+        {
+          "path": "build/ansi-audit/won-down-disabled/before.png",
+          "sha256": "cc7486b723bdc1ccb9db13ffa9fd0a1fd9f1e8d71d2e884865c0f0ae2af07957",
+          "ansi_complete_character_offset": 123477
+        },
+        {
+          "path": "build/ansi-audit/won-down-disabled/after.png",
+          "sha256": "b07a58049625b111c44793ea40c36f0e581b75139f9a1f011754b848c0115e09",
+          "ansi_complete_character_offset": 123664
+        },
+        {
+          "path": "build/ansi-audit/won-esc-disabled/before.png",
+          "sha256": "b07a58049625b111c44793ea40c36f0e581b75139f9a1f011754b848c0115e09",
+          "ansi_complete_character_offset": 123664
+        },
+        {
+          "path": "build/ansi-audit/won-esc-disabled/after.png",
+          "sha256": "b07a58049625b111c44793ea40c36f0e581b75139f9a1f011754b848c0115e09",
+          "ansi_complete_character_offset": 123664
+        },
+        {
+          "path": "build/ansi-audit/won-j-disabled/before.png",
+          "sha256": "b07a58049625b111c44793ea40c36f0e581b75139f9a1f011754b848c0115e09",
+          "ansi_complete_character_offset": 123664
+        },
+        {
+          "path": "build/ansi-audit/won-j-disabled/after.png",
+          "sha256": "b07a58049625b111c44793ea40c36f0e581b75139f9a1f011754b848c0115e09",
+          "ansi_complete_character_offset": 123664
+        },
+        {
+          "path": "build/ansi-audit/won-left-disabled/before.png",
+          "sha256": "b07a58049625b111c44793ea40c36f0e581b75139f9a1f011754b848c0115e09",
+          "ansi_complete_character_offset": 123664
+        },
+        {
+          "path": "build/ansi-audit/won-left-disabled/after.png",
+          "sha256": "b07a58049625b111c44793ea40c36f0e581b75139f9a1f011754b848c0115e09",
+          "ansi_complete_character_offset": 123664
+        },
+        {
+          "path": "build/ansi-audit/won-p-disabled/before.png",
+          "sha256": "b07a58049625b111c44793ea40c36f0e581b75139f9a1f011754b848c0115e09",
+          "ansi_complete_character_offset": 123664
+        },
+        {
+          "path": "build/ansi-audit/won-p-disabled/after.png",
+          "sha256": "b07a58049625b111c44793ea40c36f0e581b75139f9a1f011754b848c0115e09",
+          "ansi_complete_character_offset": 123664
+        }
+      ]
+    },
+    {
+      "path": "build/ansi-audit/contact-sheets/controls-20.png",
+      "sha256": "7b284ebfb4eceffe109d7c3224bc1ab768939368ccc2ea608e0fdb26b1655c4e",
+      "reviewer": "campaign",
+      "captures": [
+        {
+          "path": "build/ansi-audit/won-r-disabled/before.png",
+          "sha256": "b07a58049625b111c44793ea40c36f0e581b75139f9a1f011754b848c0115e09",
+          "ansi_complete_character_offset": 123664
+        },
+        {
+          "path": "build/ansi-audit/won-r-disabled/after.png",
+          "sha256": "b07a58049625b111c44793ea40c36f0e581b75139f9a1f011754b848c0115e09",
+          "ansi_complete_character_offset": 123664
+        },
+        {
+          "path": "build/ansi-audit/won-right-disabled/before.png",
+          "sha256": "b07a58049625b111c44793ea40c36f0e581b75139f9a1f011754b848c0115e09",
+          "ansi_complete_character_offset": 123664
+        },
+        {
+          "path": "build/ansi-audit/won-right-disabled/after.png",
+          "sha256": "b07a58049625b111c44793ea40c36f0e581b75139f9a1f011754b848c0115e09",
+          "ansi_complete_character_offset": 123664
+        },
+        {
+          "path": "build/ansi-audit/won-s-disabled/before.png",
+          "sha256": "b07a58049625b111c44793ea40c36f0e581b75139f9a1f011754b848c0115e09",
+          "ansi_complete_character_offset": 123664
+        },
+        {
+          "path": "build/ansi-audit/won-s-disabled/after.png",
+          "sha256": "b07a58049625b111c44793ea40c36f0e581b75139f9a1f011754b848c0115e09",
+          "ansi_complete_character_offset": 123664
+        },
+        {
+          "path": "build/ansi-audit/won-space-disabled/before.png",
+          "sha256": "b07a58049625b111c44793ea40c36f0e581b75139f9a1f011754b848c0115e09",
+          "ansi_complete_character_offset": 123664
+        },
+        {
+          "path": "build/ansi-audit/won-space-disabled/after.png",
+          "sha256": "b07a58049625b111c44793ea40c36f0e581b75139f9a1f011754b848c0115e09",
+          "ansi_complete_character_offset": 123664
+        },
+        {
+          "path": "build/ansi-audit/won-tab-disabled/before.png",
+          "sha256": "b07a58049625b111c44793ea40c36f0e581b75139f9a1f011754b848c0115e09",
+          "ansi_complete_character_offset": 123664
+        },
+        {
+          "path": "build/ansi-audit/won-tab-disabled/after.png",
+          "sha256": "b07a58049625b111c44793ea40c36f0e581b75139f9a1f011754b848c0115e09",
+          "ansi_complete_character_offset": 123664
+        },
+        {
+          "path": "build/ansi-audit/won-up-disabled/before.png",
+          "sha256": "b07a58049625b111c44793ea40c36f0e581b75139f9a1f011754b848c0115e09",
+          "ansi_complete_character_offset": 123664
+        },
+        {
+          "path": "build/ansi-audit/won-up-disabled/after.png",
+          "sha256": "b07a58049625b111c44793ea40c36f0e581b75139f9a1f011754b848c0115e09",
+          "ansi_complete_character_offset": 123664
+        },
+        {
+          "path": "build/ansi-audit/won-w-disabled/before.png",
+          "sha256": "b07a58049625b111c44793ea40c36f0e581b75139f9a1f011754b848c0115e09",
+          "ansi_complete_character_offset": 123664
+        },
+        {
+          "path": "build/ansi-audit/won-w-disabled/after.png",
+          "sha256": "b07a58049625b111c44793ea40c36f0e581b75139f9a1f011754b848c0115e09",
+          "ansi_complete_character_offset": 123664
+        },
+        {
+          "path": "build/ansi-audit/won-x-disabled/before.png",
+          "sha256": "b07a58049625b111c44793ea40c36f0e581b75139f9a1f011754b848c0115e09",
+          "ansi_complete_character_offset": 123664
+        }
+      ]
+    },
+    {
+      "path": "build/ansi-audit/contact-sheets/controls-21.png",
+      "sha256": "d34241f077997a08849778b3c8338243e1c8df1904cb0979cb2464b344d2dc1b",
+      "reviewer": "campaign",
+      "captures": [
+        {
+          "path": "build/ansi-audit/won-x-disabled/after.png",
+          "sha256": "b07a58049625b111c44793ea40c36f0e581b75139f9a1f011754b848c0115e09",
+          "ansi_complete_character_offset": 123664
+        },
+        {
+          "path": "build/ansi-audit/won-m/before.png",
+          "sha256": "b07a58049625b111c44793ea40c36f0e581b75139f9a1f011754b848c0115e09",
+          "ansi_complete_character_offset": 123664
+        },
+        {
+          "path": "build/ansi-audit/won-m/toggled.png",
+          "sha256": "d339db58cc8da3427aeae191ca4419076acdb35c48421c6d55fd16b4e50d53f8",
+          "ansi_complete_character_offset": 123851
+        },
+        {
+          "path": "build/ansi-audit/won-m/after.png",
+          "sha256": "b07a58049625b111c44793ea40c36f0e581b75139f9a1f011754b848c0115e09",
+          "ansi_complete_character_offset": 124038
+        },
+        {
+          "path": "build/ansi-audit/won-g/before.png",
+          "sha256": "b07a58049625b111c44793ea40c36f0e581b75139f9a1f011754b848c0115e09",
+          "ansi_complete_character_offset": 124038
+        },
+        {
+          "path": "build/ansi-audit/won-g/toggled.png",
+          "sha256": "bce9863a132a16457ace4404019c68ac71ad47c4705e4c4583a1e9cd18c1a679",
+          "ansi_complete_character_offset": 132298
+        },
+        {
+          "path": "build/ansi-audit/won-g/after.png",
+          "sha256": "b07a58049625b111c44793ea40c36f0e581b75139f9a1f011754b848c0115e09",
+          "ansi_complete_character_offset": 140284
+        },
+        {
+          "path": "build/ansi-audit/won-q/before.png",
+          "sha256": "cc7486b723bdc1ccb9db13ffa9fd0a1fd9f1e8d71d2e884865c0f0ae2af07957",
+          "ansi_complete_character_offset": 123477
+        },
+        {
+          "path": "build/ansi-audit/won-q/after.png",
+          "sha256": "e548f48385bb1dc586dd1fccbd65545dc778579c5aa18feaa124bb217f9c4247",
+          "ansi_complete_character_offset": 123549,
+          "replayed_from_retained_raw": true
+        },
+        {
+          "path": "build/ansi-audit/won-ctrl-c/before.png",
+          "sha256": "cc7486b723bdc1ccb9db13ffa9fd0a1fd9f1e8d71d2e884865c0f0ae2af07957",
+          "ansi_complete_character_offset": 123477
+        },
+        {
+          "path": "build/ansi-audit/won-ctrl-c/after.png",
+          "sha256": "e548f48385bb1dc586dd1fccbd65545dc778579c5aa18feaa124bb217f9c4247",
+          "ansi_complete_character_offset": 123549,
+          "replayed_from_retained_raw": true
+        },
+        {
+          "path": "build/ansi-audit/small-a-disabled/before.png",
+          "sha256": "48c4c7c14dd227e0ff16a0c09f4d37d600f448c9881f3d086ac196786ff8485c",
+          "ansi_complete_character_offset": 43843
+        },
+        {
+          "path": "build/ansi-audit/small-a-disabled/after.png",
+          "sha256": "48c4c7c14dd227e0ff16a0c09f4d37d600f448c9881f3d086ac196786ff8485c",
+          "ansi_complete_character_offset": 43843
+        },
+        {
+          "path": "build/ansi-audit/small-d-disabled/before.png",
+          "sha256": "48c4c7c14dd227e0ff16a0c09f4d37d600f448c9881f3d086ac196786ff8485c",
+          "ansi_complete_character_offset": 43843
+        },
+        {
+          "path": "build/ansi-audit/small-d-disabled/after.png",
+          "sha256": "48c4c7c14dd227e0ff16a0c09f4d37d600f448c9881f3d086ac196786ff8485c",
+          "ansi_complete_character_offset": 43843
+        }
+      ]
+    },
+    {
+      "path": "build/ansi-audit/contact-sheets/controls-22.png",
+      "sha256": "dea66d90f450e942a2e6fe2737fb78423a908da94d5652c4c5a37c7a6bf2f327",
+      "reviewer": "campaign",
+      "captures": [
+        {
+          "path": "build/ansi-audit/small-down-disabled/before.png",
+          "sha256": "48c4c7c14dd227e0ff16a0c09f4d37d600f448c9881f3d086ac196786ff8485c",
+          "ansi_complete_character_offset": 43843
+        },
+        {
+          "path": "build/ansi-audit/small-down-disabled/after.png",
+          "sha256": "48c4c7c14dd227e0ff16a0c09f4d37d600f448c9881f3d086ac196786ff8485c",
+          "ansi_complete_character_offset": 43843
+        },
+        {
+          "path": "build/ansi-audit/small-enter-disabled/before.png",
+          "sha256": "48c4c7c14dd227e0ff16a0c09f4d37d600f448c9881f3d086ac196786ff8485c",
+          "ansi_complete_character_offset": 43843
+        },
+        {
+          "path": "build/ansi-audit/small-enter-disabled/after.png",
+          "sha256": "48c4c7c14dd227e0ff16a0c09f4d37d600f448c9881f3d086ac196786ff8485c",
+          "ansi_complete_character_offset": 43843
+        },
+        {
+          "path": "build/ansi-audit/small-esc-disabled/before.png",
+          "sha256": "48c4c7c14dd227e0ff16a0c09f4d37d600f448c9881f3d086ac196786ff8485c",
+          "ansi_complete_character_offset": 43843
+        },
+        {
+          "path": "build/ansi-audit/small-esc-disabled/after.png",
+          "sha256": "48c4c7c14dd227e0ff16a0c09f4d37d600f448c9881f3d086ac196786ff8485c",
+          "ansi_complete_character_offset": 43843
+        },
+        {
+          "path": "build/ansi-audit/small-j-disabled/before.png",
+          "sha256": "48c4c7c14dd227e0ff16a0c09f4d37d600f448c9881f3d086ac196786ff8485c",
+          "ansi_complete_character_offset": 43843
+        },
+        {
+          "path": "build/ansi-audit/small-j-disabled/after.png",
+          "sha256": "48c4c7c14dd227e0ff16a0c09f4d37d600f448c9881f3d086ac196786ff8485c",
+          "ansi_complete_character_offset": 43843
+        },
+        {
+          "path": "build/ansi-audit/small-left-disabled/before.png",
+          "sha256": "48c4c7c14dd227e0ff16a0c09f4d37d600f448c9881f3d086ac196786ff8485c",
+          "ansi_complete_character_offset": 43843
+        },
+        {
+          "path": "build/ansi-audit/small-left-disabled/after.png",
+          "sha256": "48c4c7c14dd227e0ff16a0c09f4d37d600f448c9881f3d086ac196786ff8485c",
+          "ansi_complete_character_offset": 43843
+        },
+        {
+          "path": "build/ansi-audit/small-p-disabled/before.png",
+          "sha256": "48c4c7c14dd227e0ff16a0c09f4d37d600f448c9881f3d086ac196786ff8485c",
+          "ansi_complete_character_offset": 43843
+        },
+        {
+          "path": "build/ansi-audit/small-p-disabled/after.png",
+          "sha256": "48c4c7c14dd227e0ff16a0c09f4d37d600f448c9881f3d086ac196786ff8485c",
+          "ansi_complete_character_offset": 43843
+        },
+        {
+          "path": "build/ansi-audit/small-r-disabled/before.png",
+          "sha256": "48c4c7c14dd227e0ff16a0c09f4d37d600f448c9881f3d086ac196786ff8485c",
+          "ansi_complete_character_offset": 43843
+        },
+        {
+          "path": "build/ansi-audit/small-r-disabled/after.png",
+          "sha256": "48c4c7c14dd227e0ff16a0c09f4d37d600f448c9881f3d086ac196786ff8485c",
+          "ansi_complete_character_offset": 43843
+        },
+        {
+          "path": "build/ansi-audit/small-right-disabled/before.png",
+          "sha256": "48c4c7c14dd227e0ff16a0c09f4d37d600f448c9881f3d086ac196786ff8485c",
+          "ansi_complete_character_offset": 43843
+        }
+      ]
+    },
+    {
+      "path": "build/ansi-audit/contact-sheets/controls-23.png",
+      "sha256": "efa17d3356036c8aa2a53ee85b62591520359d3843a8aa646e3420490a5ae3a7",
+      "reviewer": "campaign",
+      "captures": [
+        {
+          "path": "build/ansi-audit/small-right-disabled/after.png",
+          "sha256": "48c4c7c14dd227e0ff16a0c09f4d37d600f448c9881f3d086ac196786ff8485c",
+          "ansi_complete_character_offset": 43843
+        },
+        {
+          "path": "build/ansi-audit/small-s-disabled/before.png",
+          "sha256": "48c4c7c14dd227e0ff16a0c09f4d37d600f448c9881f3d086ac196786ff8485c",
+          "ansi_complete_character_offset": 43843
+        },
+        {
+          "path": "build/ansi-audit/small-s-disabled/after.png",
+          "sha256": "48c4c7c14dd227e0ff16a0c09f4d37d600f448c9881f3d086ac196786ff8485c",
+          "ansi_complete_character_offset": 43843
+        },
+        {
+          "path": "build/ansi-audit/small-space-disabled/before.png",
+          "sha256": "48c4c7c14dd227e0ff16a0c09f4d37d600f448c9881f3d086ac196786ff8485c",
+          "ansi_complete_character_offset": 43843
+        },
+        {
+          "path": "build/ansi-audit/small-space-disabled/after.png",
+          "sha256": "48c4c7c14dd227e0ff16a0c09f4d37d600f448c9881f3d086ac196786ff8485c",
+          "ansi_complete_character_offset": 43843
+        },
+        {
+          "path": "build/ansi-audit/small-tab-disabled/before.png",
+          "sha256": "48c4c7c14dd227e0ff16a0c09f4d37d600f448c9881f3d086ac196786ff8485c",
+          "ansi_complete_character_offset": 43843
+        },
+        {
+          "path": "build/ansi-audit/small-tab-disabled/after.png",
+          "sha256": "48c4c7c14dd227e0ff16a0c09f4d37d600f448c9881f3d086ac196786ff8485c",
+          "ansi_complete_character_offset": 43843
+        },
+        {
+          "path": "build/ansi-audit/small-up-disabled/before.png",
+          "sha256": "48c4c7c14dd227e0ff16a0c09f4d37d600f448c9881f3d086ac196786ff8485c",
+          "ansi_complete_character_offset": 43843
+        },
+        {
+          "path": "build/ansi-audit/small-up-disabled/after.png",
+          "sha256": "48c4c7c14dd227e0ff16a0c09f4d37d600f448c9881f3d086ac196786ff8485c",
+          "ansi_complete_character_offset": 43843
+        },
+        {
+          "path": "build/ansi-audit/small-w-disabled/before.png",
+          "sha256": "48c4c7c14dd227e0ff16a0c09f4d37d600f448c9881f3d086ac196786ff8485c",
+          "ansi_complete_character_offset": 43843
+        },
+        {
+          "path": "build/ansi-audit/small-w-disabled/after.png",
+          "sha256": "48c4c7c14dd227e0ff16a0c09f4d37d600f448c9881f3d086ac196786ff8485c",
+          "ansi_complete_character_offset": 43843
+        },
+        {
+          "path": "build/ansi-audit/small-x-disabled/before.png",
+          "sha256": "48c4c7c14dd227e0ff16a0c09f4d37d600f448c9881f3d086ac196786ff8485c",
+          "ansi_complete_character_offset": 43843
+        },
+        {
+          "path": "build/ansi-audit/small-x-disabled/after.png",
+          "sha256": "48c4c7c14dd227e0ff16a0c09f4d37d600f448c9881f3d086ac196786ff8485c",
+          "ansi_complete_character_offset": 43843
+        },
+        {
+          "path": "build/ansi-audit/small-m/before.png",
+          "sha256": "48c4c7c14dd227e0ff16a0c09f4d37d600f448c9881f3d086ac196786ff8485c",
+          "ansi_complete_character_offset": 43843
+        },
+        {
+          "path": "build/ansi-audit/small-m/toggled.png",
+          "sha256": "0c80053bcccb80b1b8985180b9ff5bbb7d1ba24e96dc45695903c525d45c8872",
+          "ansi_complete_character_offset": 43968
+        }
+      ]
+    },
+    {
+      "path": "build/ansi-audit/contact-sheets/controls-24.png",
+      "sha256": "8641ef5c5b15f329b4e9592d9b26744b090179f63deb1f0228f16c0bbff52b12",
+      "reviewer": "campaign",
+      "captures": [
+        {
+          "path": "build/ansi-audit/small-m/after.png",
+          "sha256": "48c4c7c14dd227e0ff16a0c09f4d37d600f448c9881f3d086ac196786ff8485c",
+          "ansi_complete_character_offset": 44093
+        },
+        {
+          "path": "build/ansi-audit/small-g/before.png",
+          "sha256": "48c4c7c14dd227e0ff16a0c09f4d37d600f448c9881f3d086ac196786ff8485c",
+          "ansi_complete_character_offset": 44093
+        },
+        {
+          "path": "build/ansi-audit/small-g/toggled.png",
+          "sha256": "d4a3fa1601588bfbb51096cf37d43bbe559eecb853cb65790699bac3f5cd6510",
+          "ansi_complete_character_offset": 44218
+        },
+        {
+          "path": "build/ansi-audit/small-g/after.png",
+          "sha256": "48c4c7c14dd227e0ff16a0c09f4d37d600f448c9881f3d086ac196786ff8485c",
+          "ansi_complete_character_offset": 44343
+        },
+        {
+          "path": "build/ansi-audit/small-q/before.png",
+          "sha256": "48c4c7c14dd227e0ff16a0c09f4d37d600f448c9881f3d086ac196786ff8485c",
+          "ansi_complete_character_offset": 43843
+        },
+        {
+          "path": "build/ansi-audit/small-q/after.png",
+          "sha256": "5fa1c140b37ea80790bed1ee073c4808c1cf412e22cf5f956d8f6b63797f0c58",
+          "ansi_complete_character_offset": 43914,
+          "replayed_from_retained_raw": true
+        },
+        {
+          "path": "build/ansi-audit/small-ctrl-c/before.png",
+          "sha256": "48c4c7c14dd227e0ff16a0c09f4d37d600f448c9881f3d086ac196786ff8485c",
+          "ansi_complete_character_offset": 46343
+        },
+        {
+          "path": "build/ansi-audit/small-ctrl-c/after.png",
+          "sha256": "5fa1c140b37ea80790bed1ee073c4808c1cf412e22cf5f956d8f6b63797f0c58",
+          "ansi_complete_character_offset": 46414,
+          "replayed_from_retained_raw": true
+        },
+        {
+          "path": "build/ansi-audit/playing-focus-loss-regain/before.png",
+          "sha256": "43d2c6cf8bd7081db3de8952d3f5be17d5588f3ac13ffa8c5e235ea2fa1de518",
+          "ansi_complete_character_offset": 161569
+        },
+        {
+          "path": "build/ansi-audit/playing-focus-loss-regain/blurred.png",
+          "sha256": "d2ac8c46b5cfd0bac281bbaddbddc0fdfa1ef456d6bace4de8f587972afe4862",
+          "ansi_complete_character_offset": 250976
+        },
+        {
+          "path": "build/ansi-audit/playing-focus-loss-regain/after.png",
+          "sha256": "b69e67c2e28dfa9cab88e6047a3f15796e36494ea761c1ea6cc17f59990d3ebf",
+          "ansi_complete_character_offset": 324272
+        },
+        {
+          "path": "build/ansi-audit/playing-resize/before.png",
+          "sha256": "34b60bbe38b925a9b5841ff9d10f7d420f459748b7810e4279f65789247b6cfc",
+          "ansi_complete_character_offset": 159387
+        },
+        {
+          "path": "build/ansi-audit/playing-resize/small.png",
+          "sha256": "48c4c7c14dd227e0ff16a0c09f4d37d600f448c9881f3d086ac196786ff8485c",
+          "ansi_complete_character_offset": 218099
+        },
+        {
+          "path": "build/ansi-audit/playing-resize/after.png",
+          "sha256": "d21b9d6a9458acb0ea37a227141fc8aead66f1cd6bd387bf31b373cf4e5000cc",
+          "ansi_complete_character_offset": 308789
+        },
+        {
+          "path": "build/ansi-audit/playing-opposing-repeated/before.png",
+          "sha256": "43d2c6cf8bd7081db3de8952d3f5be17d5588f3ac13ffa8c5e235ea2fa1de518",
+          "ansi_complete_character_offset": 170695
+        }
+      ]
+    },
+    {
+      "path": "build/ansi-audit/contact-sheets/controls-25.png",
+      "sha256": "3f26cb3e4a8a922b2f02c25c1dc51459352190fac70aa9e5ca9f1fef80c9f4e2",
+      "reviewer": "campaign",
+      "captures": [
+        {
+          "path": "build/ansi-audit/playing-opposing-repeated/right-last.png",
+          "sha256": "79fd219631aeed47598e2bb04f5e7d5a956037b23d0c32543c5d5ffb1bec4e6f",
+          "ansi_complete_character_offset": 227219
+        },
+        {
+          "path": "build/ansi-audit/playing-opposing-repeated/left-last.png",
+          "sha256": "c2e843e35e43e4370a1d19a98231897f81f0ad3e485a608471449fdc8c998690",
+          "ansi_complete_character_offset": 283599
+        },
+        {
+          "path": "build/ansi-audit/playing-opposing-repeated/stopped-after-repeat.png",
+          "sha256": "c7fce2581398538f42f07a957d355b191e59246d54358913c99fe768f47c32aa",
+          "ansi_complete_character_offset": 388106
+        },
+        {
+          "path": "build/ansi-audit/playing-opposing-repeated/after.png",
+          "sha256": "f90047af34634472e7d594370ea3ac3b23a63e270e834056f7af61a10e452564",
+          "ansi_complete_character_offset": 424097
+        },
+        {
+          "path": "build/ansi-audit/playing-d-w-and-pause/before.png",
+          "sha256": "34b60bbe38b925a9b5841ff9d10f7d420f459748b7810e4279f65789247b6cfc",
+          "ansi_complete_character_offset": 169795
+        },
+        {
+          "path": "build/ansi-audit/playing-d-w-and-pause/run-and-jump.png",
+          "sha256": "adebe35344fce421b61c4908107bd4af8d0a3c18ca5d8b334cd461f89c286104",
+          "ansi_complete_character_offset": 226312
+        },
+        {
+          "path": "build/ansi-audit/playing-d-w-and-pause/paused-mid-jump.png",
+          "sha256": "458d940a88c27ce4ba7b12beae2baacf22ade1b4b77ea9a9441eda3e23a87414",
+          "ansi_complete_character_offset": 307033
+        },
+        {
+          "path": "build/ansi-audit/playing-d-w-and-pause/after.png",
+          "sha256": "359cc47ce546419e929890286a9f57cc5ac2335dc122ed93875be17e4a2d781e",
+          "ansi_complete_character_offset": 403340
+        },
+        {
+          "path": "build/ansi-audit/paused-up-down-tab-boundaries/before.png",
+          "sha256": "0e09d34e2e0309f3989c68e82bea5945a2b3a05f87d3dc55ca355dbd1fc93786",
+          "ansi_complete_character_offset": 107582
+        },
+        {
+          "path": "build/ansi-audit/paused-up-down-tab-boundaries/up-clamped.png",
+          "sha256": "0e09d34e2e0309f3989c68e82bea5945a2b3a05f87d3dc55ca355dbd1fc93786",
+          "ansi_complete_character_offset": 107582
+        },
+        {
+          "path": "build/ansi-audit/paused-up-down-tab-boundaries/down-wrapped.png",
+          "sha256": "0e09d34e2e0309f3989c68e82bea5945a2b3a05f87d3dc55ca355dbd1fc93786",
+          "ansi_complete_character_offset": 118957
+        },
+        {
+          "path": "build/ansi-audit/paused-up-down-tab-boundaries/tab-wrapped.png",
+          "sha256": "0e09d34e2e0309f3989c68e82bea5945a2b3a05f87d3dc55ca355dbd1fc93786",
+          "ansi_complete_character_offset": 130332
+        },
+        {
+          "path": "build/ansi-audit/paused-up-down-tab-boundaries/after.png",
+          "sha256": "0e09d34e2e0309f3989c68e82bea5945a2b3a05f87d3dc55ca355dbd1fc93786",
+          "ansi_complete_character_offset": 130332
+        },
+        {
+          "path": "build/ansi-audit/playing-uppercase-bracketed-paste/before.png",
+          "sha256": "43d2c6cf8bd7081db3de8952d3f5be17d5588f3ac13ffa8c5e235ea2fa1de518",
+          "ansi_complete_character_offset": 158824
+        },
+        {
+          "path": "build/ansi-audit/playing-uppercase-bracketed-paste/uppercase.png",
+          "sha256": "1234fe8d89d4777973f1ab359d870bd39fe228f830131bdde0f8746f76f44e97",
+          "ansi_complete_character_offset": 196714
+        }
+      ]
+    },
+    {
+      "path": "build/ansi-audit/contact-sheets/controls-26.png",
+      "sha256": "915c02393619c05112977f53220f9cec96449e4a45a9f92796e1b2d0d96e52f4",
+      "reviewer": "campaign",
+      "captures": [
+        {
+          "path": "build/ansi-audit/playing-uppercase-bracketed-paste/paste-chord.png",
+          "sha256": "a61af11890b92d279ff1d485306cb2fac5c45758a6b09a24dfbb2f27ae583bc9",
+          "ansi_complete_character_offset": 227975
+        },
+        {
+          "path": "build/ansi-audit/playing-uppercase-bracketed-paste/paste-single.png",
+          "sha256": "ae9faca7d48161cf92c2186851735448804b21634792c22f5a95f937a1f6b994",
+          "ansi_complete_character_offset": 265397
+        },
+        {
+          "path": "build/ansi-audit/playing-uppercase-bracketed-paste/after.png",
+          "sha256": "ae9faca7d48161cf92c2186851735448804b21634792c22f5a95f937a1f6b994",
+          "ansi_complete_character_offset": 265397
+        },
+        {
+          "path": "build/ansi-audit/motion-g-rendered-effects/before.png",
+          "sha256": "37a53527c00ddb6c79f31b8dcfe4bee505d4a8cda1189b55b33b243e46b630b9",
+          "ansi_complete_character_offset": 128722
+        },
+        {
+          "path": "build/ansi-audit/motion-g-rendered-effects/snow-full-motion.png",
+          "sha256": "a630b16193748cb6913e10d5f69397fd7444ac2e4f20224df2e8507cfd107488",
+          "ansi_complete_character_offset": 157227
+        },
+        {
+          "path": "build/ansi-audit/motion-g-rendered-effects/jump-particles.png",
+          "sha256": "4a13f97389053f31f15673b925227befa19fc75cd7edf3cdc1116ef9ac278873",
+          "ansi_complete_character_offset": 196783
+        },
+        {
+          "path": "build/ansi-audit/motion-g-rendered-effects/snow-and-particles-removed.png",
+          "sha256": "8702df1add3b861dc97484c1f0c0ce97421c1c32eb1db12a569e07307d148306",
+          "ansi_complete_character_offset": 250905
+        },
+        {
+          "path": "build/ansi-audit/motion-g-rendered-effects/snow-restored.png",
+          "sha256": "2d5b86e60fa3a0d6b9328984afd223b689b40698bf4c9dc2c8f8c2ea453c7635",
+          "ansi_complete_character_offset": 325686
+        },
+        {
+          "path": "build/ansi-audit/motion-g-rendered-effects/after.png",
+          "sha256": "2d5b86e60fa3a0d6b9328984afd223b689b40698bf4c9dc2c8f8c2ea453c7635",
+          "ansi_complete_character_offset": 325686
+        },
+        {
+          "path": "build/ansi-audit/motion-g-camera-recentering/before.png",
+          "sha256": "6069acb0fab7b6204ebcc6a42065876319c53efe74314839c556928874015682",
+          "ansi_complete_character_offset": 133637
+        },
+        {
+          "path": "build/ansi-audit/motion-g-camera-recentering/smooth-camera.png",
+          "sha256": "4bf1e5e386e104a6355faa8f0034d2af53d492eb4abdb2d51091cb2241cf3ddb",
+          "ansi_complete_character_offset": 420457
+        },
+        {
+          "path": "build/ansi-audit/motion-g-camera-recentering/steady-camera.png",
+          "sha256": "4bb257c741d967b579f182356cb528cec7b12969c85bf5ac7a38357effc68ff3",
+          "ansi_complete_character_offset": 561834
+        },
+        {
+          "path": "build/ansi-audit/motion-g-camera-recentering/after.png",
+          "sha256": "2410c9bb945055d1cc8226f92c527106532b33e5f21064c924e4638264c3c052",
+          "ansi_complete_character_offset": 693123
+        },
+        {
+          "path": "build/ansi-audit/playing-256-color-rendering/before.png",
+          "sha256": "056820e39d5a29efa3b5d12500465b427bddc1f56598bd15b07345d8de30b2c0",
+          "ansi_complete_character_offset": 110918
+        },
+        {
+          "path": "build/ansi-audit/playing-256-color-rendering/indexed-running.png",
+          "sha256": "5ce56850916f1165f27fb64662e27caf781b4b116261efa56538eb4dc25ed5f4",
+          "ansi_complete_character_offset": 184119
+        }
+      ]
+    },
+    {
+      "path": "build/ansi-audit/contact-sheets/controls-27.png",
+      "sha256": "b70d82e34cacd4f17648341f3fbb782b27b51b0c3e7494911dd2a69ff09e62c9",
+      "reviewer": "ansi_controls (recovered selection re-review)",
+      "captures": [
+        {
+          "path": "build/ansi-audit/playing-256-color-rendering/after.png",
+          "sha256": "8af3813fc8c7b32293e71ff6ec1be9e6110ddd3afea6e84c32b319f7df840ffb",
+          "ansi_complete_character_offset": 253632
+        },
+        {
+          "path": "build/ansi-audit/paused-enter-bow/before.png",
+          "sha256": "0e09d34e2e0309f3989c68e82bea5945a2b3a05f87d3dc55ca355dbd1fc93786",
+          "ansi_complete_character_offset": 107582
+        },
+        {
+          "path": "build/ansi-audit/paused-enter-bow/selected.png",
+          "sha256": "0e09d34e2e0309f3989c68e82bea5945a2b3a05f87d3dc55ca355dbd1fc93786",
+          "ansi_complete_character_offset": 107582
+        },
+        {
+          "path": "build/ansi-audit/paused-enter-bow/removed.png",
+          "sha256": "f0a8d61326162bbf0c194c603f6b999f4ccb9c8f3a503acaf6ad25d763f664a1",
+          "ansi_complete_character_offset": 112262
+        },
+        {
+          "path": "build/ansi-audit/paused-enter-bow/equipped.png",
+          "sha256": "0e09d34e2e0309f3989c68e82bea5945a2b3a05f87d3dc55ca355dbd1fc93786",
+          "ansi_complete_character_offset": 117017
+        },
+        {
+          "path": "build/ansi-audit/paused-enter-bow/removed-after-equip.png",
+          "sha256": "f0a8d61326162bbf0c194c603f6b999f4ccb9c8f3a503acaf6ad25d763f664a1",
+          "ansi_complete_character_offset": 121697,
+          "replayed_from_retained_raw": true
+        },
+        {
+          "path": "build/ansi-audit/paused-enter-bow/fired.png",
+          "sha256": "4e5cf458c4c23b0ef35ff0ef635da16ff117972698044d7138f4225f15eb7f23",
+          "ansi_complete_character_offset": 208305
+        },
+        {
+          "path": "build/ansi-audit/paused-enter-bow/fired-left.png",
+          "sha256": "1c98ccd7661639ed6f442b6f6c0002cfafa5ae8a3ca80b0a74e67304775b3b33",
+          "ansi_complete_character_offset": 334937
+        },
+        {
+          "path": "build/ansi-audit/paused-enter-bow/after.png",
+          "sha256": "1c98ccd7661639ed6f442b6f6c0002cfafa5ae8a3ca80b0a74e67304775b3b33",
+          "ansi_complete_character_offset": 334937
+        },
+        {
+          "path": "build/ansi-audit/paused-enter-armor/before.png",
+          "sha256": "0e09d34e2e0309f3989c68e82bea5945a2b3a05f87d3dc55ca355dbd1fc93786",
+          "ansi_complete_character_offset": 107582
+        },
+        {
+          "path": "build/ansi-audit/paused-enter-armor/selected.png",
+          "sha256": "37f4c1fed60028047dd00c8d04af3ecf9cf673ce112ab14988c1fc42853da25f",
+          "ansi_complete_character_offset": 108106,
+          "replayed_from_retained_raw": true
+        },
+        {
+          "path": "build/ansi-audit/paused-enter-armor/equipped.png",
+          "sha256": "424b0875b43fa856556cd095d7e45d01543f4ee029655cad8d5e2e2086f08158",
+          "ansi_complete_character_offset": 111295
+        },
+        {
+          "path": "build/ansi-audit/paused-enter-armor/removed-after-equip.png",
+          "sha256": "ffd360b4d9d244dbdad41d8ba3558d74f02261ae96585466f47b775cdaa45a60",
+          "ansi_complete_character_offset": 114519,
+          "replayed_from_retained_raw": true
+        },
+        {
+          "path": "build/ansi-audit/paused-enter-armor/after.png",
+          "sha256": "424b0875b43fa856556cd095d7e45d01543f4ee029655cad8d5e2e2086f08158",
+          "ansi_complete_character_offset": 117708
+        },
+        {
+          "path": "build/ansi-audit/paused-enter-spear/before.png",
+          "sha256": "0e09d34e2e0309f3989c68e82bea5945a2b3a05f87d3dc55ca355dbd1fc93786",
+          "ansi_complete_character_offset": 107582
+        }
+      ]
+    },
+    {
+      "path": "build/ansi-audit/contact-sheets/controls-28.png",
+      "sha256": "1400207901d641c837a2b9376fae45b63f528c2232745dc08f464fed0783cfd5",
+      "reviewer": "ansi_controls (recovered selection re-review)",
+      "captures": [
+        {
+          "path": "build/ansi-audit/paused-enter-spear/selected.png",
+          "sha256": "fb73f62af83f4473d2e9ac04b40f75dd21641fea9fd47b7a25a830cee870454c",
+          "ansi_complete_character_offset": 108630
+        },
+        {
+          "path": "build/ansi-audit/paused-enter-spear/equipped.png",
+          "sha256": "e77a57cf88d9222868511633e34d8ba120c8f2d868e29f026076b95bbe924aee",
+          "ansi_complete_character_offset": 113391
+        },
+        {
+          "path": "build/ansi-audit/paused-enter-spear/removed-after-equip.png",
+          "sha256": "1e1dc5920d9cd1da84b2e72eecb0a16a8e9982d4a2a174e3415a32b85d2a2499",
+          "ansi_complete_character_offset": 115089,
+          "replayed_from_retained_raw": true
+        },
+        {
+          "path": "build/ansi-audit/paused-enter-spear/fired.png",
+          "sha256": "0879db1e7615eef298646ebc07aa913c496353a85c91e83af9194074487dcf91",
+          "ansi_complete_character_offset": 198321
+        },
+        {
+          "path": "build/ansi-audit/paused-enter-spear/fired-left.png",
+          "sha256": "f59cc9eec2cc829bd89be48079eb2e2a267a0e04c5e8f39578e9219ae6111848",
+          "ansi_complete_character_offset": 439889
+        },
+        {
+          "path": "build/ansi-audit/paused-enter-spear/after.png",
+          "sha256": "f59cc9eec2cc829bd89be48079eb2e2a267a0e04c5e8f39578e9219ae6111848",
+          "ansi_complete_character_offset": 439889
+        },
+        {
+          "path": "build/ansi-audit/paused-enter-bark-armor/before.png",
+          "sha256": "0e09d34e2e0309f3989c68e82bea5945a2b3a05f87d3dc55ca355dbd1fc93786",
+          "ansi_complete_character_offset": 107582
+        },
+        {
+          "path": "build/ansi-audit/paused-enter-bark-armor/selected.png",
+          "sha256": "027c5390a0a925f5e2ca5b2e28345826f33a43e3d19e2a81695efc4f925eca79",
+          "ansi_complete_character_offset": 109661,
+          "replayed_from_retained_raw": true
+        },
+        {
+          "path": "build/ansi-audit/paused-enter-bark-armor/equipped.png",
+          "sha256": "4ebd3217ea0f73f32cc757125ac108b20c7d00847ec85d47ba6921d380dafbaf",
+          "ansi_complete_character_offset": 112849
+        },
+        {
+          "path": "build/ansi-audit/paused-enter-bark-armor/removed-after-equip.png",
+          "sha256": "881fc1cfaf3e9a1f97fbdc7f70584870cfb518521e9ecf9ad3d0573b3ecca55e",
+          "ansi_complete_character_offset": 116073,
+          "replayed_from_retained_raw": true
+        },
+        {
+          "path": "build/ansi-audit/paused-enter-bark-armor/after.png",
+          "sha256": "4ebd3217ea0f73f32cc757125ac108b20c7d00847ec85d47ba6921d380dafbaf",
+          "ansi_complete_character_offset": 119261
+        },
+        {
+          "path": "build/ansi-audit/paused-enter-seed-bomb/before.png",
+          "sha256": "0e09d34e2e0309f3989c68e82bea5945a2b3a05f87d3dc55ca355dbd1fc93786",
+          "ansi_complete_character_offset": 107582
+        },
+        {
+          "path": "build/ansi-audit/paused-enter-seed-bomb/selected.png",
+          "sha256": "6ef9f6837a89776fb1f342c635e64bc6c6a545c4697aee26c271ba5fad5bd4f0",
+          "ansi_complete_character_offset": 110692
+        },
+        {
+          "path": "build/ansi-audit/paused-enter-seed-bomb/equipped.png",
+          "sha256": "6b9d6cbae1aa171e4e2c56bfa9b5859c9d9bebd950de789bcb53da98d9094b2e",
+          "ansi_complete_character_offset": 115372
+        },
+        {
+          "path": "build/ansi-audit/paused-enter-seed-bomb/removed-after-equip.png",
+          "sha256": "a148d85ebaef09d851c155cc671da45c2c6628736246c8098fa0673ff6525d56",
+          "ansi_complete_character_offset": 120052,
+          "replayed_from_retained_raw": true
+        }
+      ]
+    },
+    {
+      "path": "build/ansi-audit/contact-sheets/controls-29.png",
+      "sha256": "afad3ded290c056ce5b74e76829100b7a1f6de550ad2b3c60785357851010e69",
+      "reviewer": "campaign",
+      "captures": [
+        {
+          "path": "build/ansi-audit/paused-enter-seed-bomb/fired.png",
+          "sha256": "daf6b207fe7f26211ac3a11da06a571b61047b1504d47332b0628835da129381",
+          "ansi_complete_character_offset": 191762
+        },
+        {
+          "path": "build/ansi-audit/paused-enter-seed-bomb/fired-left.png",
+          "sha256": "2923685520c8d046980b376be7c30bae54f78165e4765837109505dc0360e415",
+          "ansi_complete_character_offset": 437619
+        },
+        {
+          "path": "build/ansi-audit/paused-enter-seed-bomb/after.png",
+          "sha256": "2923685520c8d046980b376be7c30bae54f78165e4765837109505dc0360e415",
+          "ansi_complete_character_offset": 437619
+        },
+        {
+          "path": "build/ansi-audit/paused-enter-ironwood-armor/before.png",
+          "sha256": "0e09d34e2e0309f3989c68e82bea5945a2b3a05f87d3dc55ca355dbd1fc93786",
+          "ansi_complete_character_offset": 107582
+        },
+        {
+          "path": "build/ansi-audit/paused-enter-ironwood-armor/selected.png",
+          "sha256": "e5d251e5476fa36406ee87da6367b30d4e75bf8c1a420aed49165286ef404bda",
+          "ansi_complete_character_offset": 111723
+        },
+        {
+          "path": "build/ansi-audit/paused-enter-ironwood-armor/equipped.png",
+          "sha256": "1b5b247bc186bd6ffa65fd0916176d761b1afdfdf93ffb968004bdd40e8dc644",
+          "ansi_complete_character_offset": 114911
+        },
+        {
+          "path": "build/ansi-audit/paused-enter-ironwood-armor/removed-after-equip.png",
+          "sha256": "bb15b69db4f41dbc2cbeb1c7c22c2cb6226b876e2a5101b2645e34fe70b53226",
+          "ansi_complete_character_offset": 118135,
+          "replayed_from_retained_raw": true
+        },
+        {
+          "path": "build/ansi-audit/paused-enter-ironwood-armor/after.png",
+          "sha256": "1b5b247bc186bd6ffa65fd0916176d761b1afdfdf93ffb968004bdd40e8dc644",
+          "ansi_complete_character_offset": 121323
+        },
+        {
+          "path": "build/ansi-audit/paused-enter-reed-mail/before.png",
+          "sha256": "0e09d34e2e0309f3989c68e82bea5945a2b3a05f87d3dc55ca355dbd1fc93786",
+          "ansi_complete_character_offset": 107582
+        },
+        {
+          "path": "build/ansi-audit/paused-enter-reed-mail/selected.png",
+          "sha256": "a41d6cd656537a473aa23c783721a5910dfb5b5f377165fb6e4ce6e858076ac0",
+          "ansi_complete_character_offset": 112754
+        },
+        {
+          "path": "build/ansi-audit/paused-enter-reed-mail/equipped.png",
+          "sha256": "119aa9d739cbc30d7b0fde3aa500b2d4d95d2d414a92bef192b2bb56a299c2f5",
+          "ansi_complete_character_offset": 115905
+        },
+        {
+          "path": "build/ansi-audit/paused-enter-reed-mail/removed-after-equip.png",
+          "sha256": "9f55b813d57b9b3ca0fb382c5060d4ba3dd2d0d1acb3a5dff2aef9462a4bf921",
+          "ansi_complete_character_offset": 119129,
+          "replayed_from_retained_raw": true
+        },
+        {
+          "path": "build/ansi-audit/paused-enter-reed-mail/after.png",
+          "sha256": "119aa9d739cbc30d7b0fde3aa500b2d4d95d2d414a92bef192b2bb56a299c2f5",
+          "ansi_complete_character_offset": 122280
+        },
+        {
+          "path": "build/ansi-audit/paused-enter-thorn-fan/before.png",
+          "sha256": "0e09d34e2e0309f3989c68e82bea5945a2b3a05f87d3dc55ca355dbd1fc93786",
+          "ansi_complete_character_offset": 107582
+        },
+        {
+          "path": "build/ansi-audit/paused-enter-thorn-fan/selected.png",
+          "sha256": "92bc055e14c20552b98d003eb60d3463df8ef6d1b02a007a67a924c41f8c18d4",
+          "ansi_complete_character_offset": 113785
+        }
+      ]
+    },
+    {
+      "path": "build/ansi-audit/contact-sheets/controls-30.png",
+      "sha256": "ebdd69aa4adbfc009c082250dac8f29c048efd2c009b1637e64d1e09b26743c3",
+      "reviewer": "campaign",
+      "captures": [
+        {
+          "path": "build/ansi-audit/paused-enter-thorn-fan/equipped.png",
+          "sha256": "63798a67c8fa2ed2278c0fae400f54c14406c6dbc7f98c72a07b4d2adddf74b9",
+          "ansi_complete_character_offset": 115432
+        },
+        {
+          "path": "build/ansi-audit/paused-enter-thorn-fan/removed-after-equip.png",
+          "sha256": "2cdd05470bffc556f8ad6e9baaa41814f6997cfb52ba7103c1ad0ba6b56c1fcc",
+          "ansi_complete_character_offset": 120112,
+          "replayed_from_retained_raw": true
+        },
+        {
+          "path": "build/ansi-audit/paused-enter-thorn-fan/fired.png",
+          "sha256": "73b9d0a029b5363a908b14d1148abcd660dd27e1736fb1d617326b4a7fdee2a2",
+          "ansi_complete_character_offset": 200793
+        },
+        {
+          "path": "build/ansi-audit/paused-enter-thorn-fan/fired-left.png",
+          "sha256": "5ec1e03ea5422852d9b5b99663448ee263f8b3741af493c491b0fea5792e1312",
+          "ansi_complete_character_offset": 376418
+        },
+        {
+          "path": "build/ansi-audit/paused-enter-thorn-fan/after.png",
+          "sha256": "5ec1e03ea5422852d9b5b99663448ee263f8b3741af493c491b0fea5792e1312",
+          "ansi_complete_character_offset": 376418
+        },
+        {
+          "path": "build/ansi-audit/paused-enter-frost-armor/before.png",
+          "sha256": "0e09d34e2e0309f3989c68e82bea5945a2b3a05f87d3dc55ca355dbd1fc93786",
+          "ansi_complete_character_offset": 107582
+        },
+        {
+          "path": "build/ansi-audit/paused-enter-frost-armor/selected.png",
+          "sha256": "1423eac0c0ffcbfe4230d3d769f6cc5026ee4114122332e3a2be5eae61a06c9c",
+          "ansi_complete_character_offset": 114816
+        },
+        {
+          "path": "build/ansi-audit/paused-enter-frost-armor/equipped.png",
+          "sha256": "0657d2879bf5030109df8d70ee9f76a136480181a41becd71500b83dec7ff531",
+          "ansi_complete_character_offset": 118029
+        },
+        {
+          "path": "build/ansi-audit/paused-enter-frost-armor/removed-after-equip.png",
+          "sha256": "e7bf810bfc2458807d27dca183e3217d045eb96c3aa6d4718213e8c95b34027c",
+          "ansi_complete_character_offset": 121253,
+          "replayed_from_retained_raw": true
+        },
+        {
+          "path": "build/ansi-audit/paused-enter-frost-armor/after.png",
+          "sha256": "0657d2879bf5030109df8d70ee9f76a136480181a41becd71500b83dec7ff531",
+          "ansi_complete_character_offset": 124466
+        },
+        {
+          "path": "build/ansi-audit/paused-enter-stoneplate/before.png",
+          "sha256": "0e09d34e2e0309f3989c68e82bea5945a2b3a05f87d3dc55ca355dbd1fc93786",
+          "ansi_complete_character_offset": 107582
+        },
+        {
+          "path": "build/ansi-audit/paused-enter-stoneplate/selected.png",
+          "sha256": "954343cf73163109036441141a77b7695922e2ffde9436e575bb1efd7d299e9a",
+          "ansi_complete_character_offset": 115847
+        },
+        {
+          "path": "build/ansi-audit/paused-enter-stoneplate/equipped.png",
+          "sha256": "3d5074c0fc3f36b738061c738b86748d701d3a90c28f37b4dd0289594fe7ca7b",
+          "ansi_complete_character_offset": 119034
+        },
+        {
+          "path": "build/ansi-audit/paused-enter-stoneplate/removed-after-equip.png",
+          "sha256": "724f66548ab81e65ae64355aed0592bae0be8329fdafc3f07c641617ac6769e9",
+          "ansi_complete_character_offset": 122258,
+          "replayed_from_retained_raw": true
+        },
+        {
+          "path": "build/ansi-audit/paused-enter-stoneplate/after.png",
+          "sha256": "3d5074c0fc3f36b738061c738b86748d701d3a90c28f37b4dd0289594fe7ca7b",
+          "ansi_complete_character_offset": 125445
+        }
+      ]
+    },
+    {
+      "path": "build/ansi-audit/contact-sheets/controls-31.png",
+      "sha256": "3a30203b768463bcd65961ba9121d8109e7425a7a99d788217c6d3a03d381e3c",
+      "reviewer": "campaign",
+      "captures": [
+        {
+          "path": "build/ansi-audit/paused-enter-copperbark-armor/before.png",
+          "sha256": "0e09d34e2e0309f3989c68e82bea5945a2b3a05f87d3dc55ca355dbd1fc93786",
+          "ansi_complete_character_offset": 107582
+        },
+        {
+          "path": "build/ansi-audit/paused-enter-copperbark-armor/selected.png",
+          "sha256": "c89a4aa7f1dcb08cc514bf92fbdaecfc8d934d87f544d642e1fa28b471400f3a",
+          "ansi_complete_character_offset": 116878
+        },
+        {
+          "path": "build/ansi-audit/paused-enter-copperbark-armor/equipped.png",
+          "sha256": "be35e3be201cf17538d04f300f8876c22e625bfa41381475b1fd9b7f69399e32",
+          "ansi_complete_character_offset": 120236
+        },
+        {
+          "path": "build/ansi-audit/paused-enter-copperbark-armor/removed-after-equip.png",
+          "sha256": "992beaeed3f07dcb5f0da11398435c76af23019e54b852eafffa420e8b6fe535",
+          "ansi_complete_character_offset": 123460,
+          "replayed_from_retained_raw": true
+        },
+        {
+          "path": "build/ansi-audit/paused-enter-copperbark-armor/after.png",
+          "sha256": "be35e3be201cf17538d04f300f8876c22e625bfa41381475b1fd9b7f69399e32",
+          "ansi_complete_character_offset": 126649
+        },
+        {
+          "path": "build/ansi-audit/paused-enter-sunwood-lance/before.png",
+          "sha256": "0e09d34e2e0309f3989c68e82bea5945a2b3a05f87d3dc55ca355dbd1fc93786",
+          "ansi_complete_character_offset": 107582
+        },
+        {
+          "path": "build/ansi-audit/paused-enter-sunwood-lance/selected.png",
+          "sha256": "70459bb7ed672e9a2f7ef7e9b57d36c321f0f2e1d10abad27bb1872173c5b8cc",
+          "ansi_complete_character_offset": 117402
+        },
+        {
+          "path": "build/ansi-audit/paused-enter-sunwood-lance/equipped.png",
+          "sha256": "5384c9b5e31dc1d91901974e913158a5c2f5c1345969887e62987c940741c587",
+          "ansi_complete_character_offset": 122013
+        },
+        {
+          "path": "build/ansi-audit/paused-enter-sunwood-lance/removed-after-equip.png",
+          "sha256": "fb4af76516dd8b13e28b777fc2517b90b90a4cec7c67d997ca36f1c329793bb4",
+          "ansi_complete_character_offset": 123711,
+          "replayed_from_retained_raw": true
+        },
+        {
+          "path": "build/ansi-audit/paused-enter-sunwood-lance/fired.png",
+          "sha256": "fdb487ed8e949ae22f27d46a79242a58a7f273c9570bc36522d017a6eec29ac5",
+          "ansi_complete_character_offset": 202172
+        },
+        {
+          "path": "build/ansi-audit/paused-enter-sunwood-lance/fired-left.png",
+          "sha256": "965358b10b562b2581fb7905e3f3408abfc603c1efe5f26dd334aee1f591b0a5",
+          "ansi_complete_character_offset": 523341
+        },
+        {
+          "path": "build/ansi-audit/paused-enter-sunwood-lance/after.png",
+          "sha256": "965358b10b562b2581fb7905e3f3408abfc603c1efe5f26dd334aee1f591b0a5",
+          "ansi_complete_character_offset": 523341
+        },
+        {
+          "path": "build/ansi-audit/paused-enter-sunleaf-armor/before.png",
+          "sha256": "0e09d34e2e0309f3989c68e82bea5945a2b3a05f87d3dc55ca355dbd1fc93786",
+          "ansi_complete_character_offset": 107582
+        },
+        {
+          "path": "build/ansi-audit/paused-enter-sunleaf-armor/selected.png",
+          "sha256": "929d2d3627121168d8271f47eb2f6a17f93e84361532a8f9269bdf373fd19cbb",
+          "ansi_complete_character_offset": 117926
+        },
+        {
+          "path": "build/ansi-audit/paused-enter-sunleaf-armor/removed.png",
+          "sha256": "2153a9f51106327400d43d69b694c1216b1bea4113e5afd4b17a9ebf82de802f",
+          "ansi_complete_character_offset": 121150
+        }
+      ]
+    },
+    {
+      "path": "build/ansi-audit/contact-sheets/controls-32.png",
+      "sha256": "80595d00e639df539e08315ca2b864094a3351bb0b96e881dca2dcf795f83c40",
+      "reviewer": "campaign",
+      "captures": [
+        {
+          "path": "build/ansi-audit/paused-enter-sunleaf-armor/equipped.png",
+          "sha256": "929d2d3627121168d8271f47eb2f6a17f93e84361532a8f9269bdf373fd19cbb",
+          "ansi_complete_character_offset": 124380
+        },
+        {
+          "path": "build/ansi-audit/paused-enter-sunleaf-armor/removed-after-equip.png",
+          "sha256": "2153a9f51106327400d43d69b694c1216b1bea4113e5afd4b17a9ebf82de802f",
+          "ansi_complete_character_offset": 127604,
+          "replayed_from_retained_raw": true
+        },
+        {
+          "path": "build/ansi-audit/paused-enter-sunleaf-armor/after.png",
+          "sha256": "929d2d3627121168d8271f47eb2f6a17f93e84361532a8f9269bdf373fd19cbb",
+          "ansi_complete_character_offset": 130834
+        }
+      ]
+    }
+  ]
+}

@@ -175,15 +175,10 @@ not merely a large preview. Reduce decorative detail where it hides gameplay.
 - Use JVM 25 and independently verify current stable Kotlin/Gradle/dependency
   versions. Prior sibling version pins are a starting point, not current proof.
 
-## Working acceptance checklist
+## Acceptance evidence
 
-- [ ] Campaign: twenty routes, counts, six guardians, 13 rewards, ending/replay.
-- [ ] Physics: fixed steps, jump/double jump, dash, carry/crumble, bounce, collisions.
-- [ ] Interaction: every terminal binding, combinations, cooldowns, every gear choice.
-- [ ] Navigation: actual route play, readable hazards/landmarks, no stuck menus.
-- [ ] State: title/play/pause/retry/completion/win, defeated-boss persistence/reset.
-- [ ] Feel: recognizable existing art, color contrast, resize, reduced motion/audio.
-- [ ] Robustness: malformed input/settings, focus loss, repeat actions, performance.
-- [ ] Distribution: fresh/offline/update/reinstall, desktop launcher/icon, macOS gaps.
-- [ ] Evidence: actual ANSI input and inspected output for every inventory row;
-      full route play and adversarial review supplement focused regression tests.
+The maintained [game checklist](GAME_CHECKLIST.md) tracks campaign, physics,
+interaction, navigation, state, accessibility, polish and robustness. The
+[physical control inventory](CONTROLS.md) tracks each binding and game state.
+[Verification results](VERIFICATION.md) separately record simulation, ANSI,
+native-terminal, audio and distribution evidence, including remaining limits.

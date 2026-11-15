@@ -13,8 +13,7 @@ Actual installed game in a 120×40 XTerm window.
 On **Linux or macOS**, paste this into a terminal:
 
 ```sh
-curl -fsSL https://github.com/samsaw123456/emberwood-tui/releases/download/v1.0.0/install.sh -o /tmp/emberwood-install.sh
-bash /tmp/emberwood-install.sh
+curl -fsSL https://github.com/samsaw123456/emberwood-tui/releases/download/v1.0.0/install.sh | bash
 ```
 
 The installer checks prerequisites, verifies the release checksum, downloads a checksum-pinned private Java 25 if needed, and installs for your user. It does not require administrator privileges or replace your system Java. Open **Emberwood Terminal** in your application launcher, or run:

@@ -8,6 +8,7 @@ only a fixture launcher; all tested commands enter through terminal bytes.
 from __future__ import annotations
 
 import argparse
+import copy
 import hashlib
 import json
 import os
@@ -72,6 +73,28 @@ def rgb(value: str, default: tuple[int, int, int]) -> tuple[int, int, int]:
     )
 
 
+class TerminalScreen(pyte.Screen):
+    """Preserve the primary PTY buffer when tui4j uses ANSI alternate screen."""
+
+    def __init__(self, columns: int, lines: int):
+        super().__init__(columns, lines)
+        self.primary = None
+
+    def set_mode(self, *modes: int, **kwargs) -> None:
+        if kwargs.get("private") and 1049 in modes and self.primary is None:
+            self.primary = (copy.deepcopy(self.buffer), copy.deepcopy(self.cursor))
+            self.erase_in_display(2)
+            self.cursor_position()
+        super().set_mode(*modes, **kwargs)
+
+    def reset_mode(self, *modes: int, **kwargs) -> None:
+        super().reset_mode(*modes, **kwargs)
+        if kwargs.get("private") and 1049 in modes and self.primary is not None:
+            self.buffer, self.cursor = self.primary
+            self.primary = None
+            self.dirty.update(range(self.lines))
+
+
 class Terminal:
     def __init__(
         self,
@@ -86,7 +109,7 @@ class Terminal:
         self.telemetry = self.directory / "state.json"
         self.telemetry.unlink(missing_ok=True)
         shutil.rmtree(self.directory / f"settings-{scenario}", ignore_errors=True)
-        self.screen = pyte.Screen(columns, rows)
+        self.screen = TerminalScreen(columns, rows)
         self.stream = pyte.Stream(self.screen)
         self.raw = ""
         self.pending_output = ""
@@ -169,7 +192,16 @@ class Terminal:
             except pexpect.TIMEOUT:
                 continue
             except pexpect.EOF:
+                self.finish_output()
                 return
+
+    def finish_output(self) -> None:
+        # At EOF no partial repaint remains in flight. Decode the restoration
+        # suffix too, so the real primary screen replaces the game's last image.
+        if self.pending_output:
+            self.stream.feed(self.pending_output)
+            self.complete_offset += len(self.pending_output)
+            self.pending_output = ""
 
     def key(self, name: str, wait: float = 0.16) -> None:
         self.send_keys(BINDINGS[name], wait=wait)
@@ -447,8 +479,8 @@ def jump(terminal: Terminal, binding: str) -> None:
     )
     wait_for(
         terminal,
-        lambda: terminal.state()["grounded"],
-        "Jump must land and restore grounded state",
+        lambda: terminal.state()["grounded"] and abs(terminal.fox()[1] - old[1]) < 2,
+        "Jump must visibly land and restore grounded state",
         timeout=5,
     )
 
@@ -513,8 +545,11 @@ def respawn_pause(terminal: Terminal, binding: str) -> None:
     terminal.save("resumed-return")
     wait_for(
         terminal,
-        lambda: terminal.state()["state"] == "PLAYING",
-        "Resumed return must finish safely",
+        lambda: (
+            terminal.state()["state"] == "PLAYING"
+            and "Steering: STOP" in terminal.text()
+        ),
+        "Resumed return must visibly finish safely",
         timeout=7,
     )
     require(
@@ -548,7 +583,11 @@ def exit_command(terminal: Terminal, binding: str) -> None:
         lambda: not terminal.child.isalive(),
         f"{binding} must terminate the process",
     )
+    terminal.finish_output()
     require("\x1b[?1049l" in terminal.raw, "Exit must restore primary terminal screen")
+    require(
+        terminal.screen.primary is None, "Exit must restore the recorded primary buffer"
+    )
     modes = {}
     for parameters, action in re.findall(r"\x1b\[\?([0-9;]+)([hl])", terminal.raw):
         for parameter in parameters.split(";"):
@@ -703,7 +742,15 @@ def retry(terminal: Terminal) -> None:
     )
     require("Returning to camp" in terminal.text(), "Retry must have rendered feedback")
     terminal.save("returning")
-    terminal.pump(1)
+    wait_for(
+        terminal,
+        lambda: (
+            terminal.state()["state"] == "PLAYING"
+            and "Steering: STOP" in terminal.text()
+        ),
+        "Retry must visibly restore the playing HUD",
+        timeout=5,
+    )
     state = terminal.state()
     require(
         state["state"] == "PLAYING"
@@ -869,10 +916,15 @@ def simultaneous(terminal: Terminal) -> None:
     )
     terminal.save("paused-mid-jump")
     terminal.key("P")
-    terminal.pump(1)
-    require(
-        terminal.state()["grounded"] and terminal.state()["direction"] == 0,
-        "Resume must land without latent extra movement",
+    wait_for(
+        terminal,
+        lambda: (
+            terminal.state()["grounded"]
+            and terminal.state()["direction"] == 0
+            and abs(terminal.fox()[1] - old[1]) < 2
+        ),
+        "Resume must visibly land without latent extra movement",
+        timeout=5,
     )
 
 
@@ -1026,26 +1078,53 @@ def menu_edges(terminal: Terminal) -> None:
         terminal.save(f"{binding.lower()}-wrapped")
 
 
+def equipment_status(terminal: Terminal, status: str) -> None:
+    wait_for(
+        terminal,
+        lambda: any(
+            line.startswith(" >") and line.rstrip().endswith(status)
+            for line in terminal.screen.display
+        ),
+        f"Selected equipment must visibly report {status}",
+    )
+
+
 def every_equipment(
     terminal: Terminal, index: int, item_id: str, category: str
 ) -> None:
     for _ in range(index):
+        selected = next(
+            line for line in terminal.screen.display if line.startswith(" >")
+        )
         terminal.key("Down", 0.04)
+        wait_for(
+            terminal,
+            lambda selected=selected: (
+                next(line for line in terminal.screen.display if line.startswith(" >"))
+                != selected
+            ),
+            "Equipment navigation must visibly update the selected item",
+        )
     terminal.save("selected")
     field = "weapon" if category == "weapon" else "armor"
     if terminal.state()[field] == item_id:
         terminal.key("Enter")
         require(terminal.state()[field] == "", "Equipped item must be removable")
+        equipment_status(terminal, "owned")
         terminal.save("removed")
     terminal.key("Enter")
     require(terminal.state()[field] == item_id, f"Enter must equip selected {item_id}")
+    equipment_status(terminal, "equipped")
     terminal.save("equipped")
     terminal.key("Enter")
     require(terminal.state()[field] == "", "Second Enter must remove selected item")
+    equipment_status(terminal, "owned")
+    terminal.save("removed-after-equip")
     terminal.key("Enter")
     require(
         terminal.state()[field] == item_id, "Third Enter must restore selected item"
     )
+    equipment_status(terminal, "equipped")
     if category == "weapon":
         terminal.key("P")
         fire_visible(terminal, item_id)
@@ -1333,7 +1412,7 @@ def report() -> None:
     lines = [
         "# Physical terminal control audit",
         "",
-        "Generated by `python3 tools/ansi_audit.py` against a running tui4j process in a real PTY. Every listed key is sent as ANSI input. Before/during/after PNGs are reconstructed from the captured output, and raw ANSI and state records remain under `build/ansi-audit`. The fixture host sets starting states; it does not call input handlers directly.",
+        "Generated by `python3 tools/ansi_audit.py` against a running tui4j process in a real PTY. Every listed key is sent as ANSI input. Before/during/after PNGs are reconstructed from completed ANSI paints; each snapshot records its exact character offset in the retained raw stream. The decoder honors primary/alternate screen switching. Raw ANSI and state records remain under `build/ansi-audit`. The fixture host sets starting states; it does not call input handlers directly.",
         "",
         "Steering is intentionally latched: ordinary ANSI terminals send key presses but no releases. A/D or arrows select direction, S/Down stops; X replaces modifier-only Shift. Binding letters denote unshifted lowercase keys. No mouse, controller, touch, manual camera keys, uppercase letter aliases, or key-release protocol is implemented. Terminal font and audio-device behavior require separate host checks.",
         "",
@@ -1351,7 +1430,7 @@ def report() -> None:
             "",
             "## Limits",
             "",
-            "M rows prove terminal feedback and saved mute state. Actual PCM output and silence are independently checked by `tools/audio_audit.py`; see [the verification record](VERIFICATION.md). Contact sheets include every captured frame, and the manual visual review is recorded in [evidence notes](evidence/README.md). macOS and terminal-specific font/device behavior are not established by a Linux PTY audit.",
+            "M rows prove terminal feedback and the mute preference state. Persistence and actual PCM output/silence are independently checked; see [the verification record](VERIFICATION.md) and `tools/audio_audit.py`. Contact sheets include every captured frame, and the manual visual review is recorded in [evidence notes](evidence/README.md). macOS and terminal-specific font/device behavior are not established by a Linux PTY audit.",
             "",
         ]
     )

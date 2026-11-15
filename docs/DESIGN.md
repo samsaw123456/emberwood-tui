@@ -19,7 +19,7 @@ Horizontal tracking reuses the source camera's easing, bounded so a retry cannot
 leave the fox off screen. The vertical crop follows only high jumps; ordinary
 jump arcs visibly rise through the scene. Camera bounds include the far-right
 exit. This changes presentation only: physics, collision geometry and level data
-remain in their original 1152 × 648 coordinate system.
+remain in their original world units and 1152 × 648 reference viewport.
 
 The fox remains orange against green and blue forest silhouettes. Pale green
 platform tops indicate solid footing; aqua indicates moving platforms, amber
