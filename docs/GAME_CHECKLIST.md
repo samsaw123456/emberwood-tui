@@ -5,7 +5,13 @@ inspection and device checks. Passing a model test is not physical control proof
 Per-binding results belong in [CONTROLS.md](CONTROLS.md); build, installer, audio
 and platform evidence belongs in [VERIFICATION.md](VERIFICATION.md).
 
-## Completed campaign on the final build
+The v1.0.2 launcher release changes only the executable version manifest; all
+3,956 class files and game assets are byte-identical to this campaign build. Its
+new icon, dock pinning, installer and terminal regression evidence are recorded
+in [verification](VERIFICATION.md). The campaign below retains its original
+artifact identity.
+
+## Completed campaign on v1.0.1
 
 The actual tui4j game completed all **20 trails, 60 required acorns, 20 hidden
 fireflies and six guardians** using ordinary ANSI key presses in a live PTY.

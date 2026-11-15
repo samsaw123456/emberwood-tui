@@ -28,6 +28,56 @@ failures retain both the original diagnostic and cleanup error. The retained
 traces and diagnosis are under `build/release-1.0.2/ci-diagnosis`, `focused`,
 and `exit-final`.
 
+The release source is commit `41d388d5030f2ad36ebd2f8e1fbc33e74f22ef1f`.
+Local `./emberwood-tui --build`, `./gradlew check`, ShellCheck and Ruff passed,
+as did all 23 installer checks. Independent archive inspection compared all
+2,206 source/build files against the checkout, validated the generated release
+marker, eight icon sizes, 17 notices and three editor tasks, and rejected unsafe
+paths, duplicate members, links and special files. All three draft assets were
+then downloaded from GitHub and matched byte for byte. The application archive
+SHA-256 is `f4d71fe3c0f7b2c18d45515d408850b53af6bd7afcb1d6c37e6e15ef0515c698`.
+
+The actual local application was upgraded to v1.0.2 with `--pin`; all 24 existing
+GNOME favorites remained in the same order, with one Emberwood entry. All eight
+installed icons match the release. Launching the registered desktop entry through
+GIO created the installed game in a 120×40 terminal with terminal input active;
+only that new process was closed. GTK icon-theme loading and its rendered sizes
+were inspected separately. A native screenshot and physical dock click remain
+unverified: the official Wayland screenshot route timed out, and GNOME denied
+ShowApplications automation. These restrictions were respected; a successful GIO
+launch is not described as a physical dock click.
+
+The [final four-platform CI run](https://github.com/samsaw123456/emberwood-tui/actions/runs/43738439037)
+passed on Linux x64/ARM64 and macOS Intel/ARM64. Linux x64 and both Macs passed
+all 177 physical ANSI inventory rows plus six focused cases. All four platforms
+passed ten exact terminal-restoration cases and five audit-cleanup regressions.
+Installer coverage passed 23 checks per Linux target and 17 per Mac target;
+Linux-only dependency, desktop and favorites cases are not counted as Mac tests.
+Every saved full/focused ANSI snapshot was independently decoded from its raw
+trace: 541 snapshots from 183 traces on each of the three ANSI targets, with
+exact text matches. The independent visual review inspected 129 new remote PNGs
+(43 per ANSI target: W, Right reduced motion, X, and Q/Ctrl+C in all seven states).
+The remaining new remote PNGs are not claimed visually inspected. The committed
+[release review](evidence/release-1.0.2-review.json) records counts, hashes and scope.
+Linux ARM's full ANSI inventory remains intentionally outside
+this workflow; its build, lint, cleanup, native lifecycle and installer checks ran.
+
+After publication, the actual public v1.0.2 installer was downloaded and supplied
+through a stdin pipe to Bash in a fresh minimal Ubuntu image. It installed real
+missing dependencies and a private Java in **30.040 seconds**, then passed
+network-disabled title/start/right/stop/Ctrl+Z/pause/resume/Q checks. All six
+captured frames were directly inspected and independently replayed from completed
+ANSI paints. No host packages changed. The actual public
+`curl .../v1.0.2/install.sh | bash -s -- --pin` command also passed on the host;
+its JAR, eight icons, desktop entry and preserved favorites were rechecked.
+Evidence is under `build/release-1.0.2/public-release` and `host-install`.
+
+The release's application archive, installer and original SHA256SUMS remain
+immutable. Supplemental terminal evidence is distributed as
+`emberwood-tui-1.0.2-verification.tar.gz` with its own
+`emberwood-tui-1.0.2-verification.sha256`; earlier releases remain unchanged.
+Private local application backups and user dock snapshots are excluded.
+
 The detailed v1.0.1 gameplay and control evidence below remains associated with
 its original executable hash. It is not relabelled as a new campaign playthrough.
 

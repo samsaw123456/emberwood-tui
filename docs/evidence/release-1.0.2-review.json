@@ -1,0 +1,184 @@
+{
+  "release": "https://github.com/samsaw123456/emberwood-tui/releases/tag/v1.0.2",
+  "source_commit": "41d388d5030f2ad36ebd2f8e1fbc33e74f22ef1f",
+  "jar_sha256": "0c774eeddcbc082c8a250ecaef318cfa20d86c6aa5f93d4af3166395088db1c0",
+  "application_archive_sha256": "f4d71fe3c0f7b2c18d45515d408850b53af6bd7afcb1d6c37e6e15ef0515c698",
+  "ci": {
+    "run_url": "https://github.com/samsaw123456/emberwood-tui/actions/runs/43738439037",
+    "head_sha": "41d388d5030f2ad36ebd2f8e1fbc33e74f22ef1f",
+    "jar_sha256": "0c774eeddcbc082c8a250ecaef318cfa20d86c6aa5f93d4af3166395088db1c0",
+    "final_review": {
+      "status": "PASSED",
+      "all_four_ci_jobs": "SUCCESS",
+      "full_ansi_rows_per_enabled_platform": 177,
+      "focused_ansi_rows_per_enabled_platform": 6,
+      "ansi_enabled_platforms": 3,
+      "native_lifecycle_rows_per_platform": 10,
+      "native_lifecycle_platforms": 4,
+      "cleanup_regression_scenarios_per_platform": 5,
+      "installer_checks_linux": 23,
+      "installer_checks_macos": 17,
+      "independently_replayed_snapshots": 1623,
+      "independently_replayed_raw_traces": 549,
+      "visually_inspected_remote_pngs": 129,
+      "visual_scope": "43 PNGs per ANSI platform: W, Right reduced motion, X and Q/Ctrl+C in all seven states. Every saved full/focused snapshot was independently text-replayed; remaining remote PNGs were not claimed visually inspected. Prior whole-game visual evidence is retained in docs/evidence/control-review.json.",
+      "historical_linux_stall": "Exact historical cause remains unknown; this successful run does not retroactively prove that cause."
+    },
+    "platforms": [
+      {
+        "platform": "ubuntu-24.04",
+        "conclusion": "success",
+        "ansi": 177,
+        "lifecycle": 10,
+        "cleanup_regressions": 5,
+        "installer_checks": 23
+      },
+      {
+        "platform": "macos-15",
+        "conclusion": "success",
+        "ansi": 177,
+        "lifecycle": 10,
+        "cleanup_regressions": 5,
+        "installer_checks": 17
+      },
+      {
+        "platform": "macos-15-intel",
+        "conclusion": "success",
+        "ansi": 177,
+        "lifecycle": 10,
+        "cleanup_regressions": 5,
+        "installer_checks": 17
+      },
+      {
+        "platform": "ubuntu-24.04-arm",
+        "conclusion": "success",
+        "ansi": "SKIPPED",
+        "lifecycle": 10,
+        "cleanup_regressions": 5,
+        "installer_checks": 23
+      }
+    ],
+    "reports": [
+      "aggregate-review.json",
+      "replay-ubuntu-24.04.json",
+      "replay-macos-15.json",
+      "replay-macos-15-intel.json"
+    ],
+    "reporting_corrections": [
+      {
+        "scope": "Read-only collector only; no production, test or CI change",
+        "detail": "Initial collector incorrectly required 23 installer checks on macOS. Actual platform branches intentionally run 23 on Linux and 17 on macOS. Both expected counts are now checked separately; original collector assertion is retained in aggregate-review-macos-count-assumption.log."
+      }
+    ],
+    "collection_note": "One GitHub TLS handshake timeout in a read-only collector was retried successfully; its original diagnostic remains in aggregate-review-network-timeout.log. This was not a CI or game failure."
+  },
+  "public_minimal_install": {
+    "status": "PASSED",
+    "ubuntu_base_url": "https://cdimage.ubuntu.com/ubuntu-base/releases/24.04/release/ubuntu-base-24.04.5-base-amd64.tar.gz",
+    "ubuntu_base_sha256": "e77b6f10c2590cef872b33ee9f635a0e3fd1f57fb074c0e52b5c7f56147a0c86",
+    "installer_sha256": "1a99059944208c1f1d645c315b2b6280682dacee65f41acbdb538da482875f7d",
+    "jar_sha256": "0c774eeddcbc082c8a250ecaef318cfa20d86c6aa5f93d4af3166395088db1c0",
+    "version": "Emberwood Terminal 1.0.2 (JVM 25, tui4j 0.3.5)",
+    "install_seconds": 30.04,
+    "missing_before": [
+      "curl",
+      "wget",
+      "CA certificates",
+      "fontconfig",
+      "Java",
+      "desktop terminal"
+    ],
+    "actual_package_install": true,
+    "host_packages_modified": false,
+    "isolation_adaptations": [
+      "APT sandbox user root",
+      "staff/adm GIDs mapped to root in disposable image"
+    ],
+    "offline_play": "Network namespace disabled: title/start/right/stop/CtrlZ/pause/resume/Q; complete ANSI frames retained",
+    "desktop_and_icon": "Terminal=true entry and original icon bytes; GUI activation separately checked on host",
+    "source": "https://github.com/samsaw123456/emberwood-tui/releases/download/v1.0.2/install.sh"
+  },
+  "host_public_install": {
+    "status": "PASSED",
+    "method": "public",
+    "command": [
+      "bash",
+      "-o",
+      "pipefail",
+      "-c",
+      "curl -fsSL https://github.com/samsaw123456/emberwood-tui/releases/download/v1.0.2/install.sh | bash -s -- --pin"
+    ],
+    "version": "Emberwood Terminal 1.0.2 (JVM 25, tui4j 0.3.5)",
+    "jar_sha256": "0c774eeddcbc082c8a250ecaef318cfa20d86c6aa5f93d4af3166395088db1c0",
+    "favorites_before_count": 24,
+    "favorites_after_count": 24,
+    "prior_favorites_order_preserved": true,
+    "favorites_unchanged": true,
+    "game_pin_count": 1,
+    "icons": {
+      "16": "ff078e6e4b53f3e1f5364269a2bdd7c45cacbd4edb7232a9df49b7a5e54b44e4",
+      "24": "b5bf86a1313b4d18f1c5d57e47be429c805d29a2ca2c71f029c9d2be69cd733d",
+      "32": "79af34d0a31f7bbac87451a4f3b83d479a6c5c7656612b2d3fb089bb94eb4496",
+      "48": "aafe0e14456c91509a8e54228546bed0516683fb7377c959ed0e1efd53a85fdf",
+      "64": "346949dd555a5bc6698d3bb3a993e9aaf16e54a84fdde8571c07c67ec8a4d06e",
+      "128": "0a246d98611ba4e9ea6ca775c7e5641e04a2d751023f4c22feeff7f69c187775",
+      "256": "084464213a15ce240d7e9db59ac3553a814b8bde551a19156266718f44abb129",
+      "512": "abe179df19569e3e487543b7b6e0e8bf3b7904b3026ee5680f220dae7e9af84e"
+    },
+    "desktop_entry_valid": true,
+    "desktop_entry_sha256": "8fa25555a29ef27013d78a61b3d569c9ee907cb6141ee7088e4023179f372d45"
+  },
+  "public_frames": {
+    "status": "PASSED",
+    "reviewer": "Root directly viewed all six full-size PNGs",
+    "frames": [
+      {
+        "frame": "01-title",
+        "completed_ansi_character_offset": 32466,
+        "png_sha256": "7448ff18169f00493c31e3f47facd3123c78ea3092383f416d2fbfe87f37b261",
+        "text_replayed": true
+      },
+      {
+        "frame": "02-playing",
+        "completed_ansi_character_offset": 156458,
+        "png_sha256": "6125e4f3986c470fed8fdd6ecb1189395c83a82f82d1e3b55c12c57ca21bee8a",
+        "text_replayed": true
+      },
+      {
+        "frame": "03-right",
+        "completed_ansi_character_offset": 202997,
+        "png_sha256": "6a6ecb39203057df97e052d88317a156b4f32c9d394c7d3974cec8e36cb5c58c",
+        "text_replayed": true
+      },
+      {
+        "frame": "04-stopped",
+        "completed_ansi_character_offset": 263011,
+        "png_sha256": "415063633f69c286e29b4796248abb2096018de31f469191e7e0dd869fa1c57e",
+        "text_replayed": true
+      },
+      {
+        "frame": "05-suspend-paused",
+        "completed_ansi_character_offset": 345939,
+        "png_sha256": "0cc102001f8e9a74cf1a9e92971651adb2ef2008bb01011796cfa7f86d2032c0",
+        "text_replayed": true
+      },
+      {
+        "frame": "06-resumed",
+        "completed_ansi_character_offset": 393616,
+        "png_sha256": "2ce09f2a6e360a41333140ab55d282c302dbc81fe074e96109d9bc8a27255eb8",
+        "text_replayed": true
+      }
+    ],
+    "observed": "Readable original fox/forest title, Enter opens playing HUD, D changes steering to RIGHT with screen-right movement, S clears steering, literal Ctrl+Z opens paused equipment menu, P returns to stopped gameplay. Q exited normally and restored primary screen per smoke harness. Network disabled during play.",
+    "scope": "Published-installer smoke play, not a replacement for full177-case control audit. Audio device unavailable in isolated image."
+  },
+  "limits": [
+    "Native GNOME dock screenshot and physical click remain unverified; GIO launch and GTK icon rendering were separately checked.",
+    "Native macOS GUI/Dock interaction and physical-speaker listening remain unverified.",
+    "Old full-campaign evidence remains tied to v1.0.1; all game classes/assets are byte-identical in v1.0.2.",
+    "Historical Linux input stall exact cause remains unknown."
+  ],
+  "evidence_root": "build/release-1.0.2",
+  "evidence_asset": "emberwood-tui-1.0.2-verification.tar.gz",
+  "evidence_checksum_asset": "emberwood-tui-1.0.2-verification.sha256"
+}
