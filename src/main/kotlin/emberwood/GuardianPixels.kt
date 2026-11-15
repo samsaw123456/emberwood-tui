@@ -1,0 +1,77 @@
+package emberwood
+
+/** The original guardian pixel silhouettes, unchanged from guardian_art.gd. */
+internal object GuardianPixels {
+    val rows =
+        mapOf(
+            "boar" to
+                listOf(
+                    ".....dd..........dd.....",
+                    "....drrd..dddd..drrd....",
+                    "....drrrddrrrrddrrrd....",
+                    ".....drrrrrrrrrrrrd.....",
+                    "....drrrrrrrrrrrrrrd....",
+                    "...drrrrrrrrrrrrrrrrd...",
+                    "...drrrllrrrrrrllrrrd...",
+                    "..drrrlwwlrrrrlwwlrrrd..",
+                    "..drrrlwklrrrrlkwlrrrd..",
+                    "..drrrrllrrrrrrllrrrrd..",
+                    "..drrrrrrrrrrrrrrrrrrd..",
+                    "..dwrrrppppppppprrrwd..",
+                    "..dwwrrppkpppkpprrwwd..",
+                    "...dwwrppkpppkpprwwd...",
+                    "....dwwpppppppppwwd....",
+                    "....drrrrrrrrrrrrrd....",
+                    ".....drrrrrrrrrrrd.....",
+                    ".....drrrd..drrrd......",
+                    ".....drrrd..drrrd......",
+                    ".....dddd....dddd......",
+                ),
+            "wolf" to
+                listOf(
+                    "....dd............dd....",
+                    "...drrd..........drrd...",
+                    "...drrrd........drrrd...",
+                    "...drlrrddddddddrrlrd...",
+                    "....drlrrrrrrrrrlrd....",
+                    "....drrrrrrrrrrrrrd....",
+                    "...drrrllrrrrllrrrrd...",
+                    "..drrrlwwlrrlwwlrrrd..",
+                    "..drrrlwklrrlkwlrrrd..",
+                    "...drrrllrrrrllrrrd...",
+                    "..drrrllllkkllllrrrd..",
+                    "...drrllllkkllllrrd...",
+                    "....drllllllllllrd....",
+                    "...drrrllllllllrrrd...",
+                    "..drrrrrllllllrrrrrd..",
+                    "...drrrrrllllrrrrrd...",
+                    "....drrrrrllrrrrrd....",
+                    ".....drrrd..drrrd.....",
+                    ".....drrrd..drrrd.....",
+                    ".....dllll..lllld.....",
+                ),
+            "owl" to
+                listOf(
+                    "....dd............dd....",
+                    "....drrd........drrd....",
+                    "....drrrddddddddrrrd....",
+                    "...drrrrrrrrrrrrrrrrd...",
+                    "..drrllllllllllllllrrd..",
+                    "..drlwwwwllllwwwwllrd..",
+                    "..drlwwkwwllwwkwwllrd..",
+                    "..drlwwkwwllwwkwwllrd..",
+                    "..drrlwwwlrrlwwwllrrd..",
+                    "...drrllllppllllrrrd...",
+                    "..drrrrlllpplllrrrrrd..",
+                    ".drrrrrrllllllrrrrrrd.",
+                    ".drrrdrrllllllrrdrrrd.",
+                    ".drrrdrlrrllrrlrdrrrd.",
+                    "..drrdrlrrllrrlrdrrd..",
+                    "...ddrrlrrllrrlrrdd...",
+                    "....drrllllllllrrd....",
+                    ".....drrrrrrrrrrd.....",
+                    "......drrrrrrrrd......",
+                    "......ppp..ppp........",
+                ),
+        )
+}

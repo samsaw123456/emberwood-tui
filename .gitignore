@@ -1,0 +1,9 @@
+.gradle/
+.kotlin/
+build/
+.cache/
+__pycache__/
+.venv/
+.ruff_cache/
+*.log
+dist/

@@ -1,0 +1,5 @@
+# Preserve original artwork, licenses and exported geometry byte-for-byte.
+src/main/resources/assets/** -text -whitespace
+src/main/resources/levels.tsv -text
+# Keep the generated Windows wrapper's CRLF endings.
+gradlew.bat -text whitespace=cr-at-eol

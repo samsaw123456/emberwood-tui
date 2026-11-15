@@ -1,0 +1,21 @@
+[
+  {
+    "label": "Play Emberwood Terminal",
+    "command": "./emberwood-tui",
+    "cwd": "$ZED_WORKTREE_ROOT",
+    "use_new_terminal": true,
+    "allow_concurrent_runs": false
+  },
+  {
+    "label": "Build Emberwood Terminal",
+    "command": "./emberwood-tui --build",
+    "cwd": "$ZED_WORKTREE_ROOT",
+    "use_new_terminal": true
+  },
+  {
+    "label": "Check Emberwood Terminal",
+    "command": "JAVA_HOME=$(./tools/bootstrap.sh) ./gradlew check fatJar",
+    "cwd": "$ZED_WORKTREE_ROOT",
+    "use_new_terminal": true
+  }
+]

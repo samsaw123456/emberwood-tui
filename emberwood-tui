@@ -1,0 +1,70 @@
+#!/usr/bin/env bash
+# Build from source once, then play directly with a private Java 25.
+set -euo pipefail
+root=$(CDPATH="" cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)
+cd -- "$root"
+build_only=false
+offline=false
+case ${1:-} in
+    --help|-h)
+        printf '%s\n' 'Emberwood Terminal' 'Usage: ./emberwood-tui [--build | --offline] [game options]' \
+            '  --build     prepare the game without starting it' \
+            '  --offline   run the existing build with no downloads' \
+            '  --version   print the game version' \
+            '  --practice 1..20  play an individual trail without recording a best time' \
+            'First source launch prepares private Java 25 and builds with the Gradle wrapper.' \
+            'Install a terminal launcher with ./install.sh. See README.md for controls.' \
+            'A/D or Left/Right run; S/Down stop; Space/W/Up jump; X dash; J weapon.' \
+            'P/Esc pause; R retry; M sound; G reduced motion; Q quit.' \
+            'Steering continues after key release. Use a UTF-8 color terminal, 80x28 or larger.'
+        exit 0 ;;
+    --build) build_only=true; shift ;;
+    --offline) offline=true; shift ;;
+esac
+if $build_only && (($#)); then printf '%s\n' '--build accepts no game arguments.' >&2; exit 2; fi
+if $offline; then java_home=$(tools/bootstrap.sh --offline); else java_home=$(tools/bootstrap.sh); fi
+export JAVA_HOME="$java_home"
+# Source launches serialize freshness checks with the build itself. Otherwise a
+# second launch could observe Gradle's newer but not-yet-complete JAR.
+launch_lock=''
+release_lock() {
+    if [[ -n "$launch_lock" ]]; then rm -rf -- "$launch_lock"; launch_lock=''; fi
+}
+if [[ ! -f .release-build ]] || $build_only; then
+    mkdir -p .gradle
+    pending_lock=.gradle/emberwood-launch.lock
+    attempts=0
+    while ! mkdir "$pending_lock" 2>/dev/null; do
+        if [[ -r "$pending_lock/pid" ]]; then
+            owner=$(cat "$pending_lock/pid")
+            if [[ $owner =~ ^[0-9]+$ ]] && ! kill -0 "$owner" 2>/dev/null; then
+                rm -rf -- "$pending_lock"
+                continue
+            fi
+        elif [[ -n $(find "$pending_lock" -maxdepth 0 -mmin +1 -print 2>/dev/null) ]]; then
+            rm -rf -- "$pending_lock"
+            continue
+        fi
+        ((attempts+=1))
+        ((attempts < 900)) || { printf '%s\n' 'Another source launch is still preparing the game. Try again when it finishes.' >&2; exit 2; }
+        sleep 1
+    done
+    launch_lock=$pending_lock
+    printf '%s\n' "$$" > "$launch_lock/pid"
+    trap release_lock EXIT
+    trap 'exit 130' INT
+    trap 'exit 143' TERM
+    trap 'exit 129' HUP
+fi
+jar=build/libs/emberwood-tui.jar
+needs_build=false
+[[ -f "$jar" ]] || needs_build=true
+if [[ -f "$jar" && ! -f .release-build ]] && [[ -n $(find src/main build.gradle.kts settings.gradle.kts gradle.properties VERSION -newer "$jar" -print -quit) ]]; then needs_build=true; fi
+if $build_only || $needs_build; then
+    if $offline; then printf '%s\n' 'No current game build is available. Run ./emberwood-tui --build online first.' >&2; exit 2; fi
+    printf '%s\n' 'Building Emberwood Terminal. Later launches run directly and work offline.' >&2
+    ./gradlew --console=plain --no-daemon fatJar
+fi
+if $build_only; then printf '%s\n' 'Ready. Run ./emberwood-tui to play.'; exit 0; fi
+release_lock
+exec "$java_home/bin/java" -Xms32m -Xmx256m --enable-native-access=ALL-UNNAMED -Djava.awt.headless=true -jar "$jar" "$@"

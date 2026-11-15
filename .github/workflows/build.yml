@@ -1,0 +1,49 @@
+name: Build and verify
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  check:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, ubuntu-24.04-arm, macos-15-intel, macos-15]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Prepare pinned private Java 25
+        shell: bash
+        run: |
+          java_home=$(tools/bootstrap.sh)
+          printf 'JAVA_HOME=%s\n' "$java_home" >> "$GITHUB_ENV"
+      - name: Lint, test and build
+        run: ./gradlew --no-daemon check fatJar
+      - name: Prepare verification tools
+        run: |
+          python3 -m venv .venv
+          .venv/bin/pip install -r tools/audit-requirements.txt -r tools/lint-requirements.txt
+      - name: Lint shell and Python entry points
+        run: |
+          .venv/bin/shellcheck install.sh emberwood-tui tools/bootstrap.sh tools/package.sh
+          .venv/bin/ruff check tools
+          .venv/bin/ruff format --check tools
+      - name: Audit every ANSI control
+        if: matrix.os != 'ubuntu-24.04-arm'
+        run: .venv/bin/python tools/ansi_audit.py
+      - name: Build portable release
+        run: ./tools/package.sh
+      - name: Test isolated installation
+        run: python3 tools/test_install.py
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: emberwood-terminal-${{ matrix.os }}
+          path: dist/
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        if: always() && matrix.os != 'ubuntu-24.04-arm'
+        with:
+          name: ansi-control-evidence-${{ matrix.os }}
+          path: build/ansi-audit/
