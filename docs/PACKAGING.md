@@ -107,3 +107,10 @@ tools in `tools/lint-requirements.txt` for ShellCheck and Ruff. The Linux x86-64
 and both macOS jobs also run the complete ANSI control inventory and upload captures even
 if an assertion fails. CI does not claim a physical macOS terminal or audio-device
 playtest.
+
+The published v1.0.0 installer was also tested directly with `curl | bash` on
+Linux, using an empty private Java cache and paths containing spaces,
+backslashes and shell punctuation. It installed the matching release JAR without
+a source build, then passed twenty installed CLI/PTY cases including offline
+play. The release verification archive retains its logs, checksums and captures;
+see [the verification record](VERIFICATION.md).

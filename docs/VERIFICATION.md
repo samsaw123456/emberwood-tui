@@ -19,6 +19,12 @@ of evidence; none substitutes for another.
   cover fresh installation, unusual paths, invalid options, corrupted runtime
   rejection, simultaneous source launch ordering, offline play, update
   preservation, exact license-file copying and rollback when Java preparation fails.
+- After publication, the real v1.0.0 `curl | bash` command installed in 15.169
+  seconds with a fresh private Java cache. The prefix contained spaces and shell
+  punctuation; the cache and temporary paths contained backslashes. Downloaded
+  checksums, the final JAR, all seventeen license notices, desktop entry and fox
+  icon matched. All twenty installed CLI/PTY cases passed, including offline
+  play; no source build was needed. The temporary installation was removed.
 - An installed public game ran in a PTY. M changed its rendered sound state and
   saved preference; a reinstall retained it and a new process loaded it.
 - The actual Linux desktop entry launched through GIO into GNOME Terminal.
@@ -126,8 +132,8 @@ not delay navigation. Prefer an otherwise lightly loaded host.
 
 Final evidence remains in `build/verification/`, `build/ansi-audit/`,
 `build/native-final/`, `build/public-combat/`, `build/cli-audit/`,
-`build/best-time-audit/`, `build/performance-final/`, `build/audio-audit/` and
-`build/installer-evidence.json`. A verification archive accompanies the
+`build/best-time-audit/`, `build/performance-final/`, `build/audio-audit/`,
+`build/remote-audit/` and `build/installer-evidence.json`. A verification archive accompanies the
 [v1.0.0 release](https://github.com/samsaw123456/emberwood-tui/releases/tag/v1.0.0).
 CI uploads its own terminal evidence for Linux x86-64 and both macOS architectures.
 
