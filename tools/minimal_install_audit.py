@@ -213,13 +213,11 @@ def main():
         )
         # Public mode supplies the downloaded script on stdin, as curl | bash does.
         # Package commands must not consume the unread remainder of that script.
-        with (
-            (output / "install.log").open("w") as log,
-            installer.open("rb") as script_input,
-        ):
+        with (output / "install.log").open("w") as log:
             subprocess.run(
                 command + ["--", "/bin/bash", *script_arguments],
-                stdin=script_input if args.installer_url else subprocess.DEVNULL,
+                input=installer.read_bytes() if args.installer_url else None,
+                stdin=None if args.installer_url else subprocess.DEVNULL,
                 stdout=log,
                 stderr=subprocess.STDOUT,
                 check=True,

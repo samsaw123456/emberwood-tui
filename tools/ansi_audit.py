@@ -14,7 +14,6 @@ import json
 import os
 import re
 import shutil
-import termios
 import time
 from pathlib import Path
 
@@ -105,6 +104,7 @@ class Terminal:
         columns: int = 120,
         rows: int = 40,
         color_mode: str = "truecolor",
+        literal_suspend: bool = False,
     ):
         self.directory = OUTPUT / name
         self.directory.mkdir(parents=True, exist_ok=True)
@@ -127,19 +127,32 @@ class Terminal:
             LANG="C.UTF-8",
             EMBERWOOD_TUI_COLOR=color_mode,
         )
+        arguments = [
+            "-Xms32m",
+            "-Xmx256m",
+            "-Djava.awt.headless=true",
+            "--enable-native-access=ALL-UNNAMED",
+            "-cp",
+            "build/classes/kotlin/test:build/libs/emberwood-tui.jar",
+            "emberwood.AuditHostKt",
+            scenario,
+            str(self.telemetry),
+        ]
+        executable = java
+        if literal_suspend:
+            # Configure the slave before Java/JLine starts. Mutating the master
+            # termios after startup does not reliably disable VSUSP on Darwin.
+            arguments = [
+                "-c",
+                'stty susp undef || exit 2; exec "$@"',
+                "emberwood-literal-suspend",
+                java,
+                *arguments,
+            ]
+            executable = "sh"
         self.child = pexpect.spawn(
-            java,
-            [
-                "-Xms32m",
-                "-Xmx256m",
-                "-Djava.awt.headless=true",
-                "--enable-native-access=ALL-UNNAMED",
-                "-cp",
-                "build/classes/kotlin/test:build/libs/emberwood-tui.jar",
-                "emberwood.AuditHostKt",
-                scenario,
-                str(self.telemetry),
-            ],
+            executable,
+            arguments,
             cwd=str(ROOT),
             env=env,
             encoding="utf-8",
@@ -343,7 +356,12 @@ def case(
             terminal = (
                 Terminal(scenario, name, columns=60, rows=20, color_mode=color_mode)
                 if scenario == "small"
-                else Terminal(scenario, name, color_mode=color_mode)
+                else Terminal(
+                    scenario,
+                    name,
+                    color_mode=color_mode,
+                    literal_suspend=binding == "Ctrl+Z literal",
+                )
             )
         else:
             terminal.directory = OUTPUT / name
@@ -829,69 +847,58 @@ def suspend_pause(terminal: Terminal, scenario: str, literal: bool = False) -> N
             "Steering must visibly run before Ctrl+Z clears it",
         )
         terminal.save("moving")
-    original_attributes = None
-    try:
-        if literal:
-            original_attributes = termios.tcgetattr(terminal.child.child_fd)
-            attributes = termios.tcgetattr(terminal.child.child_fd)
-            attributes[6][termios.VSUSP] = bytes(
-                [os.fpathconf(terminal.child.child_fd, "PC_VDISABLE")]
-            )
-            termios.tcsetattr(terminal.child.child_fd, termios.TCSANOW, attributes)
-            terminal.key("Ctrl+Z", 0)
-        else:
-            # The terminal driver normally turns this physical byte into TSTP;
-            # a signal becomes BlurMessage, not an acknowledged KeyPressMessage.
-            terminal.child.send(BINDINGS["Ctrl+Z"])
-            wait_for(
-                terminal,
-                lambda: terminal.state()["blurCount"] > before["blurCount"],
-                "The physical suspend byte must reach the application's signal filter",
-            )
-        expected = (
-            "PAUSED"
-            if before["state"] in {"PLAYING", "RESPAWNING"}
-            else before["state"]
+    if literal:
+        terminal.key("Ctrl+Z", 0)
+        require(
+            terminal.state()["blurCount"] == before["blurCount"],
+            "Literal Ctrl+Z must reach the key parser without a suspend signal",
         )
+    else:
+        # The terminal driver normally turns this physical byte into TSTP;
+        # a signal becomes BlurMessage, not an acknowledged KeyPressMessage.
+        terminal.child.send(BINDINGS["Ctrl+Z"])
+        wait_for(
+            terminal,
+            lambda: terminal.state()["blurCount"] > before["blurCount"],
+            "The physical suspend byte must reach the application's signal filter",
+        )
+    expected = (
+        "PAUSED" if before["state"] in {"PLAYING", "RESPAWNING"} else before["state"]
+    )
+    wait_for(
+        terminal,
+        lambda: (
+            terminal.state()["state"] == expected
+            and terminal.state()["direction"] == 0
+            and (
+                "Paused" in terminal.text()
+                if expected == "PAUSED" and scenario != "small"
+                else True
+            )
+        ),
+        "Ctrl+Z must pause safely or preserve an already inactive state",
+    )
+    terminal.save("paused-or-unchanged")
+    terminal.child.send(BINDINGS["Ctrl+Z"] * 2)
+    terminal.pump(0.15)
+    require(
+        terminal.state()["state"] == expected,
+        "Repeated Ctrl+Z must never resume the game",
+    )
+    # A static screen alone cannot prove its reader/render loop survived.
+    toggle(terminal, "M", "muted")
+    if before["state"] in {"PLAYING", "RESPAWNING"}:
+        terminal.key("P", 0)
         wait_for(
             terminal,
             lambda: (
-                terminal.state()["state"] == expected
-                and terminal.state()["direction"] == 0
-                and (
-                    "Paused" in terminal.text()
-                    if expected == "PAUSED" and scenario != "small"
-                    else True
-                )
+                terminal.state()["state"] == "PLAYING"
+                and "Steering: STOP" in terminal.text()
             ),
-            "Ctrl+Z must pause safely or preserve an already inactive state",
+            "P must recover from Ctrl+Z pause with stopped steering",
+            timeout=7,
         )
-        terminal.save("paused-or-unchanged")
-        terminal.child.send(BINDINGS["Ctrl+Z"] * 2)
-        terminal.pump(0.15)
-        require(
-            terminal.state()["state"] == expected,
-            "Repeated Ctrl+Z must never resume the game",
-        )
-        # A static screen alone cannot prove its reader/render loop survived.
-        toggle(terminal, "M", "muted")
-        if before["state"] in {"PLAYING", "RESPAWNING"}:
-            terminal.key("P", 0)
-            wait_for(
-                terminal,
-                lambda: (
-                    terminal.state()["state"] == "PLAYING"
-                    and "Steering: STOP" in terminal.text()
-                ),
-                "P must recover from Ctrl+Z pause with stopped steering",
-                timeout=7,
-            )
-            terminal.save("resumed")
-    finally:
-        if original_attributes is not None:
-            termios.tcsetattr(
-                terminal.child.child_fd, termios.TCSANOW, original_attributes
-            )
+        terminal.save("resumed")
 
 
 def resize(terminal: Terminal) -> None:
@@ -1057,32 +1064,45 @@ def motion_effect(terminal: Terminal) -> None:
 
 
 def motion_camera(terminal: Terminal) -> None:
+    # Calibrate against a real reduced-motion frame, not a simulation coordinate.
+    # Telemetry can advance while the last complete paint still predates tracking.
+    terminal.key("G", 0)
     terminal.key("D", 0.3)
     wait_for(
         terminal,
+        lambda: terminal.state()["x"] > 430 and "motion: reduced" in terminal.text(),
+        "Running must reach the camera tracking region in reduced motion",
+        timeout=5,
+    )
+    terminal.save("steady-reference")
+    centered_pixels = terminal.fox()
+    terminal.key("G", 0)
+    wait_for(
+        terminal,
         lambda: (
-            terminal.state()["x"] > 430
+            "motion: full" in terminal.text()
+            and terminal.fox()[0] > centered_pixels[0] + 1.5
             and terminal.state()["x"] - 380 - terminal.state()["cameraX"] > 5
         ),
-        "Running must reach the camera tracking region",
+        "Full motion must visibly ease behind the running fox",
         timeout=5,
     )
     before = terminal.save("smooth-camera")
     old_pixels = terminal.fox()
-    require(
-        before["x"] - 380 - before["cameraX"] > 5,
-        "Full motion should retain camera easing",
+    terminal.key("G", 0)
+    wait_for(
+        terminal,
+        lambda: (
+            "motion: reduced" in terminal.text()
+            and terminal.fox()[0] < old_pixels[0] - 1
+        ),
+        "Camera snap must visibly recenter the running fox",
+        timeout=5,
     )
-    terminal.key("G", 0.2)
     after = terminal.save("steady-camera")
-    new_pixels = terminal.fox()
     require(
         abs(after["cameraX"] - (after["x"] - 380)) < 1,
         "Reduced motion must remove camera easing",
-    )
-    require(
-        new_pixels[0] < old_pixels[0] - 1,
-        "Camera snap must visibly recenter the running fox",
     )
     require(
         after["x"] > before["x"],
@@ -1349,7 +1369,7 @@ def run() -> None:
         # cumulative so every capture can be reconstructed from the real stream.
         shared = (
             None
-            if state == "respawning"
+            if state == "respawning" or CASE_FILTER is not None
             else (
                 Terminal(state, f"shared-{state}", columns=60, rows=20)
                 if state == "small"
@@ -1498,7 +1518,7 @@ def contact_sheets() -> None:
     (directory / "manifest.json").write_text(json.dumps(manifest, indent=2) + "\n")
 
 
-def report() -> None:
+def report(write_inventory: bool = True) -> None:
     lines = [
         "# Physical terminal control audit",
         "",
@@ -1524,7 +1544,8 @@ def report() -> None:
             "",
         ]
     )
-    (ROOT / "docs" / "CONTROLS.md").write_text("\n".join(lines))
+    if write_inventory:
+        (ROOT / "docs" / "CONTROLS.md").write_text("\n".join(lines))
     contact_sheets()
     failed = [row for row in ROWS if row["status"] != "PASSED"]
     print(
@@ -1547,7 +1568,19 @@ if __name__ == "__main__":
         action="store_true",
         help="Rerun failed rows from the last audit and regenerate its complete report",
     )
+    parser.add_argument(
+        "--case",
+        nargs=2,
+        action="append",
+        metavar=("STATE", "BINDING"),
+        help="Run a named case; repeat for multiple cases. Uses a selected/ evidence subdirectory and leaves the complete inventory untouched.",
+    )
     options = parser.parse_args()
+    if options.case:
+        if options.quick or options.retry_failed:
+            parser.error("--case cannot be combined with --quick or --retry-failed")
+        CASE_FILTER = {tuple(selected) for selected in options.case}
+        OUTPUT = OUTPUT / "selected"
     OUTPUT.mkdir(parents=True, exist_ok=True)
     jar = ROOT / "build/libs/emberwood-tui.jar"
     jar_hash = hashlib.sha256(jar.read_bytes()).hexdigest()
@@ -1575,6 +1608,11 @@ if __name__ == "__main__":
             )
     else:
         run()
+    if options.case:
+        require(
+            {(row["state"], row["binding"]) for row in ROWS} == CASE_FILTER,
+            "One or more selected cases were not found in the inventory",
+        )
     require(
         hashlib.sha256(jar.read_bytes()).hexdigest() == jar_hash,
         "The release JAR changed during the audit",
@@ -1585,6 +1623,8 @@ if __name__ == "__main__":
             if options.retry_failed
             else "quick"
             if options.quick
+            else "selected"
+            if options.case
             else "complete",
             "duration_seconds": round(time.monotonic() - started, 2),
             "rows": len(ROWS),
@@ -1592,4 +1632,4 @@ if __name__ == "__main__":
         }
     )
     metadata_path.write_text(json.dumps(metadata, indent=2) + "\n")
-    report()
+    report(write_inventory=not options.case)

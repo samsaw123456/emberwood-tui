@@ -31,6 +31,9 @@ jobs:
           .venv/bin/shellcheck install.sh emberwood-tui tools/bootstrap.sh tools/package.sh
           .venv/bin/ruff check tools
           .venv/bin/ruff format --check tools
+      - name: Check literal keys and rendered camera response first
+        if: matrix.os != 'ubuntu-24.04-arm'
+        run: .venv/bin/python tools/ansi_audit.py --case playing 'Ctrl+Z literal' --case motion 'G camera recentering'
       - name: Audit every ANSI control
         if: matrix.os != 'ubuntu-24.04-arm'
         run: .venv/bin/python tools/ansi_audit.py
