@@ -72,7 +72,7 @@ lock=$install_lock
 target=$prefix/share/emberwood-tui
 staging=$(mktemp -d "$prefix/share/.emberwood-tui.XXXXXX")
 # Keep a clean portable application, excluding user checkouts, build caches, and audit output.
-for entry in emberwood-tui install.sh VERSION LICENSE THIRD_PARTY.md README.md .editorconfig build.gradle.kts settings.gradle.kts gradle.properties gradlew gradlew.bat gradle src tools packaging docs; do
+for entry in emberwood-tui install.sh VERSION LICENSE THIRD_PARTY.md README.md .editorconfig .gitattributes build.gradle.kts settings.gradle.kts gradle.properties gradlew gradlew.bat gradle src tools packaging docs; do
     [[ ! -e "$source_dir/$entry" ]] || cp -R -- "$source_dir/$entry" "$staging/$entry"
 done
 find "$staging/tools" -type d -name __pycache__ -prune -exec rm -rf -- {} +

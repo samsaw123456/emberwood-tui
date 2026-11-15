@@ -8,6 +8,7 @@ only a fixture launcher; all tested commands enter through terminal bytes.
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import os
 import re
@@ -44,6 +45,7 @@ BINDINGS = {
     "Ctrl+C": "\x03",
 }
 ROWS: list[dict] = []
+CASE_FILTER: set[tuple[str, str]] | None = None
 
 
 def require(condition: bool, explanation: str) -> None:
@@ -274,6 +276,8 @@ def case(
     color_mode: str = "truecolor",
     reuse: Terminal | None = None,
 ) -> None:
+    if CASE_FILTER is not None and (scenario, binding) not in CASE_FILTER:
+        return
     name = re.sub(r"[^a-z0-9]+", "-", f"{scenario}-{binding}-{suffix}".lower()).strip(
         "-"
     )
@@ -297,11 +301,15 @@ def case(
             terminal.directory.mkdir(parents=True, exist_ok=True)
             terminal.frames = []
             terminal.key_latencies = []
-        terminal.save("before")
+        before = terminal.save("before")
         exercise(terminal)
-        terminal.save("after")
+        after = terminal.save("after")
         row["status"] = "PASSED"
-        row["actual"] = "Assertions passed against live PTY output and state"
+        row["actual"] = (
+            "Process exited and emitted primary-screen restoration"
+            if binding in {"Q", "Ctrl+C"}
+            else f"{before['state']} to {after['state']}; fox ({before['x']:.1f}, {before['y']:.1f}) to ({after['x']:.1f}, {after['y']:.1f}); {len(terminal.frames)} captured frames"
+        )
     except (
         AssertionError,
         OSError,
@@ -321,7 +329,18 @@ def case(
             row["key_acknowledgment_seconds"] = terminal.key_latencies
             if reuse is None:
                 terminal.close()
-    ROWS.append(row)
+    existing = next(
+        (
+            i
+            for i, old in enumerate(ROWS)
+            if (old["state"], old["binding"]) == (scenario, binding)
+        ),
+        None,
+    )
+    if existing is None:
+        ROWS.append(row)
+    else:
+        ROWS[existing] = row
     print(f"{row['status']:6} {scenario:12} {binding:12} {row['actual']}", flush=True)
     (OUTPUT / "results.json").write_text(json.dumps(ROWS, indent=2) + "\n")
 
@@ -459,6 +478,36 @@ def transition(terminal: Terminal, binding: str, expected: str) -> None:
         )
 
 
+def respawn_pause(terminal: Terminal, binding: str) -> None:
+    transition(terminal, binding, "PAUSED")
+    terminal.save("paused-return")
+    terminal.pump(0.3)
+    require(
+        terminal.state()["state"] == "PAUSED",
+        "Paused return-to-camp must remain frozen",
+    )
+    terminal.key(binding, 0.05)
+    wait_for(
+        terminal,
+        lambda: (
+            terminal.state()["state"] == "RESPAWNING"
+            and "Returning to camp" in terminal.text()
+        ),
+        "Resume must restore the interrupted return-to-camp state",
+    )
+    terminal.save("resumed-return")
+    wait_for(
+        terminal,
+        lambda: terminal.state()["state"] == "PLAYING",
+        "Resumed return must finish safely",
+        timeout=7,
+    )
+    require(
+        abs(terminal.state()["x"] - 100) < 0.1 and terminal.state()["direction"] == 0,
+        "Return must finish at camp without stuck steering",
+    )
+
+
 def toggle(terminal: Terminal, binding: str, property_name: str) -> None:
     before = terminal.state()[property_name]
     terminal.key(binding)
@@ -476,7 +525,9 @@ def toggle(terminal: Terminal, binding: str, property_name: str) -> None:
 
 
 def exit_command(terminal: Terminal, binding: str) -> None:
-    terminal.key(binding, 0.1)
+    # Quit can finish before the observer writes another snapshot. The external
+    # process exit and restored terminal are the acknowledgment for this command.
+    terminal.child.send(BINDINGS[binding])
     wait_for(
         terminal,
         lambda: not terminal.child.isalive(),
@@ -507,17 +558,36 @@ def dash(terminal: Terminal) -> None:
     )
 
 
-def shoot(terminal: Terminal, armed: bool = True) -> None:
-    before = terminal.text()
-    terminal.key("J", 0.12)
-    require(
-        (terminal.state()["shots"] > 0) == armed,
-        "Weapon availability must control projectile creation",
+PROJECTILE_COLORS = {
+    "bow": {"b88c55", "c8d6a5", "f3e4bd"},
+    "spear": {"ad7951", "d5b97d", "c6d3ca"},
+    "seed_bomb": {"9d633c", "d3ae68", "71915b", "9aae6a"},
+    "thorn_fan": {"b4ce78"},
+    "sunwood_lance": {"ad7951", "d5b97d", "c6d3ca", "e2c16d"},
+}
+
+
+def fire_visible(terminal: Terminal, weapon: str) -> None:
+    colors = PROJECTILE_COLORS[weapon]
+    baseline = set(color_pixels(terminal, colors))
+    terminal.key("J", 0)
+    wait_for(
+        terminal,
+        lambda: (
+            terminal.state()["shots"] > 0
+            and bool(set(color_pixels(terminal, colors)) - baseline)
+        ),
+        f"{weapon} must produce visible projectile pixels after physical J input",
+        timeout=2,
     )
+
+
+def shoot(terminal: Terminal, armed: bool = True) -> None:
     if armed:
-        require(
-            terminal.text() != before, "Projectile action must change rendered output"
-        )
+        fire_visible(terminal, terminal.state()["weapon"])
+    else:
+        terminal.key("J", 0.12)
+        require(terminal.state()["shots"] == 0, "No weapon must mean no projectile")
     terminal.save("shot")
     wait_for(
         terminal,
@@ -525,6 +595,35 @@ def shoot(terminal: Terminal, armed: bool = True) -> None:
         "Projectile must expire after its range",
         timeout=5,
     )
+
+
+def repeat_shoot(terminal: Terminal) -> None:
+    baseline = set(color_pixels(terminal, PROJECTILE_COLORS["bow"]))
+    terminal.send_keys("jjj", expected_keys=3, wait=0)
+    wait_for(
+        terminal,
+        lambda: (
+            terminal.state()["shots"] == 1
+            and bool(set(color_pixels(terminal, PROJECTILE_COLORS["bow"])) - baseline)
+        ),
+        "A repeated J burst must make one visible arrow without bypassing cooldown",
+    )
+    terminal.save("repeat-burst")
+    wait_for(
+        terminal,
+        lambda: terminal.state()["shots"] == 0,
+        "Repeated fire must expire",
+        timeout=5,
+    )
+    fire_visible(terminal, "bow")
+    terminal.save("recovered-shot")
+
+
+def reduced_direction(terminal: Terminal, binding: str, direction: int) -> None:
+    terminal.key("G")
+    terminal.save("reduced-before-movement")
+    movement(terminal, binding, direction)
+    terminal.key("G")
 
 
 def retry(terminal: Terminal) -> None:
@@ -549,6 +648,7 @@ def retry(terminal: Terminal) -> None:
 def menu(terminal: Terminal, binding: str) -> None:
     if binding == "Up":
         terminal.key("Down")
+        terminal.save("selected-before-up")
     before = next(line for line in terminal.screen.display if line.startswith(" >"))
     terminal.key(binding)
     after = next(line for line in terminal.screen.display if line.startswith(" >"))
@@ -859,11 +959,7 @@ def every_equipment(
     )
     if category == "weapon":
         terminal.key("P")
-        terminal.key("J", 0.12)
-        require(
-            terminal.state()["shots"] > 0,
-            "Equipped weapon must fire through real J input",
-        )
+        fire_visible(terminal, item_id)
         terminal.save("fired")
 
 
@@ -874,6 +970,13 @@ def run() -> None:
             binding,
             "Fox visibly moves in named screen direction; latched steering and stop work",
             lambda t, b=binding, d=direction: movement(t, b, d),
+        )
+    for binding, direction in (("A", -1), ("Left", -1), ("D", 1), ("Right", 1)):
+        case(
+            "playing",
+            f"{binding} reduced motion",
+            "Reduced motion preserves named screen direction and explicit stopping",
+            lambda t, b=binding, d=direction: reduced_direction(t, b, d),
         )
     for binding in ("S", "Down"):
         case(
@@ -892,6 +995,12 @@ def run() -> None:
     case("playing", "X", "Dash moves fox, reports cooldown, recovers", dash)
     case("playing", "J", "Projectile appears and expires", shoot)
     case(
+        "playing",
+        "J repeated",
+        "Repeated presses respect cooldown; later fire recovers",
+        repeat_shoot,
+    )
+    case(
         "no_weapon",
         "J",
         "No projectile without earned weapon",
@@ -903,8 +1012,12 @@ def run() -> None:
             case(
                 state,
                 binding,
-                "Pause and clear input",
-                lambda t, b=binding: transition(t, b, "PAUSED"),
+                "Pause return-to-camp, resume its timer, then safely return to camp"
+                if state == "respawning"
+                else "Pause and clear input",
+                (lambda t, b=binding: respawn_pause(t, b))
+                if state == "respawning"
+                else (lambda t, b=binding: transition(t, b, "PAUSED")),
             )
     for binding in ("P", "Esc"):
         case(
@@ -1078,33 +1191,39 @@ def run() -> None:
 def contact_sheets() -> None:
     directory = OUTPUT / "contact-sheets"
     directory.mkdir(exist_ok=True)
+    for old in directory.glob("controls-*.png"):
+        old.unlink()
     font = ImageFont.truetype(
-        str(ROOT / "src/main/resources/assets/fonts/DejaVuSans.ttf"), 16
+        str(ROOT / "src/main/resources/assets/fonts/DejaVuSans.ttf"), 14
     )
-    for offset in range(0, len(ROWS), 6):
-        group = ROWS[offset : offset + 6]
-        sheet = Image.new("RGB", (1440, len(group) * 350), (15, 20, 22))
+    # Retain every frame: directional movement, first/second jump, restore, and
+    # equipment removal are separate observable steps, not expendable samples.
+    frames = [
+        (number, row, path)
+        for number, row in enumerate(ROWS, 1)
+        for path in row["evidence"]
+    ]
+    manifest = []
+    for offset in range(0, len(frames), 15):
+        group = frames[offset : offset + 15]
+        sheet = Image.new("RGB", (1440, ((len(group) + 2) // 3) * 350), (15, 20, 22))
         draw = ImageDraw.Draw(sheet)
-        for index, row in enumerate(group):
-            frames = row["evidence"]
-            if len(frames) > 3:
-                frames = [frames[0], frames[len(frames) // 2], frames[-1]]
+        page = f"controls-{offset // 15 + 1:02}.png"
+        page_frames = []
+        for index, (number, row, path) in enumerate(group):
+            x, y = index % 3 * 480, index // 3 * 350
             draw.text(
-                (8, index * 350 + 2),
-                f"{offset + index + 1}. {row['state']} | {row['binding']} | {row['status']}",
+                (x + 5, y + 2),
+                f"{number}. {row['state']} | {row['binding']} | {Path(path).stem}",
                 font=font,
-                fill="white",
+                fill="white" if row["status"] == "PASSED" else "#ff8a8a",
             )
-            for column, path in enumerate(frames):
-                picture = Image.open(ROOT / path).convert("RGB").resize((480, 320))
-                sheet.paste(picture, (column * 480, index * 350 + 28))
-                draw.text(
-                    (column * 480 + 240, index * 350 + 2),
-                    Path(path).stem,
-                    font=font,
-                    fill="#ffd28a",
-                )
-        sheet.save(directory / f"controls-{offset // 6 + 1:02}.png")
+            picture = Image.open(ROOT / path).convert("RGB").resize((480, 320))
+            sheet.paste(picture, (x, y + 28))
+            page_frames.append(path)
+        sheet.save(directory / page)
+        manifest.append({"page": page, "captures": page_frames})
+    (directory / "manifest.json").write_text(json.dumps(manifest, indent=2) + "\n")
 
 
 def report() -> None:
@@ -1113,7 +1232,7 @@ def report() -> None:
         "",
         "Generated by `python3 tools/ansi_audit.py` against a running tui4j process in a real PTY. Every listed key is sent as ANSI input. Before/during/after PNGs are reconstructed from the captured output, and raw ANSI and state records remain under `build/ansi-audit`. The fixture host sets starting states; it does not call input handlers directly.",
         "",
-        "Steering is intentionally latched: ordinary ANSI terminals send key presses but no releases. A/D or arrows select direction, S/Down stops; X replaces modifier-only Shift. No mouse, controller, touch, camera, uppercase aliases, or key-release protocol is implemented. Terminal font and audio-device behavior require separate host checks.",
+        "Steering is intentionally latched: ordinary ANSI terminals send key presses but no releases. A/D or arrows select direction, S/Down stops; X replaces modifier-only Shift. Binding letters denote unshifted lowercase keys. No mouse, controller, touch, manual camera keys, uppercase letter aliases, or key-release protocol is implemented. Terminal font and audio-device behavior require separate host checks.",
         "",
         "| State | Physical binding | Expected result | Actual result | Status | Evidence |",
         "|---|---|---|---|---|---|",
@@ -1129,7 +1248,7 @@ def report() -> None:
             "",
             "## Limits",
             "",
-            "M rows prove terminal feedback and saved mute state. They do not by themselves prove that an audio device became silent. Audio output must be captured and compared separately before it can be called verified. macOS and terminal-specific font/device behavior are not established by a Linux PTY audit.",
+            "M rows prove terminal feedback and saved mute state. Actual PCM output and silence are independently checked by `tools/audio_audit.py`; see [the verification record](VERIFICATION.md). Contact sheets include every captured frame, and the manual visual review is recorded in [evidence notes](evidence/README.md). macOS and terminal-specific font/device behavior are not established by a Linux PTY audit.",
             "",
         ]
     )
@@ -1151,8 +1270,29 @@ if __name__ == "__main__":
         action="store_true",
         help="Only four direction bindings for harness diagnosis",
     )
+    parser.add_argument(
+        "--retry-failed",
+        action="store_true",
+        help="Rerun failed rows from the last audit and regenerate its complete report",
+    )
     options = parser.parse_args()
     OUTPUT.mkdir(parents=True, exist_ok=True)
+    jar = ROOT / "build/libs/emberwood-tui.jar"
+    jar_hash = hashlib.sha256(jar.read_bytes()).hexdigest()
+    metadata_path = OUTPUT / "run.json"
+    if options.retry_failed:
+        metadata = json.loads(metadata_path.read_text())
+        require(
+            metadata["jar_sha256"] == jar_hash,
+            "The release JAR changed; rerun the complete audit",
+        )
+        ROWS.extend(json.loads((OUTPUT / "results.json").read_text()))
+        CASE_FILTER = {
+            (row["state"], row["binding"]) for row in ROWS if row["status"] != "PASSED"
+        }
+    else:
+        metadata = {"jar_sha256": jar_hash, "runs": []}
+    started = time.monotonic()
     if options.quick:
         for key, sign in (("A", -1), ("Left", -1), ("D", 1), ("Right", 1)):
             case(
@@ -1163,4 +1303,21 @@ if __name__ == "__main__":
             )
     else:
         run()
+    require(
+        hashlib.sha256(jar.read_bytes()).hexdigest() == jar_hash,
+        "The release JAR changed during the audit",
+    )
+    metadata["runs"].append(
+        {
+            "mode": "retry-failed"
+            if options.retry_failed
+            else "quick"
+            if options.quick
+            else "complete",
+            "duration_seconds": round(time.monotonic() - started, 2),
+            "rows": len(ROWS),
+            "passed": sum(row["status"] == "PASSED" for row in ROWS),
+        }
+    )
+    metadata_path.write_text(json.dumps(metadata, indent=2) + "\n")
     report()

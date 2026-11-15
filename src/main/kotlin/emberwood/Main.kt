@@ -29,7 +29,9 @@ class TerminalGame(
     private var accumulator = 0.0
     private var selection = 0
     private var recordedWin = false
+    private var cachedView: String? = null
     private val small get() = width < 80 || height < 28
+    private val staticScene get() = game.state in listOf(GameState.TITLE, GameState.PAUSED, GameState.CHAPTER_COMPLETE)
 
     init {
         game.reducedMotion = settings.gentle
@@ -41,6 +43,8 @@ class TerminalGame(
     private fun tick(): Command = Command.tick(Duration.ofMillis(33)) { Tick() }
 
     override fun update(message: Message): UpdateResult<out Model> {
+        // These states freeze the world. Keys, focus and resizing still refresh their UI.
+        if (message !is Tick || !staticScene) cachedView = null
         when (message) {
             is WindowSizeMessage -> {
                 width = message.width()
@@ -140,6 +144,11 @@ class TerminalGame(
     }
 
     override fun view(): String {
+        if (staticScene) cachedView?.let { return it }
+        return renderView().also { if (staticScene) cachedView = it }
+    }
+
+    private fun renderView(): String {
         val cols = width.coerceIn(1, 180)
         val rows = height.coerceIn(1, 65)
         val sound =
@@ -179,7 +188,8 @@ class TerminalGame(
                 lines += line(" Terminal keys are presses: steering continues after key release.")
                 lines +=
                     line(
-                        " Enter: ${if (practice == null) "start adventure" else "practice level ${practice + 1}"}    Q: quit",
+                        " Enter: ${if (practice == null) "start adventure" else "practice level ${practice + 1}"}    Q: quit" +
+                            if (practice == null && settings.best > 0) "    Best: ${time(settings.best)}" else "",
                         0xffd28a,
                     )
             }
