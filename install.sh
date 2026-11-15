@@ -1,28 +1,163 @@
 #!/usr/bin/env bash
 # Per-user install. Also works as: curl -fsSL <release>/install.sh | bash
 set -euo pipefail
-version=1.0.0
+version=1.0.1
 repository=samsaw123456/emberwood-tui
 prefix=${HOME}/.local
 custom_prefix=false
+dependencies_only=false
+offline=false
 fail() { printf '%s\n' "Emberwood Terminal: $*" >&2; exit 2; }
 usage() {
-    printf '%s\n' 'Usage: ./install.sh [--prefix PATH]' \
+    printf '%s\n' 'Usage: ./install.sh [--prefix PATH] | --dependencies-only [--offline]' \
         'Installs the game, private Java 25, command, and application-menu launcher for this user.' \
-        'No administrator access or global Java changes. Default prefix: ~/.local.'
+        'Missing Linux system prerequisites are installed with the system package manager.' \
+        'Only missing packages need administrator access; system Java is unchanged.' \
+        'Default prefix: ~/.local. --dependencies-only prepares prerequisites without installing the game.' \
+        '--dependencies-only --offline checks play requirements without downloads or package changes.'
 }
 while (($#)); do
     case $1 in
         --prefix) (($# >= 2)) || fail '--prefix needs a directory.'; prefix=$2; custom_prefix=true; shift 2 ;;
+        --dependencies-only) dependencies_only=true; shift ;;
+        --offline) offline=true; shift ;;
         --help|-h) usage; exit 0 ;;
         *) fail "Unknown option: $1" ;;
     esac
 done
+$offline && ! $dependencies_only && fail '--offline is only supported with --dependencies-only. Installed play uses emberwood-tui --offline.'
+$dependencies_only && $custom_prefix && fail '--dependencies-only does not accept --prefix.'
 case $prefix in /*) ;; *) fail '--prefix must be an absolute path.' ;; esac
 [[ $prefix != / && $prefix != *$'\n'* && $prefix != *$'\r'* ]] || fail 'Choose a normal user-owned installation directory.'
-case $(uname -s) in Linux) platform=linux ;; Darwin) platform=mac ;; *) fail 'Supported systems: Linux and macOS.' ;; esac
-case $(uname -m) in x86_64|amd64|arm64|aarch64) ;; *) fail 'Supported processors: x86-64 and ARM64.' ;; esac
-for utility in tar awk mktemp; do command -v "$utility" >/dev/null || fail "Missing system utility: $utility"; done
+# Bash can identify the host even when coreutils (including uname) is missing.
+host_system=${OSTYPE%%[0-9]*}
+host_arch=${MACHTYPE%%-*}
+if command -v uname >/dev/null; then host_system=$(uname -s); host_arch=$(uname -m); fi
+case $host_system in Linux|linux-gnu) platform=linux ;; Darwin|darwin) platform=mac ;; *) fail 'Supported systems: glibc Linux and macOS.' ;; esac
+case $host_arch in x86_64|amd64|arm64|aarch64) ;; *) fail 'Supported processors: x86-64 and ARM64.' ;; esac
+
+# One authoritative preflight for the standalone installer and source/runtime
+# bootstrap. It uses only Bash until any missing base utilities are prepared.
+missing=()
+need() {
+    local item
+    for item in "${missing[@]+${missing[@]}}"; do [[ $item != "$1" ]] || return 0; done
+    missing+=("$1")
+}
+has_library() {
+    local path
+    for path in /lib/"$1" /lib64/"$1" /lib/*/"$1" /usr/lib/"$1" /usr/lib64/"$1" /usr/lib/*/"$1"; do
+        [[ ! -r "$path" ]] || return 0
+    done
+    return 1
+}
+has_certificates() {
+    local path
+    for path in "${CURL_CA_BUNDLE:-}" "${SSL_CERT_FILE:-}" /etc/ssl/certs/ca-certificates.crt \
+        /etc/pki/tls/certs/ca-bundle.crt /etc/ssl/ca-bundle.pem /etc/ssl/cert.pem; do
+        [[ ! -s "$path" ]] || return 0
+    done
+    return 1
+}
+has_terminal() {
+    local terminal
+    for terminal in x-terminal-emulator gnome-terminal kgx konsole xfce4-terminal mate-terminal \
+        tilix terminator xterm alacritty kitty wezterm foot cosmic-term; do
+        ! command -v "$terminal" >/dev/null || return 0
+    done
+    return 1
+}
+check_dependencies() {
+    local utility
+    missing=()
+    for utility in uname dirname mktemp mkdir rmdir cp mv rm chmod touch cat head date sleep tr ls; do
+        command -v "$utility" >/dev/null || need coreutils
+    done
+    for utility in find xargs; do command -v "$utility" >/dev/null || need findutils; done
+    command -v sed >/dev/null || need sed
+    if ! $offline; then
+        command -v tar >/dev/null || need tar
+        command -v gzip >/dev/null || need gzip
+        command -v awk >/dev/null || need gawk
+        command -v sha256sum >/dev/null || command -v shasum >/dev/null || need coreutils
+        command -v curl >/dev/null || command -v wget >/dev/null || need curl
+        [[ $platform != linux ]] || has_certificates || need ca-certificates
+    fi
+    if [[ $platform == linux ]]; then
+        for utility in /lib/ld-musl-*.so.1; do
+            [[ ! -e "$utility" ]] || fail 'This Java distribution needs glibc Linux; musl/Alpine is not supported.'
+        done
+        # Java's headless font manager still needs fontconfig and a font fallback.
+        # FreeType is already bundled in the pinned Temurin runtime.
+        if ! command -v fc-match >/dev/null || ! fc-match -f '%{file}' monospace >/dev/null 2>&1; then
+            need fontconfig
+            need fonts
+        elif [[ -z $(fc-match -f '%{file}' monospace 2>/dev/null) ]]; then
+            need fonts
+        fi
+        has_library libasound.so.2 || need alsa
+        if ! $dependencies_only && [[ -n ${DISPLAY:-}${WAYLAND_DISPLAY:-} ]]; then
+            has_terminal || need terminal
+        fi
+    elif ! $dependencies_only; then
+        for utility in sips iconutil open; do
+            command -v "$utility" >/dev/null || need "$utility"
+        done
+        [[ -d /System/Applications/Utilities/Terminal.app || -d /Applications/Utilities/Terminal.app ]] || need Terminal.app
+    fi
+}
+install_dependencies() {
+    local manager='' item package
+    local packages=() elevated=()
+    [[ $platform == linux ]] || fail "Missing macOS system tools: ${missing[*]}. Restore the built-in macOS tools or correct PATH; Homebrew is not needed."
+    $offline && fail "Offline play is missing system prerequisites: ${missing[*]}. Run ./install.sh --dependencies-only online first."
+    for item in apt-get dnf pacman zypper; do
+        if command -v "$item" >/dev/null; then manager=$item; break; fi
+    done
+    [[ -n "$manager" ]] || fail "Missing prerequisites: ${missing[*]}. No supported package manager found (apt-get, dnf, pacman, zypper)."
+    if ((EUID != 0)); then
+        command -v sudo >/dev/null || fail "Missing prerequisites: ${missing[*]}. Installing system packages requires sudo or an administrator running this script with --dependencies-only."
+        elevated=(sudo)
+    fi
+    printf '%s\n' "Preparing missing system prerequisites with $manager: ${missing[*]}" >&2
+    if [[ $manager == apt-get ]]; then
+        "${elevated[@]+${elevated[@]}}" apt-get update </dev/null >&2 || fail 'Could not refresh authenticated package indexes; check your configured repositories and network, then retry.'
+    fi
+    for item in "${missing[@]}"; do
+        package=$item
+        case $manager:$item in
+            apt-get:alsa)
+                if apt-cache show libasound2t64 >/dev/null 2>&1; then package=libasound2t64; else package=libasound2; fi ;;
+            dnf:alsa|pacman:alsa) package=alsa-lib ;;
+            zypper:alsa) package=libasound2 ;;
+            apt-get:fonts) package=fonts-dejavu-core ;;
+            dnf:fonts) package=dejavu-sans-mono-fonts ;;
+            pacman:fonts) package=ttf-dejavu ;;
+            zypper:fonts) package=dejavu-fonts ;;
+            *:terminal) package=xterm ;;
+        esac
+        packages+=("$package")
+    done
+    case $manager in
+        apt-get)
+            if ((${#elevated[@]})); then
+                sudo DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends "${packages[@]}" </dev/null >&2
+            else
+                DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends "${packages[@]}" </dev/null >&2
+            fi ;;
+        dnf) "${elevated[@]+${elevated[@]}}" dnf install -y "${packages[@]}" </dev/null >&2 ;;
+        # Use the existing package database. -Sy alone risks a partial upgrade;
+        # this installer must not force a whole-system upgrade either.
+        pacman) "${elevated[@]+${elevated[@]}}" pacman -S --needed --noconfirm "${packages[@]}" </dev/null >&2 ;;
+        zypper) "${elevated[@]+${elevated[@]}}" zypper --non-interactive install --no-recommends "${packages[@]}" </dev/null >&2 ;;
+    esac || fail 'System package installation failed. No game files were replaced. Resolve the package-manager error and rerun the same command.'
+    hash -r
+    check_dependencies
+    ((${#missing[@]} == 0)) || fail "The package manager finished but prerequisites are still unavailable: ${missing[*]}. Check PATH and package-manager output."
+}
+check_dependencies
+if ((${#missing[@]})); then install_dependencies; fi
+$dependencies_only && exit 0
 if command -v sha256sum >/dev/null; then hash_cmd=sha256sum
 elif command -v shasum >/dev/null; then hash_cmd=shasum
 else fail 'Install a SHA-256 utility (sha256sum or shasum).'; fi
@@ -38,10 +173,15 @@ checksum() {
 work=$(mktemp -d "${TMPDIR:-/tmp}/emberwood-install.XXXXXX")
 staging=''
 lock=''
-cleanup() { rm -rf -- "$work"; [[ -z "$staging" ]] || rm -rf -- "$staging"; [[ -z "$lock" ]] || rmdir -- "$lock" 2>/dev/null || true; }
+cleanup() {
+    rm -rf -- "$work"
+    [[ -z "$staging" ]] || rm -rf -- "$staging"
+    if [[ -n "$lock" ]]; then rm -f -- "$lock/pid"; rmdir -- "$lock" 2>/dev/null || true; fi
+}
 trap cleanup EXIT
 trap 'exit 130' INT
 trap 'exit 143' TERM
+trap 'exit 129' HUP
 source_dir=''
 if [[ -n ${BASH_SOURCE[0]:-} && -f ${BASH_SOURCE[0]} ]]; then
     candidate=$(CDPATH="" cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)
@@ -57,7 +197,7 @@ if [[ -z "$source_dir" ]]; then
     [[ $expected =~ ^[[:xdigit:]]{64}$ ]] || fail 'Release checksum is missing or malformed.'
     [[ $(checksum "$work/$asset") == "$expected" ]] || fail 'Release checksum mismatch; nothing installed.'
     # Publisher-controlled, checksum-verified archive extracted into a fresh directory.
-    tar -xzf "$work/$asset" -C "$work"
+    tar --no-same-owner -xzf "$work/$asset" -C "$work"
     source_dir=$work/emberwood-tui-$version
     [[ -x "$source_dir/emberwood-tui" && -f "$source_dir/build.gradle.kts" ]] || fail 'Incomplete release archive.'
 fi
@@ -67,8 +207,19 @@ if [[ ! -f "$source_dir/.release-build" ]]; then
 fi
 mkdir -p -- "$prefix/share" "$prefix/bin"
 install_lock=$prefix/share/.emberwood-tui-install.lock
-mkdir -- "$install_lock" 2>/dev/null || fail "Another installation is active ($install_lock). If it was interrupted, remove that empty directory and retry."
+if ! mkdir -- "$install_lock" 2>/dev/null; then
+    owner=''
+    [[ ! -r "$install_lock/pid" ]] || owner=$(cat "$install_lock/pid")
+    if [[ $owner =~ ^[0-9]+$ ]] && ! kill -0 "$owner" 2>/dev/null; then
+        rm -f -- "$install_lock/pid"
+        rmdir -- "$install_lock" 2>/dev/null || fail "Cannot recover interrupted installation lock: $install_lock"
+        mkdir -- "$install_lock" 2>/dev/null || fail "Another installation started ($install_lock); retry when it finishes."
+    else
+        fail "Another installation is active ($install_lock). If an older installer was interrupted, remove its empty lock directory and retry."
+    fi
+fi
 lock=$install_lock
+printf '%s\n' "$$" > "$lock/pid"
 target=$prefix/share/emberwood-tui
 staging=$(mktemp -d "$prefix/share/.emberwood-tui.XXXXXX")
 # Keep a clean portable application, excluding user checkouts, build caches, and audit output.

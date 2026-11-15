@@ -6,9 +6,12 @@ import com.williamcallahan.tui4j.compat.bubbletea.KeyPressMessage
 import com.williamcallahan.tui4j.compat.bubbletea.Message
 import com.williamcallahan.tui4j.compat.bubbletea.Model
 import com.williamcallahan.tui4j.compat.bubbletea.Program
+import com.williamcallahan.tui4j.compat.bubbletea.ProgramOption
 import com.williamcallahan.tui4j.compat.bubbletea.QuitMessage
+import com.williamcallahan.tui4j.compat.bubbletea.SuspendMessage
 import com.williamcallahan.tui4j.compat.bubbletea.UpdateResult
 import com.williamcallahan.tui4j.compat.bubbletea.WindowSizeMessage
+import org.jline.nativ.CLibrary
 import java.time.Duration
 import kotlin.math.abs
 import kotlin.system.exitProcess
@@ -81,7 +84,9 @@ class TerminalGame(
                 if (message.getKey().paste()) return UpdateResult.from(this)
                 val key = message.key()
                 if (key == "q" || key == "ctrl+c") return UpdateResult.from(this, Command { QuitMessage() })
-                if (key == "m") {
+                if (key == "ctrl+z") {
+                    pause()
+                } else if (key == "m") {
                     settings.muted = !settings.muted
                     settings.save("muted")
                     audio?.muted = settings.muted
@@ -184,7 +189,7 @@ class TerminalGame(
                 lines += line(" Collect 3 acorns to open each exit. Campfires save your return point.")
                 lines += line(" Tap A/D or Left/Right to RUN; tap S or Down to STOP.", 0xffd28a)
                 lines += line(" Space/W/Up jump; press again for double-jump. X dash. J weapon.")
-                lines += line(" P/Esc pause & equipment. R retry camp. M sound. G reduced motion.")
+                lines += line(" P/Esc pause & equipment. Ctrl+Z pause. R retry. M sound. G motion.")
                 lines += line(" Terminal keys are presses: steering continues after key release.")
                 lines +=
                     line(
@@ -284,16 +289,27 @@ class TerminalGame(
 
 private fun time(seconds: Double): String = "%d:%02d".format(seconds.toInt() / 60, seconds.toInt() % 60)
 
+internal fun terminalMessage(message: Message): Message = if (message is SuspendMessage) BlurMessage() else message
+
+internal fun terminalProgram(model: Model): Program =
+    Program(
+        model,
+        // tui4j 0.3.5 stops reading on TSTP without handing control back to the
+        // shell. Use the same recoverable pause as a focus-loss event instead.
+        ProgramOption.withFilter { _, message -> terminalMessage(message) },
+    ).withAltScreen().withReportFocus()
+
 fun main(arguments: Array<String>) {
     val desktop = arguments.firstOrNull() == "--desktop"
     val args = if (desktop) arguments.drop(1).toTypedArray() else arguments
     if (args.contentEquals(arrayOf("--version"))) {
-        println("Emberwood Terminal 1.0.0 (JVM ${Runtime.version().feature()}, tui4j 0.3.5)")
+        val version = TerminalGame::class.java.`package`.implementationVersion ?: "development"
+        println("Emberwood Terminal $version (JVM ${Runtime.version().feature()}, tui4j 0.3.5)")
         return
     }
     if (args.contentEquals(arrayOf("--help"))) {
         println(
-            "Emberwood Terminal\nUsage: emberwood-tui [--practice 1..20 | --version | --help]\nA/D or arrows steer; S/Down stops; Space/W/Up jumps; X dashes; J fires.\nP/Esc pauses; R retries; M toggles sound; G toggles motion; Q quits.\nSteering continues after key release. Terminal needs UTF-8, color and 80x28 cells.",
+            "Emberwood Terminal\nUsage: emberwood-tui [--practice 1..20 | --version | --help]\nA/D or arrows steer; S/Down stops; Space/W/Up jumps; X dashes; J fires.\nP/Esc pauses/resumes; Ctrl+Z pauses; R retries; M sound; G motion; Q quits.\nSteering continues after key release. Terminal needs UTF-8, color and 80x28 cells.",
         )
         return
     }
@@ -302,13 +318,31 @@ fun main(arguments: Array<String>) {
         System.err.println("Invalid arguments. Use --help or --practice 1..20.")
         exitProcess(2)
     }
+    if (System.console()?.isTerminal != true) {
+        System.err.println("Open Emberwood in an interactive terminal. Use --help for usage.")
+        exitProcess(2)
+    }
+    // JLine's Attributes conversion omits native baud/control bits. Preserve
+    // the entire termios structure before its terminal setup changes anything.
+    val terminalState = CLibrary.Termios()
+    if (CLibrary.tcgetattr(0, terminalState) != 0) {
+        System.err.println("Cannot read the terminal settings.")
+        exitProcess(2)
+    }
     System.setProperty("java.awt.headless", "true")
     if (desktop) {
         // A desktop launcher commonly starts at 80x24; supporting terminals honor this request.
         print("\u001b[8;40;120t")
         System.out.flush()
     }
-    Audio().use { audio ->
-        Program(TerminalGame(audio = audio, practice = practice)).withAltScreen().withReportFocus().run()
+    try {
+        Audio().use { audio ->
+            terminalProgram(TerminalGame(audio = audio, practice = practice)).run()
+        }
+    } finally {
+        if (CLibrary.tcsetattr(0, CLibrary.TCSANOW, terminalState) != 0) {
+            System.err.println("Could not restore terminal settings. Run 'stty sane' in your shell.")
+            exitProcess(1)
+        }
     }
 }

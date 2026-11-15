@@ -11,6 +11,7 @@ import os
 import platform
 import pty
 import select
+import shlex
 import shutil
 import signal
 import struct
@@ -19,22 +20,41 @@ import tarfile
 import tempfile
 import termios
 import time
+from collections.abc import Callable
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
+VERSION = (ROOT / "VERSION").read_text().strip()
 
 
-def terminal_probe(command: Path, env: dict[str, str], toggle: bool) -> str:
+def terminal_probe(
+    command: Path,
+    env: dict[str, str],
+    toggle: bool,
+    while_open: Callable[[], None] | None = None,
+) -> str:
     """Run the installed public CLI through its actual terminal, with isolated preferences."""
-    child, descriptor = pty.fork()
+    # Keep the slave open in the parent so post-exit tcgetattr also works on
+    # macOS. Capture before forking: the child must not race this baseline.
+    descriptor, slave = pty.openpty()
+    fcntl.ioctl(slave, termios.TIOCSWINSZ, struct.pack("HHHH", 40, 120, 0, 0))
+    before = termios.tcgetattr(slave)
+    child = os.fork()
     if child == 0:
+        os.close(descriptor)
+        os.setsid()
+        fcntl.ioctl(slave, termios.TIOCSCTTY, 0)
+        for target in (0, 1, 2):
+            os.dup2(slave, target)
+        if slave > 2:
+            os.close(slave)
         os.execve(str(command), [str(command), "--offline"], env)
     output = ""
     reaped = False
     try:
-        fcntl.ioctl(descriptor, termios.TIOCSWINSZ, struct.pack("HHHH", 40, 120, 0, 0))
         deadline = time.monotonic() + 20
-        ready = False
+        phase = "title"
+        sound_key_at = 0.0
         while time.monotonic() < deadline:
             readable, _, _ = select.select([descriptor], [], [], 0.1)
             if readable:
@@ -42,17 +62,35 @@ def terminal_probe(command: Path, env: dict[str, str], toggle: bool) -> str:
                 output += fragment
                 if "\x1b[6n" in fragment:
                     os.write(descriptor, b"\x1b[1;1R")
-            if not ready and "Enter:" in output:
-                ready = True
-                if toggle:
-                    output = ""
-                    os.write(descriptor, b"m")
-            if ready and "sound: off" in output:
+            if (
+                phase == "title"
+                and "Enter:" in output
+                and (toggle or "sound: off" in output)
+            ):
+                if while_open:
+                    while_open()
+                output = ""
+                os.write(descriptor, b"\x1a")
+                sound_key_at = time.monotonic() + 0.25
+                phase = "suspend"
+            elif phase == "suspend" and time.monotonic() >= sound_key_at:
+                output = ""
+                os.write(descriptor, b"m")
+                phase = "mute" if toggle else "unmute"
+            elif phase == "unmute" and any(
+                state in output for state in ("sound: on", "sound: unavailable")
+            ):
+                # No audio device is required for the visible input-recovery
+                # check. Restore the saved preference before leaving the app.
+                output = ""
+                os.write(descriptor, b"m")
+                phase = "mute"
+            elif phase == "mute" and "sound: off" in output:
                 os.write(descriptor, b"q")
                 break
         else:
             raise AssertionError(
-                f"Installed terminal did not show saved mute state: {output[-2000:]}"
+                f"Installed terminal did not recover after Ctrl+Z ({phase}): {output[-2000:]}"
             )
         deadline = time.monotonic() + 5
         while time.monotonic() < deadline:
@@ -75,11 +113,16 @@ def terminal_probe(command: Path, env: dict[str, str], toggle: bool) -> str:
             if done:
                 reaped = True
                 assert os.waitstatus_to_exitcode(status) == 0
+                after = termios.tcgetattr(slave)
+                assert after == before, (
+                    f"Terminal settings changed: {before!r} -> {after!r}"
+                )
                 return output
             time.sleep(0.05)
         raise AssertionError("Installed terminal did not exit after Q.")
     finally:
         os.close(descriptor)
+        os.close(slave)
         if not reaped:
             os.kill(child, signal.SIGKILL)
             os.waitpid(child, 0)
@@ -112,6 +155,7 @@ def source_launch_concurrency(temp: Path) -> None:
     runtime.mkdir(parents=True)
     shutil.copy2(ROOT / "emberwood-tui", source / "emberwood-tui")
     shutil.copy2(ROOT / "tools/bootstrap.sh", source / "tools/bootstrap.sh")
+    shutil.copy2(ROOT / "install.sh", source / "install.sh")
     for name in (
         "build.gradle.kts",
         "settings.gradle.kts",
@@ -171,6 +215,7 @@ def verified_runtime_download(temp: Path) -> None:
     fixture = temp / "runtime-download"
     (fixture / "tools").mkdir(parents=True)
     shutil.copy2(ROOT / "tools/bootstrap.sh", fixture / "tools/bootstrap.sh")
+    shutil.copy2(ROOT / "install.sh", fixture / "install.sh")
     archive = fixture / "runtime.tar.gz"
     with tarfile.open(archive, "w:gz") as output:
         output.add(temp / "fixture-jdk", arcname="jdk-25.0.5+8")
@@ -204,6 +249,268 @@ def verified_runtime_download(temp: Path) -> None:
     assert not list(cache.glob("*/install.lock"))
 
 
+def dependency_preflight(temp: Path) -> list[str]:
+    """Exercise real detection with an isolated PATH; never run a host package manager."""
+    utilities = [
+        "bash",
+        "uname",
+        "dirname",
+        "mktemp",
+        "mkdir",
+        "rmdir",
+        "cp",
+        "mv",
+        "rm",
+        "chmod",
+        "touch",
+        "cat",
+        "head",
+        "date",
+        "sleep",
+        "tr",
+        "ls",
+        "find",
+        "xargs",
+        "sed",
+        "tar",
+        "gzip",
+        "awk",
+        "sha256sum",
+        "shasum",
+        "curl",
+        "wget",
+        "fc-match",
+        "sips",
+        "iconutil",
+        "open",
+    ]
+    commands = {name: shutil.which(name) for name in utilities}
+    fixture = temp / "dependency-checks"
+    fixture.mkdir()
+    standalone = fixture / "install.sh"
+    shutil.copy2(ROOT / "install.sh", standalone)
+
+    def environment(name: str, absent: set[str]) -> tuple[Path, Path, dict[str, str]]:
+        directory = fixture / name
+        directory.mkdir()
+        for utility, executable in commands.items():
+            if executable and utility not in absent:
+                (directory / utility).symlink_to(executable)
+        log = directory / "package-calls"
+        env = os.environ | {"PATH": str(directory)}
+        env.pop("DISPLAY", None)
+        env.pop("WAYLAND_DISPLAY", None)
+        return directory, log, env
+
+    if platform.system() == "Darwin":
+        _, _, env = environment("missing-mac-icon-tool", {"iconutil"})
+        prefix = fixture / "unchanged-mac-install"
+        output = run(str(standalone), "--prefix", str(prefix), env=env, success=False)
+        assert "Missing macOS system tools: iconutil" in output, output
+        assert not prefix.exists()
+        return [
+            "Missing macOS iconutil is diagnosed before installation; no Homebrew or game files are touched."
+        ]
+
+    absent = {
+        "mktemp",
+        "find",
+        "xargs",
+        "sed",
+        "tar",
+        "gzip",
+        "awk",
+        "sha256sum",
+        "shasum",
+        "curl",
+        "wget",
+        "fc-match",
+    }
+    link = shlex.quote(shutil.which("ln") or "/bin/ln")
+
+    def package_manager(directory: Path, log: Path, manager: str, mode: str = "repair"):
+        repair = "\n".join(
+            f"{link} -sf {shlex.quote(executable)} {shlex.quote(str(directory / utility))}"
+            for utility, executable in commands.items()
+            if executable and utility in absent
+        )
+        executable = directory / manager
+        executable.write_text(
+            "#!/bin/bash\nset -eu\n"
+            f"printf '%s\\n' \"$*\" >> {shlex.quote(str(log))}\n"
+            "[[ ${1:-} != update ]] || exit 0\n"
+            + (
+                "exit 42\n"
+                if mode == "fail"
+                else "exit 0\n"
+                if mode == "ineffective"
+                else (
+                    "[[ ${DEBIAN_FRONTEND:-} == noninteractive ]] || exit 88\n"
+                    if manager == "apt-get"
+                    else ""
+                )
+                + repair
+                + "\n"
+            )
+        )
+        executable.chmod(0o755)
+        sudo = directory / "sudo"
+        sudo.write_text(
+            '#!/bin/bash\nwhile [[ ${1:-} == *=* ]]; do export "$1"; shift; done\nexec "$@"\n'
+        )
+        sudo.chmod(0o755)
+
+    font_packages = {
+        "apt-get": "fonts-dejavu-core",
+        "dnf": "dejavu-sans-mono-fonts",
+        "pacman": "ttf-dejavu",
+        "zypper": "dejavu-fonts",
+    }
+    for manager, fonts in font_packages.items():
+        directory, log, env = environment(manager, absent)
+        package_manager(directory, log, manager)
+        run(str(standalone), "--dependencies-only", env=env)
+        calls = log.read_text().splitlines()
+        install = shlex.split(calls[-1])
+        for package in (
+            "coreutils",
+            "findutils",
+            "sed",
+            "tar",
+            "gzip",
+            "gawk",
+            "curl",
+            "fontconfig",
+            fonts,
+        ):
+            assert install.count(package) == 1, calls
+        assert "unzip" not in install, calls
+        if manager == "pacman":
+            assert install[:3] == ["-S", "--needed", "--noconfirm"], calls
+            assert all("-Sy" not in call and "-Su" not in call for call in calls)
+        run(str(standalone), "--dependencies-only", env=env)
+        assert log.read_text().splitlines() == calls, (
+            "Prepared launch repeated package changes"
+        )
+
+    _, log, env = environment(
+        "offline", {"tar", "gzip", "awk", "sha256sum", "shasum", "curl", "wget"}
+    )
+    run(str(standalone), "--dependencies-only", "--offline", env=env)
+    assert not log.exists()
+    directory, log, env = environment("offline-missing-runtime", {"fc-match"})
+    package_manager(directory, log, "apt-get")
+    output = run(
+        str(standalone), "--dependencies-only", "--offline", env=env, success=False
+    )
+    assert "Offline play is missing" in output and not log.exists(), output
+
+    for mode in ("fail", "ineffective"):
+        directory, log, env = environment(mode, {"curl", "wget"})
+        package_manager(directory, log, "apt-get", mode=mode)
+        prefix = fixture / f"existing-{mode}"
+        prefix.mkdir()
+        previous = prefix / "previous-game"
+        previous.write_text("unchanged")
+        output = run(str(standalone), "--prefix", str(prefix), env=env, success=False)
+        assert (
+            "failed" in output if mode == "fail" else "still unavailable" in output
+        ), output
+        assert previous.read_text() == "unchanged"
+        assert list(prefix.iterdir()) == [previous]
+
+    directory, log, env = environment("no-manager", {"curl", "wget"})
+    output = run(str(standalone), "--dependencies-only", env=env, success=False)
+    assert "No supported package manager" in output and not log.exists(), output
+    if os.geteuid() != 0:
+        package_manager(directory, log, "apt-get")
+        (directory / "sudo").unlink()
+        output = run(str(standalone), "--dependencies-only", env=env, success=False)
+        assert "requires sudo or an administrator" in output and not log.exists(), (
+            output
+        )
+
+    directory, log, env = environment("desktop-terminal", set())
+    curl = directory / "curl"
+    if curl.exists():
+        curl.unlink()
+    curl.write_text("#!/bin/bash\nprintf 'fixture download stopped\\n' >&2\nexit 23\n")
+    curl.chmod(0o755)
+    prefix = fixture / "desktop-prefix"
+    output = run(str(standalone), "--prefix", str(prefix), env=env, success=False)
+    assert "fixture download stopped" in output and not log.exists(), output
+    package_manager(directory, log, "apt-get", mode="ineffective")
+    manager = directory / "apt-get"
+    # This fixture supplies only a terminal; no graphical application is opened.
+    manager.write_text(
+        manager.read_text().removesuffix("exit 0\n")
+        + f"printf '#!/bin/bash\\nexit 0\\n' > {shlex.quote(str(directory / 'xterm'))}\n"
+        + f"{shlex.quote(commands['chmod'])} +x {shlex.quote(str(directory / 'xterm'))}\n"
+    )
+    output = run(
+        str(standalone),
+        "--prefix",
+        str(prefix),
+        env=env | {"DISPLAY": ":fixture"},
+        success=False,
+    )
+    assert "fixture download stopped" in output and not prefix.exists(), output
+    assert shlex.split(log.read_text().splitlines()[-1])[-1] == "xterm"
+
+    return [
+        "Missing tools/font support trigger the expected apt, dnf, pacman and zypper package commands exactly once; a repeated preflight changes nothing (isolated PATH and package-manager fixtures).",
+        "Offline preflight succeeds without download/hash/archive tools and never invokes a package manager, including when runtime prerequisites are missing.",
+        "Failed or ineffective dependency installation leaves existing game files untouched; missing package manager/elevation produces a precise failure.",
+        "A graphical install without a terminal requests xterm; a headless install does not request graphical packages (isolated fixtures).",
+    ]
+
+
+def interrupted_install(temp: Path, prefix: Path, env: dict[str, str]) -> None:
+    """Terminate during staging and verify that an existing installation survives."""
+    fixture = temp / "interrupted-install"
+    fixture.mkdir()
+    marker = fixture / "copy-started"
+    real_cp = shutil.which("cp")
+    assert real_cp
+    copy = fixture / "cp"
+    copy.write_text(
+        "#!/bin/bash\nset -eu\n"
+        f"printf ready > {shlex.quote(str(marker))}\n"
+        "sleep 30\n"
+        f'exec {shlex.quote(real_cp)} "$@"\n'
+    )
+    copy.chmod(0o755)
+    jar = prefix / "share/emberwood-tui/build/libs/emberwood-tui.jar"
+    before = hashlib.sha256(jar.read_bytes()).hexdigest()
+    process = subprocess.Popen(
+        [str(ROOT / "install.sh"), "--prefix", str(prefix)],
+        env=env | {"PATH": str(fixture) + os.pathsep + env["PATH"]},
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+        start_new_session=True,
+    )
+    try:
+        deadline = time.monotonic() + 20
+        while (
+            not marker.exists()
+            and process.poll() is None
+            and time.monotonic() < deadline
+        ):
+            time.sleep(0.05)
+        assert marker.exists(), "Installer did not reach the staging copy"
+        os.killpg(process.pid, signal.SIGTERM)
+        output, _ = process.communicate(timeout=10)
+        assert process.returncode in (143, -signal.SIGTERM), output
+        assert hashlib.sha256(jar.read_bytes()).hexdigest() == before
+        assert not (prefix / "share/.emberwood-tui-install.lock").exists()
+        assert not list((prefix / "share").glob(".emberwood-tui.*"))
+    finally:
+        if process.poll() is None:
+            os.killpg(process.pid, signal.SIGKILL)
+            process.wait(timeout=5)
+
+
 def main() -> None:
     evidence: list[str] = []
     run(
@@ -220,6 +527,8 @@ def main() -> None:
         ("--prefix", "relative"),
         ("--prefix", "/"),
         ("--unknown",),
+        ("--offline",),
+        ("--dependencies-only", "--prefix", "/tmp/unused"),
     ):
         run("./install.sh", *args, success=False)
     run("./emberwood-tui", "--build", "unexpected", success=False)
@@ -228,6 +537,7 @@ def main() -> None:
     )
     with tempfile.TemporaryDirectory(prefix="emberwood installer test ") as directory:
         temp = Path(directory)
+        evidence.extend(dependency_preflight(temp))
         source_launch_concurrency(temp)
         evidence.append(
             "Concurrent source launches wait for one complete build; neither executes a partial JAR, and the source lock is removed."
@@ -285,11 +595,16 @@ def main() -> None:
         command = prefix / "bin/emberwood-tui"
         assert command.stat().st_mode & 0o111
         version = run(str(command), "--offline", "--version", env=env)
-        assert "Emberwood" in version and "1.0.0" in version, version
+        assert f"Emberwood Terminal {VERSION}" in version, version
         evidence.append(
             "Fresh install to a path with spaces, $, %, and backticks; installed executable runs --offline --version."
         )
-        terminal_probe(command, env, toggle=True)
+        terminal_probe(
+            command,
+            env,
+            toggle=True,
+            while_open=lambda: run("./install.sh", "--prefix", str(prefix), env=env),
+        )
         settings = (
             temp / "config/emberwood-tui/settings.properties"
             if platform.system() == "Linux"
@@ -299,7 +614,7 @@ def main() -> None:
         assert "muted=true" in settings.read_text()
         saved_settings = settings.read_bytes()
         evidence.append(
-            "Installed public game launched through a real PTY; M changed rendered sound state, saved preferences, and Q exited cleanly."
+            "Installed public game remained open in a real PTY during reinstall; afterward Ctrl+Z preserved input, M changed rendered sound state, and Q restored every termios flag/speed/control byte exactly."
         )
         data = prefix / "share/emberwood-tui"
         assert (data / "build/libs/emberwood-tui.jar").stat().st_size > 10000
@@ -348,7 +663,7 @@ def main() -> None:
                     + "\n"
                 )
                 result = run("gio", "launch", str(probe), env=env)
-                assert "Emberwood Terminal 1.0.0" in result, result
+                assert f"Emberwood Terminal {VERSION}" in result, result
                 evidence.append(
                     "GIO parsed the generated Exec value and launched the installed Java entry point despite shell punctuation in its path."
                 )
@@ -367,18 +682,30 @@ def main() -> None:
             )
         marker = data / "obsolete-test-file"
         marker.write_text("Old installation must be cleanly replaced.")
+        interrupted_install(temp, prefix, env)
+        evidence.append(
+            "SIGTERM during staging removes temporary files and the install lock without changing the previous JAR."
+        )
+        install_lock = prefix / "share/.emberwood-tui-install.lock"
+        install_lock.mkdir()
+        (install_lock / "pid").write_text(str(os.getpid()))
+        output = run("./install.sh", "--prefix", str(prefix), env=env, success=False)
+        assert "Another installation is active" in output and marker.exists(), output
+        departed = subprocess.Popen(["/bin/sh", "-c", "exit 0"])
+        departed.wait(timeout=5)
+        (install_lock / "pid").write_text(str(departed.pid))
         run("./install.sh", "--prefix", str(prefix), env=env)
         assert not marker.exists()
         run(str(command), "--offline", "--version", env=env)
         assert not (prefix / "share/.emberwood-tui.previous").exists()
         assert not (prefix / "share/.emberwood-tui-install.lock").exists()
         evidence.append(
-            "Repeat installation replaces obsolete files, preserves runnable command, removes backup and lock."
+            "A live install lock rejects safely; a stale PID lock recovers automatically. Repeat installation replaces obsolete files, preserves the runnable command, and removes backup/lock."
         )
         assert settings.read_bytes() == saved_settings
         terminal_probe(command, env, toggle=False)
         evidence.append(
-            "A real saved mute preference survives reinstall and is loaded by the installed game on its next PTY launch."
+            "A real saved mute preference survives reinstall; the next public PTY launch loads it, recovers from Ctrl+Z, visibly toggles M twice, and restores exact terminal settings on Q."
         )
         jar = data / "build/libs/emberwood-tui.jar"
         previous = jar.read_bytes()

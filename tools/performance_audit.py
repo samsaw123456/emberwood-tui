@@ -24,9 +24,19 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 class Measurement:
-    def __init__(self, output: Path):
+    def __init__(
+        self,
+        output: Path,
+        columns: int = 100,
+        rows: int = 36,
+        heap_mib: int = 256,
+        single_cpu: bool = False,
+    ):
         self.output = output
         self.output.mkdir(parents=True, exist_ok=True)
+        self.columns = columns
+        self.rows = rows
+        self.cpu = min(os.sched_getaffinity(0)) if single_cpu else None
         java_home = subprocess.check_output(
             [str(ROOT / "tools/bootstrap.sh"), "--offline"], text=True
         ).strip()
@@ -34,7 +44,7 @@ class Measurement:
         self.command = [
             str(Path(java_home) / "bin/java"),
             "-Xms32m",
-            "-Xmx256m",
+            f"-Xmx{heap_mib}m",
             "--enable-native-access=ALL-UNNAMED",
             "-Djava.awt.headless=true",
             "-jar",
@@ -52,13 +62,16 @@ class Measurement:
                 "XDG_CONFIG_HOME": str(self.output / "settings"),
             },
             encoding=None,
-            dimensions=(36, 100),
+            dimensions=(rows, columns),
             timeout=1,
+            preexec_fn=(
+                (lambda: os.sched_setaffinity(0, {self.cpu})) if single_cpu else None
+            ),
         )
         self.child.delaybeforesend = 0
         self.raw: list[bytes] = []
         self.parsed_chunks = 0
-        self.screen = pyte.Screen(100, 36)
+        self.screen = pyte.Screen(columns, rows)
         self.stream = pyte.ByteStream(self.screen)
         self.clock_ticks = os.sysconf("SC_CLK_TCK")
 
@@ -202,7 +215,8 @@ class Measurement:
         report = {
             "artifact_sha256": hashlib.sha256(self.jar.read_bytes()).hexdigest(),
             "command": self.command,
-            "terminal": "real PTY, 100 columns x 36 rows, truecolor",
+            "terminal": f"real PTY, {self.columns} columns x {self.rows} rows, truecolor",
+            "single_cpu_affinity": self.cpu,
             "warmup_seconds": 5,
             "cpu_definition": "Linux /proc/PID/stat utime+stime delta over wall time. 100% is one fully used CPU core.",
             "rss_definition": "Per-state VmRSS sampled every 0.1s; VmHWM is separate lifetime peak.",
@@ -226,6 +240,10 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--duration", type=float, default=15, help="Seconds per state")
     parser.add_argument("--output", type=Path, default=ROOT / "build/performance")
+    parser.add_argument("--columns", type=int, default=100)
+    parser.add_argument("--rows", type=int, default=36)
+    parser.add_argument("--heap-mib", type=int, default=256)
+    parser.add_argument("--single-cpu", action="store_true")
     args = parser.parse_args()
     if platform.system() != "Linux":
         parser.error(
@@ -233,7 +251,17 @@ def main() -> None:
         )
     if not 3 <= args.duration <= 60:
         parser.error("Choose 3 to 60 seconds per state")
-    measurement = Measurement(args.output.resolve())
+    if not 80 <= args.columns <= 180 or not 28 <= args.rows <= 65:
+        parser.error("Choose 80–180 columns and 28–65 rows")
+    if not 64 <= args.heap_mib <= 256:
+        parser.error("Choose a 64–256 MiB heap")
+    measurement = Measurement(
+        args.output.resolve(),
+        args.columns,
+        args.rows,
+        args.heap_mib,
+        args.single_cpu,
+    )
     try:
         measurement.run(args.duration)
     finally:

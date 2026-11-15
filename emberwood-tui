@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
 # Build from source once, then play directly with a private Java 25.
 set -euo pipefail
-root=$(CDPATH="" cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)
+script_dir=${BASH_SOURCE[0]%/*}
+[[ $script_dir != "${BASH_SOURCE[0]}" ]] || script_dir=.
+root=$(CDPATH="" cd -- "$script_dir" && pwd)
 cd -- "$root"
 build_only=false
 offline=false
@@ -12,10 +14,12 @@ case ${1:-} in
             '  --offline   run the existing build with no downloads' \
             '  --version   print the game version' \
             '  --practice 1..20  play an individual trail without recording a best time' \
-            'First source launch prepares private Java 25 and builds with the Gradle wrapper.' \
+            'First launch prepares missing system prerequisites and private Java 25.' \
+            'Source checkouts build with the Gradle wrapper; installed releases are ready to play.' \
             'Install a terminal launcher with ./install.sh. See README.md for controls.' \
+            'Enter starts/continues; Tab cycles pause tabs; arrows or W/S choose equipment.' \
             'A/D or Left/Right run; S/Down stop; Space/W/Up jump; X dash; J weapon.' \
-            'P/Esc pause; R retry; M sound; G reduced motion; Q quit.' \
+            'P/Esc pause/resume; Ctrl+Z pauses; R retry; M sound; G reduced motion; Q quit.' \
             'Steering continues after key release. Use a UTF-8 color terminal, 80x28 or larger.'
         exit 0 ;;
     --build) build_only=true; shift ;;

@@ -1,9 +1,9 @@
 package emberwood
 
+import com.williamcallahan.tui4j.compat.bubbletea.BlurMessage
 import com.williamcallahan.tui4j.compat.bubbletea.Command
 import com.williamcallahan.tui4j.compat.bubbletea.Message
 import com.williamcallahan.tui4j.compat.bubbletea.Model
-import com.williamcallahan.tui4j.compat.bubbletea.Program
 import com.williamcallahan.tui4j.compat.bubbletea.UpdateResult
 import java.nio.file.Files
 import java.nio.file.Path
@@ -52,6 +52,7 @@ fun main(args: Array<String>) {
     Audio().use { audio ->
         val delegate = TerminalGame(game, settings, audio)
         var keyCount = 0
+        var blurCount = 0
         var lastKey = ""
         val wrapper =
             object : Model {
@@ -60,6 +61,7 @@ fun main(args: Array<String>) {
                 override fun view(): String = delegate.view()
 
                 override fun update(message: Message): UpdateResult<out Model> {
+                    if (message is BlurMessage) blurCount++
                     if (message is com.williamcallahan.tui4j.compat.bubbletea.KeyPressMessage) {
                         keyCount++
                         lastKey = message.key()
@@ -70,6 +72,7 @@ fun main(args: Array<String>) {
                     val fields =
                         mapOf(
                             "keyCount" to keyCount,
+                            "blurCount" to blurCount,
                             "lastKey" to lastKey,
                             "x" to p.x,
                             "y" to p.y,
@@ -125,6 +128,6 @@ fun main(args: Array<String>) {
                     return UpdateResult.from(this, result.command())
                 }
             }
-        Program(wrapper).withAltScreen().withReportFocus().run()
+        terminalProgram(wrapper).run()
     }
 }

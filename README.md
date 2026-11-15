@@ -13,14 +13,16 @@ Actual installed game in a 120×40 XTerm window.
 On **Linux or macOS**, paste this into a terminal:
 
 ```sh
-curl -fsSL https://github.com/samsaw123456/emberwood-tui/releases/download/v1.0.0/install.sh | bash
+curl -fsSL https://github.com/samsaw123456/emberwood-tui/releases/download/v1.0.1/install.sh | bash
 ```
 
-The installer checks prerequisites, verifies the release checksum, downloads a checksum-pinned private Java 25 if needed, and installs for your user. It does not require administrator privileges or replace your system Java. Open **Emberwood Terminal** in your application launcher, or run:
+The installer checks prerequisites, verifies the release checksum, downloads a checksum-pinned private Java 25 if needed, and installs for your user. On Linux it automatically installs missing system utilities, certificates, font/audio libraries and a desktop terminal through your package manager; only missing system packages require administrator access. Your system Java stays unchanged. Open **Emberwood Terminal** in your application launcher, or run:
 
 ```sh
 ~/.local/bin/emberwood-tui
 ```
+
+If `curl` or HTTPS certificates are missing, [download install.sh](https://github.com/samsaw123456/emberwood-tui/releases/download/v1.0.1/install.sh) in your browser and run `bash ~/Downloads/install.sh`. The downloaded installer can prepare those dependencies itself. Stock macOS already supplies its system tools and Terminal.app.
 
 The Linux launcher uses your desktop's terminal application. macOS gets an application in `~/Applications` that opens Terminal.app. Both use Emberwood's original fox icon. Installation needs internet; installed play works offline. See [installation details, overrides, updates and removal](docs/PACKAGING.md).
 
@@ -42,6 +44,7 @@ Every third trail has a guardian. Dodge its marked landing, jump its ground wave
 | Fire equipped weapon | J |
 | Return to the current camp | R |
 | Pause / resume | P or Escape |
+| Pause safely without suspending the terminal | Ctrl+Z |
 | Choose equipment while paused | Up, Down or Tab |
 | Equip / remove the selected item | Enter while paused |
 | Start / next trail / play again | Enter |
@@ -66,11 +69,11 @@ Five weapons and eight armor sets unlock across the campaign. Pause to inspect e
 ./emberwood-tui --version
 ```
 
-Practice runs do not replace a full-campaign best time. Current-run progress and checkpoints are in memory; sound, motion preferences, and the best completed campaign time persist in `~/.config/emberwood-tui` on Linux (`XDG_CONFIG_HOME` supported), or `~/Library/Application Support/Emberwood Terminal` on macOS. They are separate from the app installation and desktop game. Quitting ends the current run. Zed includes **Play Emberwood Terminal** and **Build Emberwood Terminal** tasks.
+Practice runs do not replace a full-campaign best time. Current-run progress and checkpoints are in memory; sound, motion preferences, and the best completed campaign time persist in `~/.config/emberwood-tui` on Linux (`XDG_CONFIG_HOME` supported), or `~/Library/Application Support/Emberwood Terminal` on macOS. They are separate from the app installation and desktop game. Quitting ends the current run. Zed includes **Play Emberwood Terminal** and **Build Emberwood Terminal** tasks; Play opens the integrated terminal in the center pane with enough room for the game.
 
 ## Build and verify
 
-The checked-in wrapper uses **Gradle 9.9.1**, **Kotlin 2.4.21**, **tui4j 0.3.5**, and **JVM 25**. Bootstrap pins **Temurin 25.0.5+8** for Linux/macOS, x86-64/ARM64. These are the stable versions checked on November 14, 2026; prereleases are not selected.
+The checked-in wrapper uses **Gradle 9.9.1**, **Kotlin 2.4.21**, **tui4j 0.3.5**, and **JVM 25**. Bootstrap pins **Temurin 25.0.5+8** for Linux/macOS, x86-64/ARM64. These stable versions were rechecked on November 15, 2026. The [quality review](docs/QUALITY_REVIEW.md) records dependency compatibility, recent-session guidance, and the follow-up checks.
 
 ```sh
 export JAVA_HOME="$(tools/bootstrap.sh)"

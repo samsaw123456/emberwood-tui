@@ -14,6 +14,7 @@ import json
 import os
 import re
 import shutil
+import termios
 import time
 from pathlib import Path
 
@@ -22,7 +23,7 @@ import pyte
 from PIL import Image, ImageDraw, ImageFont
 
 ROOT = Path(__file__).resolve().parents[1]
-OUTPUT = ROOT / "build" / "ansi-audit"
+OUTPUT = (ROOT / os.environ.get("EMBERWOOD_ANSI_OUTPUT", "build/ansi-audit")).resolve()
 BINDINGS = {
     "A": "a",
     "D": "d",
@@ -44,6 +45,7 @@ BINDINGS = {
     "G": "g",
     "Q": "q",
     "Ctrl+C": "\x03",
+    "Ctrl+Z": "\x1a",
 }
 ROWS: list[dict] = []
 CASE_FILTER: set[tuple[str, str]] | None = None
@@ -817,6 +819,81 @@ def focus(terminal: Terminal) -> None:
     )
 
 
+def suspend_pause(terminal: Terminal, scenario: str, literal: bool = False) -> None:
+    before = terminal.state()
+    if scenario == "playing":
+        terminal.key("D", 0.12)
+        wait_for(
+            terminal,
+            lambda: "Steering: RIGHT" in terminal.text(),
+            "Steering must visibly run before Ctrl+Z clears it",
+        )
+        terminal.save("moving")
+    original_attributes = None
+    try:
+        if literal:
+            original_attributes = termios.tcgetattr(terminal.child.child_fd)
+            attributes = termios.tcgetattr(terminal.child.child_fd)
+            attributes[6][termios.VSUSP] = bytes(
+                [os.fpathconf(terminal.child.child_fd, "PC_VDISABLE")]
+            )
+            termios.tcsetattr(terminal.child.child_fd, termios.TCSANOW, attributes)
+            terminal.key("Ctrl+Z", 0)
+        else:
+            # The terminal driver normally turns this physical byte into TSTP;
+            # a signal becomes BlurMessage, not an acknowledged KeyPressMessage.
+            terminal.child.send(BINDINGS["Ctrl+Z"])
+            wait_for(
+                terminal,
+                lambda: terminal.state()["blurCount"] > before["blurCount"],
+                "The physical suspend byte must reach the application's signal filter",
+            )
+        expected = (
+            "PAUSED"
+            if before["state"] in {"PLAYING", "RESPAWNING"}
+            else before["state"]
+        )
+        wait_for(
+            terminal,
+            lambda: (
+                terminal.state()["state"] == expected
+                and terminal.state()["direction"] == 0
+                and (
+                    "Paused" in terminal.text()
+                    if expected == "PAUSED" and scenario != "small"
+                    else True
+                )
+            ),
+            "Ctrl+Z must pause safely or preserve an already inactive state",
+        )
+        terminal.save("paused-or-unchanged")
+        terminal.child.send(BINDINGS["Ctrl+Z"] * 2)
+        terminal.pump(0.15)
+        require(
+            terminal.state()["state"] == expected,
+            "Repeated Ctrl+Z must never resume the game",
+        )
+        # A static screen alone cannot prove its reader/render loop survived.
+        toggle(terminal, "M", "muted")
+        if before["state"] in {"PLAYING", "RESPAWNING"}:
+            terminal.key("P", 0)
+            wait_for(
+                terminal,
+                lambda: (
+                    terminal.state()["state"] == "PLAYING"
+                    and "Steering: STOP" in terminal.text()
+                ),
+                "P must recover from Ctrl+Z pause with stopped steering",
+                timeout=7,
+            )
+            terminal.save("resumed")
+    finally:
+        if original_attributes is not None:
+            termios.tcsetattr(
+                terminal.child.child_fd, termios.TCSANOW, original_attributes
+            )
+
+
 def resize(terminal: Terminal) -> None:
     terminal.key("D", 0.12)
     terminal.child.setwinsize(20, 60)
@@ -1253,6 +1330,19 @@ def run() -> None:
         "won": {"Enter"},
         "small": set(),
     }
+    for state in active:
+        case(
+            state,
+            "Ctrl+Z",
+            "Pause without toggling resume; inactive states stay unchanged; rendering and input recover",
+            lambda t, s=state: suspend_pause(t, s),
+        )
+    case(
+        "playing",
+        "Ctrl+Z literal",
+        "A terminal sending literal Ctrl+Z also pauses and clears steering; P resumes",
+        lambda t: suspend_pause(t, "playing", literal=True),
+    )
     for state, available in active.items():
         # Inert controls and restored toggles share a live state. Each row still
         # records its own physical input and before/after render; raw ANSI stays
@@ -1268,7 +1358,7 @@ def run() -> None:
         )
         try:
             for binding in sorted(
-                BINDINGS.keys() - available - {"M", "G", "Q", "Ctrl+C"}
+                BINDINGS.keys() - available - {"M", "G", "Q", "Ctrl+C", "Ctrl+Z"}
             ):
                 case(
                     state,
@@ -1412,9 +1502,9 @@ def report() -> None:
     lines = [
         "# Physical terminal control audit",
         "",
-        "Generated by `python3 tools/ansi_audit.py` against a running tui4j process in a real PTY. Every listed key is sent as ANSI input. Before/during/after PNGs are reconstructed from completed ANSI paints; each snapshot records its exact character offset in the retained raw stream. The decoder honors primary/alternate screen switching. Raw ANSI and state records remain under `build/ansi-audit`. The fixture host sets starting states; it does not call input handlers directly.",
+        f"Generated by `python3 tools/ansi_audit.py` against a running tui4j process in a real PTY. Every listed key is sent as ANSI input. Before/during/after PNGs are reconstructed from completed ANSI paints; each snapshot records its exact character offset in the retained raw stream. The decoder honors primary/alternate screen switching. Raw ANSI and state records remain under `{OUTPUT.relative_to(ROOT)}`. The fixture host sets starting states; it does not call input handlers directly.",
         "",
-        "Steering is intentionally latched: ordinary ANSI terminals send key presses but no releases. A/D or arrows select direction, S/Down stops; X replaces modifier-only Shift. Binding letters denote unshifted lowercase keys. No mouse, controller, touch, manual camera keys, uppercase letter aliases, or key-release protocol is implemented. Terminal font and audio-device behavior require separate host checks.",
+        "Steering is intentionally latched: ordinary ANSI terminals send key presses but no releases. A/D or arrows select direction, S/Down stops; X replaces modifier-only Shift. Ctrl+Z pauses without toggling resume; P/Esc resumes. Both terminal-generated suspend signals and literal Ctrl+Z bytes are checked. Binding letters denote unshifted lowercase keys. No mouse, controller, touch, manual camera keys, uppercase letter aliases, or key-release protocol is implemented. Terminal font and audio-device behavior require separate host checks.",
         "",
         "| State | Physical binding | Expected result | Actual result | Status | Evidence |",
         "|---|---|---|---|---|---|",

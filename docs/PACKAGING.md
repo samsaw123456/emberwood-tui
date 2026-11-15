@@ -3,12 +3,14 @@
 The distribution targets glibc-based Linux and macOS on x86-64 or ARM64. The release is the
 same portable archive on all four targets. It contains the game JAR and its
 sources; the installer supplies a private, checksum-verified Temurin **25.0.5+8**
-JDK for the current platform. It never changes system Java or asks for sudo.
+JDK for the current platform. It never changes system Java. Missing Linux system
+packages are installed automatically; this step uses sudo when the current user
+is not root. An already prepared machine needs no administrator access.
 
 ## For players
 
 ```sh
-curl -fsSL https://github.com/samsaw123456/emberwood-tui/releases/download/v1.0.0/install.sh | bash
+curl -fsSL https://github.com/samsaw123456/emberwood-tui/releases/download/v1.0.1/install.sh | bash
 ```
 
 To inspect before executing, download `install.sh` from the release, read it, then
@@ -16,9 +18,24 @@ run `bash install.sh`. A local checkout can be installed with `./install.sh`.
 Both routes install under `~/.local` and create `~/.local/bin/emberwood-tui`.
 Add that bin directory to `PATH` if the installer reports it is missing.
 
-The first installation needs an internet connection, Bash, `tar`, `awk`, `mktemp`,
-`curl` or `wget`, and `sha256sum` or `shasum`. These are standard Linux/macOS tools;
-missing tools produce an explicit message. The installer verifies the downloaded
+The first installation needs an internet connection and Bash. If the `curl`
+command or certificate store is absent, download `install.sh` in a browser and run
+`bash ~/Downloads/install.sh`; a fetch command cannot repair itself before the
+script is obtained. The installer automatically prepares missing utilities,
+certificates, fontconfig/fonts and ALSA through apt, dnf, pacman or zypper on
+supported glibc Linux systems. It installs a terminal if a graphical session has
+none; an SSH/headless system does not get a desktop environment. Package-manager
+errors stop installation before game files are replaced. No TLS verification is
+disabled, and no full-system upgrade is requested. Stock macOS supplies the
+required utilities and Terminal.app; a damaged system installation or PATH gets a
+specific error rather than an unnecessary Homebrew installation.
+
+`./install.sh --dependencies-only` prepares just these prerequisites.
+`./install.sh --dependencies-only --offline` only checks play requirements and
+never downloads or installs packages. The source launcher uses this same
+preflight. An offline installed game does not need a downloader or CA bundle.
+
+The installer verifies the downloaded
 game archive against the release's SHA256SUMS, and Java against the pinned vendor
 hash in `tools/jdk-downloads.tsv`. HTTPS and the publisher's release account are
 the trust roots; the adjacent release checksum detects corruption, not a
@@ -42,6 +59,9 @@ Reinstall to update. Settings remain separate from application files: Linux uses
 `$XDG_CONFIG_HOME/emberwood-tui` or `~/.config/emberwood-tui`; macOS uses
 `~/Library/Application Support/Emberwood Terminal`. A candidate
 game must run `--version` successfully before the previous application is replaced.
+Interrupted installations clean up their staging directory; a lock belonging to a
+departed installer is recovered on the next attempt. An active installer keeps
+its lock. Archive extraction keeps ownership with the installing user.
 
 To uninstall the default Linux installation, remove `~/.local/bin/emberwood-tui`,
 `~/.local/share/emberwood-tui`,
@@ -73,11 +93,11 @@ launching the game; direct Gradle invocations do not participate in this lock.
 
 Run `./tools/package.sh` after `./gradlew check fatJar` to create:
 
-- `dist/emberwood-tui-1.0.0.tar.gz`
+- `dist/emberwood-tui-1.0.1.tar.gz`
 - `dist/install.sh`
 - `dist/SHA256SUMS`
 
-Attach all three to the matching `v1.0.0` GitHub release. The version in `VERSION`
+Attach all three to the matching `v1.0.1` GitHub release. The version in `VERSION`
 and `install.sh` must agree. The workflow compiles/tests and creates archives on
 Linux and macOS; it does not publish automatically.
 

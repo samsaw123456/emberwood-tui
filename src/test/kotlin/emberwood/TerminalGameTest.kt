@@ -1,18 +1,43 @@
 package emberwood
 
 import com.williamcallahan.tui4j.compat.bubbletea.KeyPressMessage
+import com.williamcallahan.tui4j.compat.bubbletea.SuspendMessage
 import com.williamcallahan.tui4j.compat.bubbletea.WindowSizeMessage
 import com.williamcallahan.tui4j.compat.bubbletea.input.key.Key
 import com.williamcallahan.tui4j.compat.bubbletea.input.key.KeyType
 import org.junit.jupiter.api.io.TempDir
 import java.nio.file.Path
 import kotlin.test.Test
+import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 class TerminalGameTest {
     @TempDir
     lateinit var directory: Path
+
+    @Test
+    fun suspendSignalPausesWithoutTogglingOrRetainingSteering() {
+        val game = Game()
+        val model = TerminalGame(game, Settings(directory))
+        model.update(terminalMessage(SuspendMessage()))
+        assertEquals(GameState.TITLE, game.state)
+        model.update(KeyPressMessage(Key(KeyType.keyCR)))
+        press(model, 'd')
+        assertEquals(1, model.input.direction)
+        model.update(terminalMessage(SuspendMessage()))
+        assertEquals(GameState.PAUSED, game.state)
+        assertEquals(0, model.input.direction)
+        assertTrue("Paused" in model.view())
+        repeat(3) { model.update(terminalMessage(SuspendMessage())) }
+        assertEquals(GameState.PAUSED, game.state)
+        press(model, 'p')
+        assertEquals(GameState.PLAYING, game.state)
+        assertTrue("Steering: STOP" in model.view())
+        model.update(KeyPressMessage(Key(KeyType.keySUB)))
+        assertEquals(GameState.PAUSED, game.state)
+        assertEquals(0, model.input.direction)
+    }
 
     @Test
     fun savedBestAndPreferencesRemainVisibleAfterStaticScreenChanges() {

@@ -54,7 +54,10 @@ tasks.register<Jar>("fatJar") {
             Files.move(candidate, target, StandardCopyOption.REPLACE_EXISTING)
         }
     }
-    manifest { attributes["Main-Class"] = application.mainClass.get() }
+    manifest {
+        attributes["Main-Class"] = application.mainClass.get()
+        attributes["Implementation-Version"] = project.version.toString()
+    }
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     from(sourceSets.main.get().output)
     dependsOn(configurations.runtimeClasspath)

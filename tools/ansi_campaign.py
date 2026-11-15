@@ -185,7 +185,12 @@ class CampaignTerminal(Terminal):
     def close(self) -> None:
         if self.child.isalive():
             self.child.send("q")
-            self.pump(0.25)
+        deadline = time.monotonic() + 5
+        while self.child.isalive() and time.monotonic() < deadline:
+            self.pump(0.025)
+        quit_cleanly = not self.child.isalive()
+        # Retain the final restoration bytes before stopping the decoder.
+        self.reader.join(timeout=0.25)
         if self.reader.is_alive():
             self.connection.send(("stop", ""))
         self.reader.join(timeout=2)
@@ -196,6 +201,11 @@ class CampaignTerminal(Terminal):
         if self.child.isalive():
             self.child.terminate(force=True)
         self.child.close()
+        assert quit_cleanly, "Campaign did not exit normally after physical Q"
+        assert self.child.exitstatus == 0, (
+            self.child.exitstatus,
+            self.child.signalstatus,
+        )
 
 
 class Campaign:

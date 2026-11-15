@@ -1,8 +1,12 @@
 #!/usr/bin/env bash
 # Prints a validated JDK home. All progress/error messages go to stderr.
 set -euo pipefail
-root=$(CDPATH="" cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)
+script_dir=${BASH_SOURCE[0]%/*}
+[[ $script_dir != "${BASH_SOURCE[0]}" ]] || script_dir=.
+root=$(CDPATH="" cd -- "$script_dir/.." && pwd)
 fail() { printf '%s\n' "Emberwood Terminal: $*" >&2; exit 2; }
+if [[ ${1:-} == --offline ]]; then "$root/install.sh" --dependencies-only --offline >&2
+else "$root/install.sh" --dependencies-only >&2; fi
 valid_jdk() {
     [[ -x "$1/bin/java" && -x "$1/bin/javac" && -x "$1/bin/jlink" ]] || return 1
     local version
@@ -64,7 +68,7 @@ if [[ $hash_cmd == sha256sum ]]; then actual=$(sha256sum < "$work/jdk.tar.gz"); 
 [[ ${actual%% *} == "$expected" ]] || fail 'Java checksum did not match. Nothing was installed; retry the download.'
 mkdir "$work/unpacked"
 # Trusted, pinned vendor archive; extraction occurs in a fresh private directory.
-tar -xzf "$work/jdk.tar.gz" -C "$work/unpacked" || fail 'Java archive could not be unpacked.'
+tar --no-same-owner -xzf "$work/jdk.tar.gz" -C "$work/unpacked" || fail 'Java archive could not be unpacked.'
 source_home=$(find "$work/unpacked" -type f -path '*/bin/javac' -print | head -n 1)
 [[ -n "$source_home" ]] || fail 'The Java archive contains no compiler.'
 source_home=${source_home%/bin/javac}
