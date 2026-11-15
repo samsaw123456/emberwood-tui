@@ -136,3 +136,11 @@ backslashes and shell punctuation. It installed the matching release JAR without
 a source build, then passed twenty installed CLI/PTY cases including offline
 play. The release verification archive retains its logs, checksums and captures;
 see [the verification record](VERIFICATION.md).
+
+For v1.0.1, the public installer was downloaded and piped into Bash inside a fresh
+minimal Ubuntu 24.04.5 image. Real missing dependencies, the private Java cache
+and the public release were installed in 20.331 seconds. Installed play then
+passed with networking disabled, and all six actual ANSI captures were inspected.
+Host packages remained unchanged. See `build/quality-review/public-release` in
+the separate release verification archive. This is additional evidence beyond
+the isolated package-manager fixtures and four-platform installation CI.

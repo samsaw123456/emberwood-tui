@@ -66,6 +66,13 @@ and version reporting; `Tick` has unchanged disassembled instructions.
   changed. The disposable user namespace maps its optional `staff`/`adm` groups
   to its only available GID and runs apt's download sandbox as its mapped root;
   these are documented test-environment adaptations, not installer behavior.
+- After publication, the actual v1.0.1 installer was downloaded from GitHub and
+  fed through a stdin pipe to Bash in another fresh minimal Ubuntu image. It
+  installed real missing packages and a fresh private Java in 20.331 seconds,
+  downloaded the public release, and passed the same network-disabled gameplay
+  checks. All six completed-frame captures were inspected; the JAR, icon and
+  desktop entry matched. This verifies the published bytes and pipe-input path,
+  without changing host packages. Evidence: `build/quality-review/public-release`.
 - An actual installed v1.0.0 process kept playing while the v1.0.1 installer
   replaced its application directory and JAR inode. Jump, projectile, pause,
   resume and quit still worked. A corrupt installed JAR was repaired; a corrupt
@@ -74,7 +81,9 @@ and version reporting; `Tick` has unchanged disassembled instructions.
 - Fresh Zed 1.28.1 loaded all three tasks. Play opened a 130×41 center terminal,
   downloaded Java into an empty private cache, and accepted actual start,
   movement, stop, pause/resume and Q commands. Twenty native captures were
-  inspected; the user's editor preferences were not changed.
+  inspected; the user's editor preferences were not changed. This consumer test
+  used the v1.0.0 game with the final task configuration. The exact task bytes
+  were subsequently verified in the v1.0.1 archive and installed copy.
 - Packaged installations include the Zed tasks and project instructions. The
   installed help accurately lists Up/Down/Tab for equipment selection; W/S are
   gameplay controls and do not navigate equipment. The fixture checks the actual
@@ -158,6 +167,14 @@ starts; its parser-acknowledgement requirement remains distinct from the seven
 ordinary Ctrl+Z signal cases. Failed CI logs, original frames, exact replay and
 successful targeted rechecks are retained under `build/quality-review/ci-final`
 and `menu-wrap-final`. These audit corrections do not change the tested game JAR.
+
+The subsequent [CI run](https://github.com/samsaw123456/emberwood-tui/actions/runs/43703490103)
+passed on Linux/macOS x86-64 and ARM64. All four passed build, lint, installation
+and ten native terminal-lifecycle cases. Linux x86-64 and both Macs passed all
+177 controls plus three focused regressions; Linux ARM64 intentionally skips
+the full inventory. All four JAR hashes equal the final local executable.
+Compact logs, counts and artifact identities remain under
+`build/quality-review/ci-recheck`; the earlier failed run remains separate.
 
 ## Performance and evidence boundaries
 
