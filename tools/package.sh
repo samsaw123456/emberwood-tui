@@ -12,7 +12,7 @@ work=$(mktemp -d "${TMPDIR:-/tmp}/emberwood-package.XXXXXX")
 trap 'rm -rf -- "$work"' EXIT
 folder=emberwood-tui-$version
 mkdir -p "$work/$folder/build/libs"
-for entry in emberwood-tui install.sh VERSION LICENSE THIRD_PARTY.md README.md .editorconfig .gitattributes build.gradle.kts settings.gradle.kts gradle.properties gradlew gradlew.bat gradle src tools packaging docs; do
+for entry in emberwood-tui install.sh VERSION LICENSE THIRD_PARTY.md README.md AGENTS.md .editorconfig .gitattributes .zed build.gradle.kts settings.gradle.kts gradle.properties gradlew gradlew.bat gradle src tools packaging docs; do
     cp -R -- "$entry" "$work/$folder/$entry"
 done
 find "$work/$folder/tools" -type d -name __pycache__ -prune -exec rm -rf -- {} +

@@ -635,6 +635,9 @@ def main() -> None:
         assert command.stat().st_mode & 0o111
         version = run(str(command), "--offline", "--version", env=env)
         assert f"Emberwood Terminal {VERSION}" in version, version
+        help_text = run(str(command), "--help", env=env)
+        assert "Up/Down or Tab choose equipment while paused." in help_text
+        assert "W/S choose equipment" not in help_text
         evidence.append(
             "Fresh install to a path with spaces, $, %, and backticks; installed executable runs --offline --version."
         )
@@ -663,11 +666,25 @@ def main() -> None:
             assert (
                 hashlib.sha256(installed.read_bytes()).hexdigest() == notice["sha256"]
             )
-        assert (data / ".gitattributes").read_bytes() == (
-            ROOT / ".gitattributes"
-        ).read_bytes()
+        for filename in (".gitattributes", "AGENTS.md"):
+            assert (data / filename).read_bytes() == (ROOT / filename).read_bytes()
         evidence.append(
-            f"All {len(notices)} runtime license/notice files and .gitattributes install byte-for-byte unchanged."
+            f"All {len(notices)} runtime license/notice files, .gitattributes and AGENTS.md install byte-for-byte unchanged."
+        )
+        tasks = json.loads((data / ".zed/tasks.json").read_text())
+        assert tasks == json.loads((ROOT / ".zed/tasks.json").read_text())
+        assert len(tasks) == 3
+        assert {task["label"] for task in tasks} == {
+            "Play Emberwood Terminal",
+            "Build Emberwood Terminal",
+            "Check Emberwood Terminal",
+        }
+        play = next(
+            task for task in tasks if task["label"] == "Play Emberwood Terminal"
+        )
+        assert play["reveal_target"] == "center"
+        evidence.append(
+            "All three installed Zed task objects exactly match source; Play retains reveal_target=center. Installed help correctly names Up/Down/Tab equipment navigation."
         )
         if platform.system() == "Linux":
             desktop = prefix / "share/applications/emberwood-terminal.desktop"

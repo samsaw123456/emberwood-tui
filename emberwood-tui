@@ -17,7 +17,7 @@ case ${1:-} in
             'First launch prepares missing system prerequisites and private Java 25.' \
             'Source checkouts build with the Gradle wrapper; installed releases are ready to play.' \
             'Install a terminal launcher with ./install.sh. See README.md for controls.' \
-            'Enter starts/continues; Tab cycles pause tabs; arrows or W/S choose equipment.' \
+            'Enter starts/continues; Up/Down or Tab choose equipment while paused.' \
             'A/D or Left/Right run; S/Down stop; Space/W/Up jump; X dash; J weapon.' \
             'P/Esc pause/resume; Ctrl+Z pauses; R retry; M sound; G reduced motion; Q quit.' \
             'Steering continues after key release. Use a UTF-8 color terminal, 80x28 or larger.'
