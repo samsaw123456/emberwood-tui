@@ -24,7 +24,7 @@ command or certificate store is absent, download `install.sh` in a browser and r
 script is obtained. The installer automatically prepares missing utilities,
 certificates, fontconfig/fonts and ALSA through apt, dnf, pacman or zypper on
 supported glibc Linux systems. It installs a terminal if a graphical session has
-none; an SSH/headless system does not get a desktop environment. Package-manager
+none usable by the desktop launcher; an SSH/headless system does not get a desktop environment. Package-manager
 errors stop installation before game files are replaced. No TLS verification is
 disabled, and no full-system upgrade is requested. Stock macOS supplies the
 required utilities and Terminal.app; a damaged system installation or PATH gets a
@@ -50,7 +50,9 @@ macOS gets `~/Applications/Emberwood Terminal.app`, which opens the game in
 Terminal.app. Pin either launcher to your dock or favorites. A graphical desktop
 and installed terminal emulator are required for menu launching; the command
 itself also works in an SSH terminal. The terminal must support UTF-8 and ANSI
-color. The game does not need an image protocol, GUI window, or system font install.
+color. Original artwork and game fonts are bundled; the installer supplies
+missing Linux fontconfig and fallback fonts. No image protocol or separate game
+GUI window is required.
 
 `./install.sh --prefix '/absolute/custom directory'` installs an isolated copy.
 Its menu files live under that prefix, so nonstandard prefixes are not necessarily

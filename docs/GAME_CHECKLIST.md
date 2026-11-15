@@ -9,26 +9,39 @@ and platform evidence belongs in [VERIFICATION.md](VERIFICATION.md).
 
 The actual tui4j game completed all **20 trails, 60 required acorns, 20 hidden
 fireflies and six guardians** using ordinary ANSI key presses in a live PTY.
-It collected **180 of 378 optional gems** and reached the ending after **517.417
-simulation seconds / 741.039 wall-clock seconds**, with 1,613 acknowledged inputs
-before quitting. One deliberate crumble-platform fall tested natural camp
-recovery; there were **no accidental retries**.
+It collected **186 of 378 optional gems** and reached the ending after **525.817
+simulation seconds / 688.243 wall-clock seconds**, with 1,657 acknowledged inputs
+before a normal physical Q exit. There were **three returns to camp**: one
+deliberate crumble-platform fall, one critter contact on trail one, and one
+physical R after the navigator missed a platform on trail six. Progress survived
+each return, and the run continued through the ending.
 
 Artifact SHA-256:
-`856921d9a634cae6bb996717a1a1ff2417a66bfe60f90548a35e549e8cb96abf`.
+`10220ad3607d6f947b4cf8ae017589f532a5b53ccd409e5d225b7488f859d5a2`.
 
 The driver reads telemetry for navigation but never teleports, grants pickups,
 forces guardian phases, injects simulation input or accelerates time. Its
-separate terminal decoder commits only complete tui4j redraws. All **72 captured
+separate terminal decoder commits only complete tui4j redraws. All **76 captured
 screens** were visually inspected, individually or in contact sheets. Their
 saved character offsets were independently checked against complete-frame
 markers in the actual ANSI archive. That archive contains 19 trail-clear
 messages, six guardian-defeat messages and the final twenty-trail ending.
 
-Evidence is under `build/ansi-audit/campaign/`: `result.json`,
+One capture requested at the first guardian's leap still showed the preceding
+warning paint. Three later completed frames were recovered from the original
+ANSI stream and visually inspected; all show the guardian airborne. Replay first
+reproduced the original screenshot pixel for pixel. The early capture and exact
+replay offsets remain available, with no unresolved presentation findings.
+
+Evidence is under `build/quality-review/final-game-noflsh/campaign/`: `result.json`,
 `complete-terminal.ansi.gz`, `commands.jsonl`, `events.jsonl`,
-`visual-review.json`, screenshots, text captures and state records. The full run
-log is `build/verification/ansi-campaign-final.log`.
+`visual-review.json`, `raw-replay-guardian03/replay.json`, screenshots, text
+captures and state records. The full run log is
+`build/quality-review/final-game-noflsh/campaign.log`. Earlier complete runs remain
+separately preserved under `build/ansi-audit/campaign/` and
+`build/quality-review/final-game/campaign/`. The committed
+[campaign review manifest](evidence/campaign-review.json) retains the final
+artifact, capture hashes, replay provenance and results.
 
 | Area | Acceptance and risks | Evidence and scope |
 | --- | --- | --- |
@@ -45,7 +58,7 @@ log is `build/verification/ansi-campaign-final.log`.
 | Focus and resize | Clear steering at boundaries, pause on supported focus loss, small-window recovery and terminal restoration | Dedicated ANSI inventory rows cover focus reports, resizing, pause/recovery and clean quit. Standard ANSI has no key-up events; focus reporting depends on the terminal. |
 | Feel and accessibility | Recognizable original art, readable text, contrast, useful feedback, mute and reduced motion | All final campaign screens were inspected at 100×36 cells. Native XTerm and palette/control checks are recorded separately. Audio output/mute/recovery was captured through PipeWire; physical-speaker listening was not claimed. |
 | Polish and discovery | Accurate counts, guardian warnings/caps, gear feedback, camp messages, secrets and ending | Inspected all 20 clear screens, all six guardian sequences, armor feedback, return-to-camp messages and ending. All 20 fireflies were found through the live routes. |
-| Robustness and performance | Invalid timing, bounded input, visible settings errors, sustained play, resource cleanup | Model invalid-time/state tests passed. The final live campaign sustained more than 12 minutes of wall-clock play under host contention and exited cleanly. Settings, resize and performance probes are recorded in VERIFICATION.md. |
+| Robustness and performance | Invalid timing, bounded input, visible settings errors, sustained play, resource cleanup | Model invalid-time/state tests passed. The final live campaign sustained more than 11 minutes of wall-clock play under host contention and exited normally with terminal restoration. Settings, resize, Ctrl+Z/Ctrl+C lifecycle and performance probes are recorded in VERIFICATION.md. |
 | Distribution | Private JVM 25, offline launch, reinstall/rollback, unusual paths and desktop icon/launcher | Installer and native Linux launcher evidence is recorded in PACKAGING.md and VERIFICATION.md. Native macOS Terminal.app/Dock/audio hardware remains a separate platform limitation. |
 
 ## Regression found during the port

@@ -1,0 +1,460 @@
+{
+  "reviewed_on": "2026-11-15",
+  "reviewer": "ansi_controls",
+  "platform": "Linux x86-64",
+  "jar_sha256": "10220ad3607d6f947b4cf8ae017589f532a5b53ccd409e5d225b7488f859d5a2",
+  "passed_cases": 20,
+  "failed_cases": 0,
+  "duration_seconds": 249.9,
+  "reviewed_capture_count": 100,
+  "reviewed_contact_page_count": 7,
+  "method": "Opened all seven contact pages containing all 100 frames; additionally opened installed-playing-ctrl-c-default-repaint-1/02-after-ctrl-z.png at full size. Each game image ends at a completed tui4j paint; shell images include fully decoded primary-screen text.",
+  "observed": "Title remains unchanged after Ctrl+Z; playing and paused states show the pause menu; Enter or P recovers to the stopped gameplay HUD; Q and Ctrl+C restore the interactive shell. Every case exits with status 0, restores exact stty/native attributes including speed and control bytes, preserves valid UTF-8, and executes a subsequent shell command.",
+  "scope": "Each case starts Ctrl+Z from its named state, repeats Ctrl+Z, then uses Enter or P to recover. The exit takes place after recovery to PLAYING. Separate full inventory covers Q/Ctrl+C in all states. This is real source/installed main entry through Bash, without fixture state/telemetry.",
+  "findings": [],
+  "results_path": "build/quality-review/terminal-final-clean/results.json",
+  "pages": [
+    {
+      "page": "build/quality-review/terminal-final-clean/contact-sheets/native-01.png",
+      "sha256": "de6fdba0cb2cefd22190a68bbd99d7bf8f986a7a635b8bc8889faf4c5b1cc885",
+      "captures": [
+        {
+          "path": "build/quality-review/terminal-final-clean/installed-paused-ctrl-c/00-shell.png",
+          "sha256": "675569f76d19cf90bfe4dc1b36034e7b8c0f4a9a19a6c3a8a2ee6b80c4643601"
+        },
+        {
+          "path": "build/quality-review/terminal-final-clean/installed-paused-ctrl-c/01-before-ctrl-z.png",
+          "sha256": "2812488d9e1975aed1289cc9f4445d0df62a43cf1080396a1133bcaeedd50001"
+        },
+        {
+          "path": "build/quality-review/terminal-final-clean/installed-paused-ctrl-c/02-after-ctrl-z.png",
+          "sha256": "2812488d9e1975aed1289cc9f4445d0df62a43cf1080396a1133bcaeedd50001"
+        },
+        {
+          "path": "build/quality-review/terminal-final-clean/installed-paused-ctrl-c/03-responsive.png",
+          "sha256": "87a4e2c1e99c3bef51fa3e0f51656d1a006dab296246ae9c1f9b31cf1e1a1d7f"
+        },
+        {
+          "path": "build/quality-review/terminal-final-clean/installed-paused-ctrl-c/04-restored-shell.png",
+          "sha256": "7bfb70ced77e24942625a0109d9a27a07f982a801932fd689f956a702e0df5c9"
+        },
+        {
+          "path": "build/quality-review/terminal-final-clean/installed-paused-q/00-shell.png",
+          "sha256": "5ecdc1e9cedbb836a7cc6ede50768752a44686c873a9b5b28796b3ae05b5d7e7"
+        },
+        {
+          "path": "build/quality-review/terminal-final-clean/installed-paused-q/01-before-ctrl-z.png",
+          "sha256": "2812488d9e1975aed1289cc9f4445d0df62a43cf1080396a1133bcaeedd50001"
+        },
+        {
+          "path": "build/quality-review/terminal-final-clean/installed-paused-q/02-after-ctrl-z.png",
+          "sha256": "2812488d9e1975aed1289cc9f4445d0df62a43cf1080396a1133bcaeedd50001"
+        },
+        {
+          "path": "build/quality-review/terminal-final-clean/installed-paused-q/03-responsive.png",
+          "sha256": "15de76bffc327920468ec86ef251a2e1e7bc844d096e59ac07bd18d58a68090e"
+        },
+        {
+          "path": "build/quality-review/terminal-final-clean/installed-paused-q/04-restored-shell.png",
+          "sha256": "1f0dffa175e7e0b1c7c608fb19175d1a68edbfba21c66ba2cde3979756fcbf2d"
+        },
+        {
+          "path": "build/quality-review/terminal-final-clean/installed-playing-ctrl-c/00-shell.png",
+          "sha256": "a4c9ab10be10e72c4b7bc1ec4d9ed0c6925a5610fe9dfba919003a1863418010"
+        },
+        {
+          "path": "build/quality-review/terminal-final-clean/installed-playing-ctrl-c/01-before-ctrl-z.png",
+          "sha256": "2a5ed16abac7dde4282c7c0786466516e29af01c8d957ff0b4e6d93f8fa66e8d"
+        },
+        {
+          "path": "build/quality-review/terminal-final-clean/installed-playing-ctrl-c/02-after-ctrl-z.png",
+          "sha256": "57d7d52cb3b5291af182bdd36eb830f566f69cba23791971c73a75878875baae"
+        },
+        {
+          "path": "build/quality-review/terminal-final-clean/installed-playing-ctrl-c/03-responsive.png",
+          "sha256": "ca02cd69adb97682988358975b292f99504bc75966993eefb4d5b0eaea53c7db"
+        },
+        {
+          "path": "build/quality-review/terminal-final-clean/installed-playing-ctrl-c/04-restored-shell.png",
+          "sha256": "5befd16c1163ef09377f3bf056216835d5be6aeb8498e3486131c95633934e0b"
+        }
+      ]
+    },
+    {
+      "page": "build/quality-review/terminal-final-clean/contact-sheets/native-02.png",
+      "sha256": "6b0b88b4256342fc4cfe0f92e131e43fc2f14064d8539f1cfcdda28d9c35f599",
+      "captures": [
+        {
+          "path": "build/quality-review/terminal-final-clean/installed-playing-ctrl-c-default-repaint-1/00-shell.png",
+          "sha256": "fa7de71f92798ef077ca6f66ad56d753f9c26da96cba5a776dd9c66665f16ae5"
+        },
+        {
+          "path": "build/quality-review/terminal-final-clean/installed-playing-ctrl-c-default-repaint-1/01-before-ctrl-z.png",
+          "sha256": "a176a98899c047472f902cb43bbc6b2086a7f55b8ce1cdb83f4392324841c466"
+        },
+        {
+          "path": "build/quality-review/terminal-final-clean/installed-playing-ctrl-c-default-repaint-1/02-after-ctrl-z.png",
+          "sha256": "329dba9dfcf351b7145656655b0ee5c3eeca12aba2a7de9a72f61b97b91d8d2c"
+        },
+        {
+          "path": "build/quality-review/terminal-final-clean/installed-playing-ctrl-c-default-repaint-1/03-responsive.png",
+          "sha256": "9ecbd9233101485de0789474f09712f78288ef0d8eab08bda70a09f72dee274f"
+        },
+        {
+          "path": "build/quality-review/terminal-final-clean/installed-playing-ctrl-c-default-repaint-1/04-restored-shell.png",
+          "sha256": "12dc607872c1c298fb6456a8a6886f1e3d91ef7bb873415e4c98fb9c2ce23507"
+        },
+        {
+          "path": "build/quality-review/terminal-final-clean/installed-playing-ctrl-c-default-repaint-2/00-shell.png",
+          "sha256": "be19af965440b7c114e5a2ae1ef32e903b19238021dd832ad365b73448144d12"
+        },
+        {
+          "path": "build/quality-review/terminal-final-clean/installed-playing-ctrl-c-default-repaint-2/01-before-ctrl-z.png",
+          "sha256": "a176a98899c047472f902cb43bbc6b2086a7f55b8ce1cdb83f4392324841c466"
+        },
+        {
+          "path": "build/quality-review/terminal-final-clean/installed-playing-ctrl-c-default-repaint-2/02-after-ctrl-z.png",
+          "sha256": "794dc4c4c2ea21cd9472e857c92dad94091a5ebdd258305c1cfae7bd1a123496"
+        },
+        {
+          "path": "build/quality-review/terminal-final-clean/installed-playing-ctrl-c-default-repaint-2/03-responsive.png",
+          "sha256": "1c048915a54f35f4a6fa296e20d67ad42d354e2bd5a391dde8f08edcac06c618"
+        },
+        {
+          "path": "build/quality-review/terminal-final-clean/installed-playing-ctrl-c-default-repaint-2/04-restored-shell.png",
+          "sha256": "ca24fa17846f4d1fce463dfad9b2faf3c45c7fe3e7ea689becfe09a176f06659"
+        },
+        {
+          "path": "build/quality-review/terminal-final-clean/installed-playing-ctrl-c-ixoff-repaint-1/00-shell.png",
+          "sha256": "1a5b0854e14c1e5b89bcaaeffd674b40da8e1436ab78066fb28a68854bac7f33"
+        },
+        {
+          "path": "build/quality-review/terminal-final-clean/installed-playing-ctrl-c-ixoff-repaint-1/01-before-ctrl-z.png",
+          "sha256": "a176a98899c047472f902cb43bbc6b2086a7f55b8ce1cdb83f4392324841c466"
+        },
+        {
+          "path": "build/quality-review/terminal-final-clean/installed-playing-ctrl-c-ixoff-repaint-1/02-after-ctrl-z.png",
+          "sha256": "93b10b749d8249eb83d777f38672d8b813f2f9d1e3249bbe8d3b03f1cc14c042"
+        },
+        {
+          "path": "build/quality-review/terminal-final-clean/installed-playing-ctrl-c-ixoff-repaint-1/03-responsive.png",
+          "sha256": "d5b65f65c84d3e3fe175ee123d6af0d3e7997fd1311f298f6058ae3028686852"
+        },
+        {
+          "path": "build/quality-review/terminal-final-clean/installed-playing-ctrl-c-ixoff-repaint-1/04-restored-shell.png",
+          "sha256": "5da4a0f65d7968c79e22cd97730fd4301df660bb63ad921b9718cb3b50a4f9fa"
+        }
+      ]
+    },
+    {
+      "page": "build/quality-review/terminal-final-clean/contact-sheets/native-03.png",
+      "sha256": "e463c3248a7cfc1382d138c6c6082cadb986d43b9f3a69920fc85be05ee975a0",
+      "captures": [
+        {
+          "path": "build/quality-review/terminal-final-clean/installed-playing-ctrl-c-ixoff-repaint-2/00-shell.png",
+          "sha256": "1c49bbf7bf592a0aa3d25594882d22c0aec8e829a59347f122b41baef00bcea5"
+        },
+        {
+          "path": "build/quality-review/terminal-final-clean/installed-playing-ctrl-c-ixoff-repaint-2/01-before-ctrl-z.png",
+          "sha256": "2a5ed16abac7dde4282c7c0786466516e29af01c8d957ff0b4e6d93f8fa66e8d"
+        },
+        {
+          "path": "build/quality-review/terminal-final-clean/installed-playing-ctrl-c-ixoff-repaint-2/02-after-ctrl-z.png",
+          "sha256": "4e4a15f57a4a57f887c8816f7499ed7d18bef0f0e358f9497f14cee1091667f8"
+        },
+        {
+          "path": "build/quality-review/terminal-final-clean/installed-playing-ctrl-c-ixoff-repaint-2/03-responsive.png",
+          "sha256": "b07e0e5733379c40e01a76974ea5f1f4a3efd03cd3fc847b1fb892660b246309"
+        },
+        {
+          "path": "build/quality-review/terminal-final-clean/installed-playing-ctrl-c-ixoff-repaint-2/04-restored-shell.png",
+          "sha256": "2d2dc32e976a9a0e69c4258e5bcaba56eab7a0e0fbd4b63e984266d1c8fd2e5f"
+        },
+        {
+          "path": "build/quality-review/terminal-final-clean/installed-playing-q/00-shell.png",
+          "sha256": "50b5afddcca3bcbce8aa52b4f1966ac0e0c6f1bb538a5c726b79cc010539301a"
+        },
+        {
+          "path": "build/quality-review/terminal-final-clean/installed-playing-q/01-before-ctrl-z.png",
+          "sha256": "2a5ed16abac7dde4282c7c0786466516e29af01c8d957ff0b4e6d93f8fa66e8d"
+        },
+        {
+          "path": "build/quality-review/terminal-final-clean/installed-playing-q/02-after-ctrl-z.png",
+          "sha256": "57d7d52cb3b5291af182bdd36eb830f566f69cba23791971c73a75878875baae"
+        },
+        {
+          "path": "build/quality-review/terminal-final-clean/installed-playing-q/03-responsive.png",
+          "sha256": "9a59ffb85c25184d9e62375ebebbf3504dd98736c23d4c5e1f53720466ce7fe6"
+        },
+        {
+          "path": "build/quality-review/terminal-final-clean/installed-playing-q/04-restored-shell.png",
+          "sha256": "4424309256ae190c698f448328c831b7a1e428ce29789c264ec7c14914b38dc6"
+        },
+        {
+          "path": "build/quality-review/terminal-final-clean/installed-title-ctrl-c/00-shell.png",
+          "sha256": "f6f2fb2508c55c8afbe2e16c56e3d7a2211440fc020f1b274b2e1a02109e24ad"
+        },
+        {
+          "path": "build/quality-review/terminal-final-clean/installed-title-ctrl-c/01-before-ctrl-z.png",
+          "sha256": "1fc6a71e18faacf4cf91680455ebeae84c4db7b65712e1b7e296ecf5bc87ea8c"
+        },
+        {
+          "path": "build/quality-review/terminal-final-clean/installed-title-ctrl-c/02-after-ctrl-z.png",
+          "sha256": "1fc6a71e18faacf4cf91680455ebeae84c4db7b65712e1b7e296ecf5bc87ea8c"
+        },
+        {
+          "path": "build/quality-review/terminal-final-clean/installed-title-ctrl-c/03-responsive.png",
+          "sha256": "8551bc11b3c60122d02ae128cb8ce07e1b948955825c0fab55072dc8581f2445"
+        },
+        {
+          "path": "build/quality-review/terminal-final-clean/installed-title-ctrl-c/04-restored-shell.png",
+          "sha256": "236503fc8e27e6ff1b9918731783cc1f8b0dedd61502b98fbaf713ce763650d3"
+        }
+      ]
+    },
+    {
+      "page": "build/quality-review/terminal-final-clean/contact-sheets/native-04.png",
+      "sha256": "da42fa8aaec0eda370c6676650b92fee5017a54a3b9023e5af72a29317ef2012",
+      "captures": [
+        {
+          "path": "build/quality-review/terminal-final-clean/installed-title-q/00-shell.png",
+          "sha256": "9761d49c9a4e08e85cfec4872a2995ddc993b011fca6150dce4d961949a9aabc"
+        },
+        {
+          "path": "build/quality-review/terminal-final-clean/installed-title-q/01-before-ctrl-z.png",
+          "sha256": "1fc6a71e18faacf4cf91680455ebeae84c4db7b65712e1b7e296ecf5bc87ea8c"
+        },
+        {
+          "path": "build/quality-review/terminal-final-clean/installed-title-q/02-after-ctrl-z.png",
+          "sha256": "1fc6a71e18faacf4cf91680455ebeae84c4db7b65712e1b7e296ecf5bc87ea8c"
+        },
+        {
+          "path": "build/quality-review/terminal-final-clean/installed-title-q/03-responsive.png",
+          "sha256": "8551bc11b3c60122d02ae128cb8ce07e1b948955825c0fab55072dc8581f2445"
+        },
+        {
+          "path": "build/quality-review/terminal-final-clean/installed-title-q/04-restored-shell.png",
+          "sha256": "36aa50fa1d40c4f5d5f106f983084cc8a531253fb0f4b17566adfb447c28c441"
+        },
+        {
+          "path": "build/quality-review/terminal-final-clean/source-paused-ctrl-c/00-shell.png",
+          "sha256": "ca7cf0937bbf6994389555921631abba95d16c4febe9f75040485bb39780080f"
+        },
+        {
+          "path": "build/quality-review/terminal-final-clean/source-paused-ctrl-c/01-before-ctrl-z.png",
+          "sha256": "2812488d9e1975aed1289cc9f4445d0df62a43cf1080396a1133bcaeedd50001"
+        },
+        {
+          "path": "build/quality-review/terminal-final-clean/source-paused-ctrl-c/02-after-ctrl-z.png",
+          "sha256": "2812488d9e1975aed1289cc9f4445d0df62a43cf1080396a1133bcaeedd50001"
+        },
+        {
+          "path": "build/quality-review/terminal-final-clean/source-paused-ctrl-c/03-responsive.png",
+          "sha256": "7567e3decbdafd575429352db1175956906d94377f88bd3cbc40b2468d775223"
+        },
+        {
+          "path": "build/quality-review/terminal-final-clean/source-paused-ctrl-c/04-restored-shell.png",
+          "sha256": "0069008ee781a9bf714f8691242c88f71fff79884a075b50e5fe546c6d059b0b"
+        },
+        {
+          "path": "build/quality-review/terminal-final-clean/source-paused-q/00-shell.png",
+          "sha256": "a1bb6f80a1cfcce27015f28cbc3b09eeba1c62c602f49d46e2f415e519604bfd"
+        },
+        {
+          "path": "build/quality-review/terminal-final-clean/source-paused-q/01-before-ctrl-z.png",
+          "sha256": "2812488d9e1975aed1289cc9f4445d0df62a43cf1080396a1133bcaeedd50001"
+        },
+        {
+          "path": "build/quality-review/terminal-final-clean/source-paused-q/02-after-ctrl-z.png",
+          "sha256": "2812488d9e1975aed1289cc9f4445d0df62a43cf1080396a1133bcaeedd50001"
+        },
+        {
+          "path": "build/quality-review/terminal-final-clean/source-paused-q/03-responsive.png",
+          "sha256": "15de76bffc327920468ec86ef251a2e1e7bc844d096e59ac07bd18d58a68090e"
+        },
+        {
+          "path": "build/quality-review/terminal-final-clean/source-paused-q/04-restored-shell.png",
+          "sha256": "505161bf0a83694eebaa6f6ea918623d3d764b75903386fbdd3311e3c2766587"
+        }
+      ]
+    },
+    {
+      "page": "build/quality-review/terminal-final-clean/contact-sheets/native-05.png",
+      "sha256": "07c88f1bb4e537531e54e7f834f7dc36829fde2605a20b01119e052be1f0349d",
+      "captures": [
+        {
+          "path": "build/quality-review/terminal-final-clean/source-playing-ctrl-c/00-shell.png",
+          "sha256": "ddb4a20a3e0778c6c4e3b91b5cf99db7d1d86a48d0af7e847044b07482d6068c"
+        },
+        {
+          "path": "build/quality-review/terminal-final-clean/source-playing-ctrl-c/01-before-ctrl-z.png",
+          "sha256": "a176a98899c047472f902cb43bbc6b2086a7f55b8ce1cdb83f4392324841c466"
+        },
+        {
+          "path": "build/quality-review/terminal-final-clean/source-playing-ctrl-c/02-after-ctrl-z.png",
+          "sha256": "846eeb48bf98f17eb724b33fed76c5747beef4431d0ee5750f7584e99bf8dcd0"
+        },
+        {
+          "path": "build/quality-review/terminal-final-clean/source-playing-ctrl-c/03-responsive.png",
+          "sha256": "38c8bc8dbaff4291ad9a1394a1dbf9f402204e6461258de78c0d47ef2fc6515f"
+        },
+        {
+          "path": "build/quality-review/terminal-final-clean/source-playing-ctrl-c/04-restored-shell.png",
+          "sha256": "a9831b23d3d003165792a3793ca7d99a671d3c62f6a0233b52c97aca6fceddb4"
+        },
+        {
+          "path": "build/quality-review/terminal-final-clean/source-playing-ctrl-c-default-repaint-1/00-shell.png",
+          "sha256": "3aef272e28cfea9aa1b558a876e0f6b3f1d7ab4f74c7c8c4d2fdf31796f739d7"
+        },
+        {
+          "path": "build/quality-review/terminal-final-clean/source-playing-ctrl-c-default-repaint-1/01-before-ctrl-z.png",
+          "sha256": "a176a98899c047472f902cb43bbc6b2086a7f55b8ce1cdb83f4392324841c466"
+        },
+        {
+          "path": "build/quality-review/terminal-final-clean/source-playing-ctrl-c-default-repaint-1/02-after-ctrl-z.png",
+          "sha256": "abf82b5e9cfcf6178a636b647395415f13db184ee62731d89d721b7246fcf808"
+        },
+        {
+          "path": "build/quality-review/terminal-final-clean/source-playing-ctrl-c-default-repaint-1/03-responsive.png",
+          "sha256": "c251641858c42ae8efd548a205a1c02bd0bced1a81aed3e66510d0a219a2f23a"
+        },
+        {
+          "path": "build/quality-review/terminal-final-clean/source-playing-ctrl-c-default-repaint-1/04-restored-shell.png",
+          "sha256": "1fdba5065782a84a7b050d8284d2a3d378fec639f3038896ba9969ab579f0446"
+        },
+        {
+          "path": "build/quality-review/terminal-final-clean/source-playing-ctrl-c-default-repaint-2/00-shell.png",
+          "sha256": "5441c20e6eb2f635d6cd9df29bde0846f283f1278651b304f379f65de8f870bd"
+        },
+        {
+          "path": "build/quality-review/terminal-final-clean/source-playing-ctrl-c-default-repaint-2/01-before-ctrl-z.png",
+          "sha256": "a176a98899c047472f902cb43bbc6b2086a7f55b8ce1cdb83f4392324841c466"
+        },
+        {
+          "path": "build/quality-review/terminal-final-clean/source-playing-ctrl-c-default-repaint-2/02-after-ctrl-z.png",
+          "sha256": "abf82b5e9cfcf6178a636b647395415f13db184ee62731d89d721b7246fcf808"
+        },
+        {
+          "path": "build/quality-review/terminal-final-clean/source-playing-ctrl-c-default-repaint-2/03-responsive.png",
+          "sha256": "8e71d1b6f20e4229ed3511ef6588cb34539f74e2b1b1d10c7416efb2036488c4"
+        },
+        {
+          "path": "build/quality-review/terminal-final-clean/source-playing-ctrl-c-default-repaint-2/04-restored-shell.png",
+          "sha256": "d022b99872066d25d8bd4386074e419f899536e2f746447cd594a6dee4b059d0"
+        }
+      ]
+    },
+    {
+      "page": "build/quality-review/terminal-final-clean/contact-sheets/native-06.png",
+      "sha256": "a83eb7097f39ac5ea812b9650ec1f03b6a3603796af7fd714736f2b22ddbbed6",
+      "captures": [
+        {
+          "path": "build/quality-review/terminal-final-clean/source-playing-ctrl-c-ixoff-repaint-1/00-shell.png",
+          "sha256": "ab3298b4a14ae6ffc1c1f1c6246d439f8fd25d1ccc2d39e8b61ac7fca9f4dec9"
+        },
+        {
+          "path": "build/quality-review/terminal-final-clean/source-playing-ctrl-c-ixoff-repaint-1/01-before-ctrl-z.png",
+          "sha256": "2a5ed16abac7dde4282c7c0786466516e29af01c8d957ff0b4e6d93f8fa66e8d"
+        },
+        {
+          "path": "build/quality-review/terminal-final-clean/source-playing-ctrl-c-ixoff-repaint-1/02-after-ctrl-z.png",
+          "sha256": "794dc4c4c2ea21cd9472e857c92dad94091a5ebdd258305c1cfae7bd1a123496"
+        },
+        {
+          "path": "build/quality-review/terminal-final-clean/source-playing-ctrl-c-ixoff-repaint-1/03-responsive.png",
+          "sha256": "8e845dde793c2c4d634226e52089c124f2d7516db8191c629e76a66f7570fa8e"
+        },
+        {
+          "path": "build/quality-review/terminal-final-clean/source-playing-ctrl-c-ixoff-repaint-1/04-restored-shell.png",
+          "sha256": "04327381ca3a53e0f70310a11cfae36b5ff13869721a73631f3abaae9c2d7c7a"
+        },
+        {
+          "path": "build/quality-review/terminal-final-clean/source-playing-ctrl-c-ixoff-repaint-2/00-shell.png",
+          "sha256": "0f67f7d3495ae1a38667d6dbfe800713fa8c96029b3084e791211ec3ed231458"
+        },
+        {
+          "path": "build/quality-review/terminal-final-clean/source-playing-ctrl-c-ixoff-repaint-2/01-before-ctrl-z.png",
+          "sha256": "2a5ed16abac7dde4282c7c0786466516e29af01c8d957ff0b4e6d93f8fa66e8d"
+        },
+        {
+          "path": "build/quality-review/terminal-final-clean/source-playing-ctrl-c-ixoff-repaint-2/02-after-ctrl-z.png",
+          "sha256": "6c5ab2625043bd1da99b64d31db4cf438be4a9f0353b75c5b64c05de4c291e1f"
+        },
+        {
+          "path": "build/quality-review/terminal-final-clean/source-playing-ctrl-c-ixoff-repaint-2/03-responsive.png",
+          "sha256": "8e845dde793c2c4d634226e52089c124f2d7516db8191c629e76a66f7570fa8e"
+        },
+        {
+          "path": "build/quality-review/terminal-final-clean/source-playing-ctrl-c-ixoff-repaint-2/04-restored-shell.png",
+          "sha256": "c54bedfd27cf4bf2405abae0ddd904402fd51562d3a069505692441817644e84"
+        },
+        {
+          "path": "build/quality-review/terminal-final-clean/source-playing-q/00-shell.png",
+          "sha256": "b10283d7007b6f2c3595b9d40c9d720d85c133c871bf6a9122b1744fe1686179"
+        },
+        {
+          "path": "build/quality-review/terminal-final-clean/source-playing-q/01-before-ctrl-z.png",
+          "sha256": "a176a98899c047472f902cb43bbc6b2086a7f55b8ce1cdb83f4392324841c466"
+        },
+        {
+          "path": "build/quality-review/terminal-final-clean/source-playing-q/02-after-ctrl-z.png",
+          "sha256": "6c6b447e7f593baee75a5e4349267b0e334aedb5b3d835b409485c280704f3bc"
+        },
+        {
+          "path": "build/quality-review/terminal-final-clean/source-playing-q/03-responsive.png",
+          "sha256": "1ec134eaee3b80d6f4fb3d959401b1ec156b6b3bebe9d8ff432083db53e672d8"
+        },
+        {
+          "path": "build/quality-review/terminal-final-clean/source-playing-q/04-restored-shell.png",
+          "sha256": "58d0ef8becaa2e580ead75e0c88b9397c9a64d49a80d7cf40eff46051d85ec65"
+        }
+      ]
+    },
+    {
+      "page": "build/quality-review/terminal-final-clean/contact-sheets/native-07.png",
+      "sha256": "7ff68b4045a2691550c1b4c2138d92395743ed708b8e8300eea8e4c5aac1cb81",
+      "captures": [
+        {
+          "path": "build/quality-review/terminal-final-clean/source-title-ctrl-c/00-shell.png",
+          "sha256": "25094dd538fb45f72587c951e900901d4bf30d0e842be22d84e9a7c474e3e4b5"
+        },
+        {
+          "path": "build/quality-review/terminal-final-clean/source-title-ctrl-c/01-before-ctrl-z.png",
+          "sha256": "1fc6a71e18faacf4cf91680455ebeae84c4db7b65712e1b7e296ecf5bc87ea8c"
+        },
+        {
+          "path": "build/quality-review/terminal-final-clean/source-title-ctrl-c/02-after-ctrl-z.png",
+          "sha256": "1fc6a71e18faacf4cf91680455ebeae84c4db7b65712e1b7e296ecf5bc87ea8c"
+        },
+        {
+          "path": "build/quality-review/terminal-final-clean/source-title-ctrl-c/03-responsive.png",
+          "sha256": "8551bc11b3c60122d02ae128cb8ce07e1b948955825c0fab55072dc8581f2445"
+        },
+        {
+          "path": "build/quality-review/terminal-final-clean/source-title-ctrl-c/04-restored-shell.png",
+          "sha256": "9306845e22a04480fe865587390addea4f6a5c376e3526a85ffb211058062417"
+        },
+        {
+          "path": "build/quality-review/terminal-final-clean/source-title-q/00-shell.png",
+          "sha256": "3e6b0d631f03d97fe3c6e4cbe4769a127d3c04aabd5e9d7f947aa560a725edcb"
+        },
+        {
+          "path": "build/quality-review/terminal-final-clean/source-title-q/01-before-ctrl-z.png",
+          "sha256": "1fc6a71e18faacf4cf91680455ebeae84c4db7b65712e1b7e296ecf5bc87ea8c"
+        },
+        {
+          "path": "build/quality-review/terminal-final-clean/source-title-q/02-after-ctrl-z.png",
+          "sha256": "1fc6a71e18faacf4cf91680455ebeae84c4db7b65712e1b7e296ecf5bc87ea8c"
+        },
+        {
+          "path": "build/quality-review/terminal-final-clean/source-title-q/03-responsive.png",
+          "sha256": "8551bc11b3c60122d02ae128cb8ce07e1b948955825c0fab55072dc8581f2445"
+        },
+        {
+          "path": "build/quality-review/terminal-final-clean/source-title-q/04-restored-shell.png",
+          "sha256": "b978dd786ddd07f30c8bb46e73c1f39af4a202f2e0779da1c3877b176825fa03"
+        }
+      ]
+    }
+  ]
+}

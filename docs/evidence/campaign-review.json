@@ -1,0 +1,524 @@
+{
+  "reviewer": "campaign",
+  "scope": "Final NOFLSH release artifact: all 76 original campaign captures and three exact raw replay frames visually inspected; no unresolved gameplay/rendering findings.",
+  "pages": [
+    {
+      "page": "review-pages/mechanics-01.png",
+      "sha256": "cb9e2ecf4eb500bfe86de21f5df0c7201922ec5de95bf191506d41ac01600fbc",
+      "captures": [
+        {
+          "path": "start.png",
+          "sha256": "eed2bed18097fa6e93462f263e0079f3fad8f89297ad6c3ff794327c781b3093"
+        },
+        {
+          "path": "mechanic-moving-before.png",
+          "sha256": "17e549a3faabcd38d8e16fedc1450b23c04d0decf4e56c863dfe7a774cc18a0a"
+        },
+        {
+          "path": "mechanic-moving-after.png",
+          "sha256": "fa9d2bde36785da970095909ffb2ccf7c1db79aaffc085200ea86a9ca6973b50"
+        },
+        {
+          "path": "mechanic-moving-carry-before.png",
+          "sha256": "659efcfbd71aa644fa59f1df3a59888c0a1f4234365dd76775a7880f0165703d"
+        }
+      ]
+    },
+    {
+      "page": "review-pages/mechanics-02.png",
+      "sha256": "dd29cbf3e5e71b81ff6d53adb13487f3cd9b996d003a8054f619169045606b88",
+      "captures": [
+        {
+          "path": "mechanic-moving-carry-after.png",
+          "sha256": "49e4928df39996924f8d858b6aa17ac45a5b6ea88df8bfc06e928aa2d2f40074"
+        },
+        {
+          "path": "mechanic-crumble-before.png",
+          "sha256": "452ae8e0b9208004a86c9470fec27b27a6a0fcaa3bc7354929b407386c3e6888"
+        },
+        {
+          "path": "mechanic-crumble-collapsed.png",
+          "sha256": "8efb452701f1908396eb9b170843badb467a39c477c859772272b6158beb3c0a"
+        },
+        {
+          "path": "mechanic-crumble-natural-fall.png",
+          "sha256": "b35cd25f5301db5f56f7666b7050316d6eaccd0fedf9eb176936c73fbbb899ab"
+        }
+      ]
+    },
+    {
+      "page": "review-pages/mechanics-03.png",
+      "sha256": "178d574b99bba19485aed16b0f56d70bafdeda0d969307cc30628d0e3fdf2820",
+      "captures": [
+        {
+          "path": "level-01-failure-1.png",
+          "sha256": "05d4ff5638ab7376bcaf07b3e3df5d96386d2dd38bdf0886195ccc2d014ff91a"
+        },
+        {
+          "path": "level-01-retry-1.png",
+          "sha256": "4df91b74f9d363c978e002604b5d6883c38fb6cd251f27ed0a2a5f02f9e7cbbc"
+        },
+        {
+          "path": "mechanic-crumble-restored.png",
+          "sha256": "7e4d9c0c94745c70bf386ca6aeaea0becc7b28e24172b3788dc6a61b3cf9e106"
+        },
+        {
+          "path": "mechanic-mushroom-before.png",
+          "sha256": "76da03d00788ed25dcc6869aeee93512269218dd8b97bf556c39dbec3f5b98de"
+        }
+      ]
+    },
+    {
+      "page": "review-pages/mechanics-04.png",
+      "sha256": "55eaf0a4da453632ff5a39d2aa79f6f10dc2bdb3bd1cf1225725af52cdfdff97",
+      "captures": [
+        {
+          "path": "mechanic-mushroom-after.png",
+          "sha256": "f2197b46d694a809ede535de35ea70c792bed98e2929587bbb3cb2174f13e82c"
+        },
+        {
+          "path": "mechanic-bounce-before.png",
+          "sha256": "641213021cd5f2b30ec5efbb6d2d658c304ddd74ce5750b02e3603a79dbcc172"
+        },
+        {
+          "path": "mechanic-bounce-after.png",
+          "sha256": "28166798e606b9cdeaef6b8c1dba505c82260fac421472d5d46642174eb3364c"
+        }
+      ]
+    },
+    {
+      "page": "review-pages/first-clear-01.png",
+      "sha256": "b16bb0a63db83abcad3c3b1a44e08803cf52d66bb13e54ad0b4e365e802740b3",
+      "captures": [
+        {
+          "path": "level-01-failure-2.png",
+          "sha256": "b35cd25f5301db5f56f7666b7050316d6eaccd0fedf9eb176936c73fbbb899ab"
+        },
+        {
+          "path": "level-01-retry-2.png",
+          "sha256": "4d5cde36d68584b77a9d57eb764fd77853c1ea27ecaa574ca5a5cd1046b4cbc4"
+        },
+        {
+          "path": "level-01-complete.png",
+          "sha256": "3b3cc846c139ffd8d0a1fbd18f1355ef04e44dfc19cb76ee8306ef89549dc412"
+        }
+      ]
+    },
+    {
+      "page": "review-pages/guardian03-01.png",
+      "sha256": "b921794e33eab04959a2e8996a72cbb73c745da8b43ba9b06ed029e9a047e606",
+      "captures": [
+        {
+          "path": "level-02-complete.png",
+          "sha256": "efc28de52532cb762701b30325200a9e72bb24d7634e9ec14e50846b50ca25e9"
+        },
+        {
+          "path": "level-03-boss-warning.png",
+          "sha256": "796c7c0a6c8afcfc94edcd608ccd661dd1b8e5c323c21f2e8471214c30aa9121"
+        },
+        {
+          "path": "level-03-boss-leap.png",
+          "sha256": "2207560d6f072552bc83f883fd13543dd6e2534f63ee43405cbce5cba64398eb"
+        },
+        {
+          "path": "level-03-boss-rest.png",
+          "sha256": "b4300cd91e6da12dfff77b4dedb4062f7f1815f0f01a6bf81ef1e828a516bca4"
+        }
+      ]
+    },
+    {
+      "page": "review-pages/guardian03-02.png",
+      "sha256": "d0c09905cbb841774588aa1254923fdeb8b4ed09ab5b60fc16f039ca7f3229b5",
+      "captures": [
+        {
+          "path": "level-03-boss-2.png",
+          "sha256": "d022d682e4b124382ef8b96b97e6208bca8787c08b459ff38b041b0b33545466"
+        },
+        {
+          "path": "level-03-boss-1.png",
+          "sha256": "5408372dcd00bd6edc61ab414aec98c823877d0d11aa185eedf7f66a21e9ab99"
+        },
+        {
+          "path": "level-03-boss-0.png",
+          "sha256": "8110a59704b580740c2eed4258999b9a76ac7ad6fc67a034bf53a02962f8bff8"
+        },
+        {
+          "path": "level-03-complete.png",
+          "sha256": "7f2f1357277af02e260edbef45937682518fff53ae7f6a5be6cab24e8c8da35f"
+        }
+      ]
+    },
+    {
+      "page": "review-pages/guardian06-01.png",
+      "sha256": "f64b943d7822c796f1e79cf588111440c0799db1e77af456333a84b1aab791a1",
+      "captures": [
+        {
+          "path": "level-05-complete.png",
+          "sha256": "3c6d347c36c4a924ea4db410935012a10c505e3dbfb86a3618e402e26882c484"
+        },
+        {
+          "path": "level-06-boss-warning.png",
+          "sha256": "eed4d4b4f39c97eb5be87a2a7a52129f249200f0faca56c7e3560e3377bb602c"
+        },
+        {
+          "path": "level-06-boss-leap.png",
+          "sha256": "578ec4d17329d7c02189d6f8453b6e4f9b1f6018a7983e2e927828f0758fb6da"
+        },
+        {
+          "path": "level-06-boss-rest.png",
+          "sha256": "c3f67ad7f3b7af0cf4f9939c07a666a876a8b6a2b461e2f2e756dce1779b5dec"
+        }
+      ]
+    },
+    {
+      "page": "review-pages/guardian06-02.png",
+      "sha256": "452d788afa29316b27143caa8137b3a64028d098cb7302c38236b88a58696f2a",
+      "captures": [
+        {
+          "path": "level-06-boss-2.png",
+          "sha256": "0e812923a4f0b8d596b13e9aaaf45f6e9b8da44ea9f35d7121517631a00a07db"
+        },
+        {
+          "path": "level-06-boss-1.png",
+          "sha256": "7aa90537104e475de2c168cee2c6fbb8c003c7f59df5016b12a4b5f57788c5ab"
+        },
+        {
+          "path": "level-06-boss-0.png",
+          "sha256": "b0bb69ab8b8c7b61ea27260d545f6eada48a9f30826f57afe121156ab16ef228"
+        },
+        {
+          "path": "level-06-complete.png",
+          "sha256": "3e81c7b8a1e087f2600a0f12fb8930a449f98223c86abb674e1208e23f52e62f"
+        }
+      ]
+    },
+    {
+      "page": "review-pages/extra-early-01.png",
+      "sha256": "b5beeddb9bd539132b5e2337dfca1b12cfa32493a4225540f796bdc563eacae7",
+      "captures": [
+        {
+          "path": "level-04-complete.png",
+          "sha256": "b734baacbc9ee581e9542bb10ce10e9350ddcb018bc4d1e9ce76f31129e49285"
+        },
+        {
+          "path": "level-06-failure-1.png",
+          "sha256": "aa2c85fcb2b03680ac585fc94cc142a83d4672fd9ea6e8d006c0bc9ae1a5b2ed"
+        },
+        {
+          "path": "level-06-retry-1.png",
+          "sha256": "328394cf723f110b00c7c678e90a0f815ab9b90eda419c3a1b837614f7ea661d"
+        }
+      ]
+    },
+    {
+      "page": "review-pages/guardian09-01.png",
+      "sha256": "785cbb620b4e603c9e1fe7ce6adfc72188375fad3ade89517c3ae08581302f21",
+      "captures": [
+        {
+          "path": "level-08-complete.png",
+          "sha256": "4af2ebfc33560a1c8775a301b2a8d0ced85875d639132fd90bcf6d4f05a85f3f"
+        },
+        {
+          "path": "level-09-boss-warning.png",
+          "sha256": "2ed6143248cceae36c9c559be5be8e96156ab02c035b9dbc765cde25443fb005"
+        },
+        {
+          "path": "level-09-boss-leap.png",
+          "sha256": "ba71178aeba99a6d4527c603f2b30346e05862c2fd793fd6147d88f5f6a9b8e1"
+        },
+        {
+          "path": "level-09-boss-rest.png",
+          "sha256": "7026bc5eac0ee2ce139b6ace4df5f7fe434390ed5d2924bc69a04c6bb77806e8"
+        }
+      ]
+    },
+    {
+      "page": "review-pages/guardian09-02.png",
+      "sha256": "6926feff79042b3e50c64c04d76652f4e64b5a114abd6a4f26cef3389fd7f65e",
+      "captures": [
+        {
+          "path": "level-09-boss-2.png",
+          "sha256": "8ed9d0a6477acd9bc4689cc0b901bd68f28c26f15ee83a5d101359b0a06fcba3"
+        },
+        {
+          "path": "level-09-boss-1.png",
+          "sha256": "9e2475c749fa2d8e404ace2bcdccca217d9832a67d372055f0203d6b0f31fc2d"
+        },
+        {
+          "path": "level-09-boss-0.png",
+          "sha256": "04df7cf19818c40239ee4ec2aa297a30b7b8db335da440f8dc3d8a156a6b4f21"
+        },
+        {
+          "path": "level-09-complete.png",
+          "sha256": "589c1549f25e1d2ed74900bce1272c433772a0f7c474964c25cc5eb2ea273451"
+        }
+      ]
+    },
+    {
+      "page": "review-pages/guardian12-01.png",
+      "sha256": "87b51b78ff169617087c7d48b00a3144d50afaf09d50249731728e5c4c9a4f79",
+      "captures": [
+        {
+          "path": "level-11-complete.png",
+          "sha256": "dd0151a6ae9ae7a89362c6ca66dc2429ec21b5e7dc06f75711e1d2d5f896ac12"
+        },
+        {
+          "path": "level-12-boss-warning.png",
+          "sha256": "b0d9346242992ea08c914acce8cadb45e9982bcbe7a3dfd0082d2e846134affa"
+        },
+        {
+          "path": "level-12-boss-leap.png",
+          "sha256": "1c65ebc51641f3015c399d7aa32d2af48e397d4f7ce48d90cc3db01bcd88aa13"
+        },
+        {
+          "path": "level-12-boss-rest.png",
+          "sha256": "558cb633628d6a9fd2a9fa9bc40811cf7069db0b6fe99621a636f52cc9085859"
+        }
+      ]
+    },
+    {
+      "page": "review-pages/guardian12-02.png",
+      "sha256": "4aaeedf48eb7ed433c0614fb19ca6cdb79fc0f2316fd252687ef0e5d008d44e0",
+      "captures": [
+        {
+          "path": "level-12-boss-2.png",
+          "sha256": "925edd62c17007b43942c218469a0d1b78b740c4af8194f55f802c179d9ca677"
+        },
+        {
+          "path": "level-12-boss-1.png",
+          "sha256": "37ce6fe537631f3a3ac94c89bf3f3d33079dbc6fd3ea3fa90976283f02f0d2be"
+        },
+        {
+          "path": "level-12-boss-0.png",
+          "sha256": "38d9645cd33c490e00d0d233e56692d08a88d76c28b17aaf580249e634764f6f"
+        },
+        {
+          "path": "level-12-complete.png",
+          "sha256": "b1f718a08b064b310070482779b3b0b6c0f5e36c8e386065a1f15499f71d7eb6"
+        }
+      ]
+    },
+    {
+      "page": "review-pages/guardian15-01.png",
+      "sha256": "ea16fb2dc8b26d31a674806bbc3d98823f4c6e2f551d2acb0a042662deb9cb06",
+      "captures": [
+        {
+          "path": "level-14-complete.png",
+          "sha256": "045ad26066ffbc5cc1e2e9d2d4bc95777f548dd636b246f46c211929354b2013"
+        },
+        {
+          "path": "level-15-boss-warning.png",
+          "sha256": "76feeb5b3796e16827aba110a6b193b35179cb025c58b7ef2a97541480138dd1"
+        },
+        {
+          "path": "level-15-boss-leap.png",
+          "sha256": "6fbf1bc56bd5517ee717d2b01ff0c48da498fb6c968d9c4afe20cb5d83ee7bb0"
+        },
+        {
+          "path": "level-15-boss-rest.png",
+          "sha256": "a63b5ff646ed69023332f759738ffecb3a27fb810c879a313bd489edaebf22d4"
+        }
+      ]
+    },
+    {
+      "page": "review-pages/guardian15-02.png",
+      "sha256": "001ae591ae861dc6b750a75d462a3ed4171fb32f8ac56c90d352587c43042eee",
+      "captures": [
+        {
+          "path": "level-15-boss-2.png",
+          "sha256": "4b9c1e91d0c46e2e8a3979d6f61ed91fcb581ba66766dd828aff58e73a045fa3"
+        },
+        {
+          "path": "level-15-boss-1.png",
+          "sha256": "bda8f34afddd5b80352c6ae119bc60823f798c83ed4f8f4fa0920bfdd762f867"
+        },
+        {
+          "path": "level-15-boss-0.png",
+          "sha256": "64d1dba55bb915343577f7f608d680d80eb276bc489ca7852b127121a48893d5"
+        },
+        {
+          "path": "level-15-complete.png",
+          "sha256": "dcd7cb3821c57dda37c269e8af5f4d8aaf601455f6f3f12f46c7a971d3a1bee0"
+        }
+      ]
+    },
+    {
+      "page": "review-pages/other-clears-01.png",
+      "sha256": "4e863fed952bf0f22cda07c478c9fb39bea92af3338905472a715e89dd6298e5",
+      "captures": [
+        {
+          "path": "level-07-complete.png",
+          "sha256": "cb057868836c1b46804b762031c4f10bd8056f1351c926c192b7f4201be411d6"
+        },
+        {
+          "path": "level-10-complete.png",
+          "sha256": "2059111cee65d142087286d6850f0e77f2fb8b1ea871d97d99cde205ad1d474e"
+        },
+        {
+          "path": "level-13-complete.png",
+          "sha256": "a387b5e3f76e995d2b3cb08fbe1d8f67b6f6854c40227bd8f3af84169d09ae81"
+        }
+      ]
+    },
+    {
+      "page": "review-pages/guardian18-01.png",
+      "sha256": "c5f57e3a8418ebb92c9b2d601fc1b67e5fbd2608ad831c4736746fe66a5d3315",
+      "captures": [
+        {
+          "path": "level-17-complete.png",
+          "sha256": "db93ceb2b5e51a582f670342eeb4987669fd26672b5f704d4e0ba16b195ce8f7"
+        },
+        {
+          "path": "level-18-boss-warning.png",
+          "sha256": "09ed2c4013b6a81e9c3202877d72a7a8e4119c7059b46d99684053cb544a761b"
+        },
+        {
+          "path": "level-18-boss-leap.png",
+          "sha256": "b73530f09d936ad4ef53a34e7e13e733d6ce40ca279409e96c12565cfa3a6625"
+        },
+        {
+          "path": "level-18-boss-rest.png",
+          "sha256": "626113855b5194b8d219a414cf7a4bfd12d47696600d63c17f4ad360707e5e80"
+        }
+      ]
+    },
+    {
+      "page": "review-pages/guardian18-02.png",
+      "sha256": "8357cbb5eafb1bb0fc1107e181f6cf96d451e328128f771d1f90803bad7d8c05",
+      "captures": [
+        {
+          "path": "level-18-boss-2.png",
+          "sha256": "1416877ba6ccbb163fa7f990a619e9387b9cd3b844e3faceb21b884593bcbd8e"
+        },
+        {
+          "path": "level-18-boss-1.png",
+          "sha256": "88f4e43095074b11858c90206a2aecae4f6e6d1a92efc92085417b312ad33c4a"
+        },
+        {
+          "path": "level-18-boss-0.png",
+          "sha256": "88e63d927e8f32376ecb24730f0e042d73d32f847e399168f2fdacc64507c55b"
+        },
+        {
+          "path": "level-18-complete.png",
+          "sha256": "67fd568a2cf04a7ee39a629f561f0e6c11d365573f3e1a3629c79045519cac22"
+        }
+      ]
+    },
+    {
+      "page": "review-pages/other-final-01.png",
+      "sha256": "f9d0027b302957e945536b71506258c502b20e88f7445323e8aa5df83dbc7977",
+      "captures": [
+        {
+          "path": "level-16-complete.png",
+          "sha256": "67d5f414fa4c7c2fda453f2d1c8debf47842124c32a6d94280031d551c87a15d"
+        },
+        {
+          "path": "level-19-complete.png",
+          "sha256": "f914bb9bff30a22a58a2a7fa227b776736cda147f4451c4cae40167b6afd4d31"
+        },
+        {
+          "path": "level-20-complete.png",
+          "sha256": "d9b7e5758cd7766cc6c157db429e66d3cc8db5421f4ad79bafcb3a88a2bfa5ae"
+        },
+        {
+          "path": "victory.png",
+          "sha256": "7cd45737e599281d8a1ca6da0e86eb1efe964f6524a9f491fcd50617a606828f"
+        }
+      ]
+    }
+  ],
+  "findings": [
+    {
+      "kind": "capture timing",
+      "capture": "level-03-boss-leap.png",
+      "observation": "The completed paint still shows the warning text and boss at ground level; do not count this as airborne phase proof. Full raw stream retained for later completed-frame recovery.",
+      "status": "resolved using exact original ANSI replay",
+      "resolution": "raw-replay-guardian03/replay.json; all three replayed airborne frames visually inspected; original warning paint preserved"
+    }
+  ],
+  "status": "passed",
+  "artifact_sha256": "10220ad3607d6f947b4cf8ae017589f532a5b53ccd409e5d225b7488f859d5a2",
+  "captures_reviewed": 76,
+  "replay_frames_reviewed": 3,
+  "replay": {
+    "original_capture": "../level-03-boss-leap.png",
+    "original_character_offset": 29991755,
+    "chapter_replay_start": 0,
+    "original_reconstruction_pixel_exact": true,
+    "captures": [
+      {
+        "path": "airborne-candidate-01.png",
+        "absolute_character_offset": 30015864,
+        "sha256": "c75771109bbc0c76e508dd5363c140645246504ee5741ac608033214c93bc093"
+      },
+      {
+        "path": "airborne-candidate-03.png",
+        "absolute_character_offset": 30039847,
+        "sha256": "4069fa14b138e6fb1d1ebd808c52ac5e3ef3641e0ff590e934216bb7ec2768fa"
+      },
+      {
+        "path": "airborne-candidate-05.png",
+        "absolute_character_offset": 30080950,
+        "sha256": "ec58b532d8b2a53552b58bee7148d860f41cffe0892c86123b3479c867e870cf"
+      }
+    ],
+    "visual_review": "passed: all three later completed paints visibly show Old Croak airborne above the fox; original reconstructed screenshot is pixel-exact",
+    "selected_capture": "airborne-candidate-03.png",
+    "archive_sha256": "aa8dabcad62d69fe89374801e3583147a3fedda7cc564d37c1fffb2c1cb24056"
+  },
+  "raw_transition_counts": {
+    "Trail cleared!": 19,
+    "yields the path.": 6,
+    "All twenty trails cleared!": 1
+  },
+  "terminal_cleanup": {
+    "cursor": true,
+    "paste": true,
+    "focus": true,
+    "alternate_screen": true
+  },
+  "normal_q_exit_code": 0,
+  "results": {
+    "status": "passed",
+    "artifact_sha256": "10220ad3607d6f947b4cf8ae017589f532a5b53ccd409e5d225b7488f859d5a2",
+    "seconds_real": 688.2432766640004,
+    "chapters_completed": 20,
+    "guardians_defeated": 6,
+    "acorns_collected": 60,
+    "fireflies_found": 20,
+    "gems_collected": 186,
+    "gems_available": 378,
+    "state": {
+      "keyCount": 1657,
+      "blurCount": 0,
+      "lastKey": " ",
+      "x": 2912.896960196153,
+      "y": 411.74999999999994,
+      "vx": 0.0,
+      "vy": 0.0,
+      "grounded": false,
+      "state": "WON",
+      "cameraX": 1947.999999999999,
+      "direction": 0,
+      "shots": 0,
+      "particles": 40,
+      "stage": 19,
+      "acorns": 3,
+      "camp": 3,
+      "deaths": 3,
+      "elapsed": 525.8166666665171,
+      "weapon": "sunwood_lance",
+      "armor": "sunleaf_armor",
+      "muted": false,
+      "gentle": false,
+      "audioAvailable": true,
+      "levelAge": 18.58333333333356,
+      "secretFound": true,
+      "bossArenaMin": 0.0,
+      "bossPhase": "none",
+      "bossX": 0.0,
+      "bossLanding": 0.0,
+      "bossHealth": 0
+    }
+  }
+}
