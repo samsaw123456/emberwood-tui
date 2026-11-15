@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Per-user install. Also works as: curl -fsSL <release>/install.sh | bash
 set -euo pipefail
-version=1.0.1
+version=1.0.2
 repository=samsaw123456/emberwood-tui
 prefix=${HOME}/.local
 custom_prefix=false

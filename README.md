@@ -13,7 +13,7 @@ Actual installed game in a 120×40 XTerm window.
 On **Linux or macOS**, paste this into a terminal:
 
 ```sh
-curl -fsSL https://github.com/samsaw123456/emberwood-tui/releases/download/v1.0.1/install.sh | bash
+curl -fsSL https://github.com/samsaw123456/emberwood-tui/releases/download/v1.0.2/install.sh | bash
 ```
 
 The installer checks prerequisites, verifies the release checksum, downloads a checksum-pinned private Java 25 if needed, and installs for your user. On Linux it automatically installs missing system utilities, certificates, font/audio libraries and a desktop terminal through your package manager; only missing system packages require administrator access. Your system Java stays unchanged. Open **Emberwood Terminal** in your application launcher, or run:
@@ -22,11 +22,17 @@ The installer checks prerequisites, verifies the release checksum, downloads a c
 ~/.local/bin/emberwood-tui
 ```
 
-If `curl` or HTTPS certificates are missing, [download install.sh](https://github.com/samsaw123456/emberwood-tui/releases/download/v1.0.1/install.sh) in your browser and run `bash ~/Downloads/install.sh`. The downloaded installer can prepare those dependencies itself. Stock macOS already supplies its system tools and Terminal.app.
+If `curl` or HTTPS certificates are missing, [download install.sh](https://github.com/samsaw123456/emberwood-tui/releases/download/v1.0.2/install.sh) in your browser and run `bash ~/Downloads/install.sh`. The downloaded installer can prepare those dependencies itself. Stock macOS already supplies its system tools and Terminal.app.
 
 The Linux launcher uses your desktop's terminal application. macOS gets an application in `~/Applications` that opens Terminal.app. Both use Emberwood's original fox artwork. Installation needs internet; installed play works offline. See [installation details, overrides, updates and removal](docs/PACKAGING.md).
 
-The application menu and pinned taskbar are separate. **From this source checkout**, `./install.sh --pin` also pins Emberwood Terminal to the current GNOME dock, preserving other favorites and their order. Repeating it does not add duplicates. The published v1.0.1 installer registers the application menu only; use **Add to Favorites** in GNOME or drag the installed macOS application to the Dock.
+To also pin the game to your **GNOME dock**, use this one-shot command:
+
+```sh
+curl -fsSL https://github.com/samsaw123456/emberwood-tui/releases/download/v1.0.2/install.sh | bash -s -- --pin
+```
+
+From a checkout, use `./install.sh --pin`. It preserves other favorites and their order; repeating it does not add duplicates. Other desktops can use **Add to Favorites**, and macOS users can drag the installed application to the Dock. The terminal edition has its own fox-in-terminal icon, rendered at eight sizes.
 
 Use a UTF-8 color terminal and a monospace font that includes `▀`. **100×36 cells or larger** is recommended; 80×28 is the minimum. Enlarge the terminal or reduce its font size for more detailed artwork. Truecolor preserves the original RGB palette; Apple Terminal automatically uses a 256-color approximation. Set `EMBERWOOD_TUI_COLOR=256` or `EMBERWOOD_TUI_COLOR=truecolor` to override detection. Desktop launches request 120×40 cells where the terminal supports resizing. No graphics protocol, browser, GPU, or Godot installation is required.
 

@@ -14,6 +14,7 @@ import json
 import os
 import re
 import shutil
+import signal
 import time
 from pathlib import Path
 
@@ -179,8 +180,13 @@ class Terminal:
                         f"AuditHost exited during startup: {self.raw[-2000:]}"
                     )
             raise AssertionError(f"AuditHost did not become ready: {self.raw[-2000:]}")
-        except BaseException:
-            self.close()
+        except BaseException as error:
+            try:
+                self.close()
+            except (AssertionError, OSError, pexpect.ExceptionPexpect) as cleanup_error:
+                if not isinstance(error, Exception):
+                    raise error from cleanup_error
+                raise AssertionError(f"{error}; cleanup: {cleanup_error}") from error
             raise
 
     def pump(self, duration: float) -> None:
@@ -328,13 +334,58 @@ class Terminal:
         )
 
     def close(self) -> None:
-        if self.child.isalive():
-            self.child.send("q")
-            self.pump(0.25)
-        if self.child.isalive():
-            self.child.terminate(force=True)
-        self.child.close()
-        (self.directory / "terminal.ansi").write_text(self.raw)
+        forced = False
+        try:
+            if self.child.isalive():
+                self.child.send("q")
+                deadline = time.monotonic() + 3
+                while self.child.isalive() and time.monotonic() < deadline:
+                    self.pump(0.05)
+            if self.child.isalive():
+                forced = True
+                # Allow more time than pexpect's 100 ms signal/reap intervals.
+                # Kill only this owned PID, then wait for actual reaping.
+                self.child.kill(signal.SIGKILL)
+                deadline = time.monotonic() + 5
+                while self.child.isalive() and time.monotonic() < deadline:
+                    time.sleep(0.025)
+            require(not self.child.isalive(), "Owned audit process could not be reaped")
+            # Exit may occur between the last read and isalive(). Drain its
+            # buffered restoration/diagnostic bytes before closing the PTY.
+            self.pump(0.05)
+            self.child.close()
+            require(
+                not forced,
+                "Game did not exit after Q; audit process was forcibly reaped",
+            )
+            require(
+                self.child.exitstatus == 0,
+                f"Audit process exited abnormally: exit={self.child.exitstatus}, signal={self.child.signalstatus}",
+            )
+        finally:
+            (self.directory / "terminal.ansi").write_text(self.raw)
+            (self.directory / "cleanup.json").write_text(
+                json.dumps(
+                    {
+                        "pid": self.child.pid,
+                        "forced": forced,
+                        "exit_status": self.child.exitstatus,
+                        "signal_status": self.child.signalstatus,
+                    },
+                    indent=2,
+                )
+                + "\n"
+            )
+
+
+def close_case(terminal: Terminal, row: dict) -> None:
+    try:
+        terminal.close()
+    except (AssertionError, OSError, pexpect.ExceptionPexpect) as error:
+        # Retain the original control failure and finish the other inventory
+        # rows. Forced cleanup is a failure, never evidence of a successful quit.
+        row["status"] = "FAILED"
+        row["actual"] = f"{row.get('actual', '')}; cleanup: {error}"
 
 
 def case(
@@ -403,7 +454,7 @@ def case(
             row["evidence"] = terminal.frames
             row["key_acknowledgment_seconds"] = terminal.key_latencies
             if reuse is None:
-                terminal.close()
+                close_case(terminal, row)
     existing = next(
         (
             i
@@ -457,11 +508,19 @@ def movement(terminal: Terminal, binding: str, direction: int) -> None:
             abs(terminal.state()["vx"]) < 0.1 and "Steering: STOP" in terminal.text()
         ),
         "Stop must brake and render stopped state",
+        timeout=5,
     )
     stopped = terminal.save("stopped")
     require(
         abs(stopped["vx"]) < 0.1 and stopped["direction"] == 0,
         "Stop must brake and clear steering",
+    )
+    stopped_pixels = terminal.fox()
+    terminal.pump(0.2)
+    require(
+        abs(terminal.state()["x"] - stopped["x"]) < 0.1
+        and abs(terminal.fox()[0] - stopped_pixels[0]) < 1,
+        "Stopped fox must remain in the same visible position",
     )
 
 
@@ -475,6 +534,7 @@ def stop(terminal: Terminal, binding: str) -> None:
             abs(terminal.state()["vx"]) < 0.1 and "Steering: STOP" in terminal.text()
         ),
         "Brake must stop motion and update HUD",
+        timeout=5,
     )
     stopped = terminal.save("stopped")
     terminal.pump(0.2)
@@ -500,6 +560,16 @@ def jump(terminal: Terminal, binding: str) -> None:
     )
     terminal.pump(0.1)
     terminal.key(binding, 0.12)
+    wait_for(
+        terminal,
+        lambda: (
+            terminal.state()["y"] < first["y"] - 20
+            and terminal.state()["vy"] < 0
+            and terminal.fox()[1] < pixels[1] - 2
+        ),
+        "Fresh second press must visibly double-jump after its simulation tick",
+        timeout=5,
+    )
     second = terminal.save("double-jump")
     require(
         second["y"] < first["y"] - 20 and second["vy"] < 0,
@@ -1433,7 +1503,8 @@ def run() -> None:
                 )
         finally:
             if shared is not None:
-                shared.close()
+                close_case(shared, ROWS[-1])
+                (OUTPUT / "results.json").write_text(json.dumps(ROWS, indent=2) + "\n")
         for binding in ("Q", "Ctrl+C"):
             case(
                 state,

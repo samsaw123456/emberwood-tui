@@ -1,6 +1,7 @@
 name: Build and verify
 on:
   push:
+    branches: ['**'] # Release tags point to commits already checked on their branch.
   pull_request:
   workflow_dispatch:
 permissions:
@@ -31,9 +32,15 @@ jobs:
           .venv/bin/shellcheck install.sh emberwood-tui tools/bootstrap.sh tools/package.sh
           .venv/bin/ruff check tools
           .venv/bin/ruff format --check tools
-      - name: Check literal keys, camera response and rapid menu wrapping first
+      - name: Verify audit cleanup and failure preservation
+        run: .venv/bin/python tools/test_ansi_audit.py
+      - name: Check terminal, motion and menu regressions first
         if: matrix.os != 'ubuntu-24.04-arm'
-        run: .venv/bin/python tools/ansi_audit.py --case playing 'Ctrl+Z literal' --case motion 'G camera recentering' --case paused 'Up/Down/Tab boundaries'
+        run: |
+          .venv/bin/python tools/ansi_audit.py \
+            --case playing 'Ctrl+Z literal' --case motion 'G camera recentering' \
+            --case paused 'Up/Down/Tab boundaries' --case playing W \
+            --case playing 'Right reduced motion' --case playing X
       - name: Audit every ANSI control
         if: matrix.os != 'ubuntu-24.04-arm'
         run: .venv/bin/python tools/ansi_audit.py

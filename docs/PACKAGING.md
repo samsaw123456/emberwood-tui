@@ -10,7 +10,7 @@ is not root. An already prepared machine needs no administrator access.
 ## For players
 
 ```sh
-curl -fsSL https://github.com/samsaw123456/emberwood-tui/releases/download/v1.0.1/install.sh | bash
+curl -fsSL https://github.com/samsaw123456/emberwood-tui/releases/download/v1.0.2/install.sh | bash
 ```
 
 To inspect before executing, download `install.sh` from the release, read it, then
@@ -47,9 +47,10 @@ Menu launches pass `--desktop`, asking the terminal for 120×40 cells before the
 game starts. A terminal that disallows window resizing keeps its existing size
 and shows the normal minimum-size instruction when necessary.
 macOS gets `~/Applications/Emberwood Terminal.app`, which opens the game in
-Terminal.app. The published v1.0.1 installer registers the application menu but
-does not pin the taskbar. From the current source checkout, `./install.sh --pin`
-also pins the default user installation to the active GNOME dock. This explicit
+Terminal.app. Starting with v1.0.2, `./install.sh --pin` also pins the default
+user installation to the active GNOME dock. The public one-shot equivalent is
+`curl -fsSL https://github.com/samsaw123456/emberwood-tui/releases/download/v1.0.2/install.sh | bash -s -- --pin`.
+This explicit
 option preserves all existing favorites and their order and is idempotent;
 ordinary installs leave dock preferences unchanged. It requires a writable GNOME
 desktop session and the default application-menu location, and rejects unsupported
@@ -104,11 +105,11 @@ launching the game; direct Gradle invocations do not participate in this lock.
 
 Run `./tools/package.sh` after `./gradlew check fatJar` to create:
 
-- `dist/emberwood-tui-1.0.1.tar.gz`
+- `dist/emberwood-tui-1.0.2.tar.gz`
 - `dist/install.sh`
 - `dist/SHA256SUMS`
 
-Attach all three to the matching `v1.0.1` GitHub release. The version in `VERSION`
+Attach all three to the matching `v1.0.2` GitHub release. The version in `VERSION`
 and `install.sh` must agree. The workflow compiles/tests and creates archives on
 Linux and macOS; it does not publish automatically.
 

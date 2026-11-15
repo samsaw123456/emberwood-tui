@@ -1,5 +1,38 @@
 # Verification record
 
+## v1.0.2 launcher release
+
+The launcher icon and explicit GNOME `--pin` support are included in v1.0.2.
+Its JAR is
+`0c774eeddcbc082c8a250ecaef318cfa20d86c6aa5f93d4af3166395088db1c0`.
+Independent ZIP comparison against v1.0.1 found only the version manifest
+changed: all 3,956 class files and every game asset are byte-identical. The
+comparison is retained in `build/release-1.0.2/artifact-comparison.json`.
+
+Two subsequent CI runs exposed audit timing and cleanup failures. One double-jump
+assertion sampled state before the next simulation tick, although the following
+state and rendered frames showed the correct second rise. A Linux movement
+probe displayed STOP before its telemetry reached zero velocity, then a later
+child did not acknowledge input and the old short cleanup sequence aborted the
+remaining inventory. That historical stall's precise cause is unproven.
+
+The audit now waits for the required visible double-jump and fully settled stop,
+checks that the stopped fox stays visibly stationary, and preserves cleanup
+failures while continuing the remaining inventory. Forced or nonzero exit is
+always a failed row. All 24 supplemental physical cases passed on v1.0.2: ten
+affected movement/jump/stop/dash cases and Q/Ctrl+C in all seven states. All 72
+captures were inspected and independently replayed from their original ANSI.
+Five real-PTY regressions establish that delayed normal exit succeeds, forced
+and nonzero exits fail, subsequent inventory work still runs, and startup
+failures retain both the original diagnostic and cleanup error. The retained
+traces and diagnosis are under `build/release-1.0.2/ci-diagnosis`, `focused`,
+and `exit-final`.
+
+The detailed v1.0.1 gameplay and control evidence below remains associated with
+its original executable hash. It is not relabelled as a new campaign playthrough.
+
+## v1.0.1 verification
+
 The v1.0.1 follow-up fixes automatic prerequisites, desktop terminal selection,
 editor entry, Ctrl+Z recovery and native terminal restoration. Its executable is
 `10220ad3607d6f947b4cf8ae017589f532a5b53ccd409e5d225b7488f859d5a2`.
