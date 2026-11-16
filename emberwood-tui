@@ -18,9 +18,9 @@ case ${1:-} in
             'Source checkouts build with the Gradle wrapper; installed releases are ready to play.' \
             'Install a terminal launcher with ./install.sh. See README.md for controls.' \
             'Enter starts/continues; Up/Down or Tab choose equipment while paused.' \
-            'A/D or Left/Right run; S/Down stop; Space/W/Up jump; X dash; J weapon.' \
+            'Hold A/D or Left/Right to move; S/Down stops. Space/W/Up jump; X dash; J weapon.' \
             'P/Esc pause/resume; Ctrl+Z pauses; R retry; M sound; G reduced motion; Q quit.' \
-            'Steering continues after key release. Use a UTF-8 color terminal, 80x28 or larger.'
+            'Movement requires holding keys (keyboard repeat). Use a UTF-8 color terminal, 80x28 or larger.'
         exit 0 ;;
     --build) build_only=true; shift ;;
     --offline) offline=true; shift ;;

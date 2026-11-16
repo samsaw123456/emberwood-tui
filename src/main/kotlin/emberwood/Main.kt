@@ -183,10 +183,10 @@ class TerminalGame(
             GameState.TITLE -> {
                 lines += line(" Guide the fox through twenty forests and six animal guardians.")
                 lines += line(" Collect 3 acorns to open each exit. Campfires save your return point.")
-                lines += line(" Tap A/D or Left/Right to RUN; tap S or Down to STOP.", 0xffd28a)
+                lines += line(" Hold A/D or Left/Right to RUN; S/Down stops immediately.", 0xffd28a)
                 lines += line(" Space/W/Up jump; press again for double-jump. X dash. J weapon.")
                 lines += line(" P/Esc pause & equipment. Ctrl+Z pause. R retry. M sound. G motion.")
-                lines += line(" Terminal keys are presses: steering continues after key release.")
+                lines += line(" Hold movement keys down to keep moving (keyboard repeat).")
                 lines +=
                     line(
                         " Enter: ${if (practice == null) "start adventure" else "practice level ${practice + 1}"}    Q: quit" +
@@ -239,13 +239,13 @@ class TerminalGame(
             }
             else -> {
                 val armor = if (game.equipment.armor == null) 0 else game.equipment.armorCharge
-                val steering =
+                val movement =
                     when (input.direction) {
                         -1 -> "LEFT"
                         1 -> "RIGHT"
                         else -> "STOP"
                     }
-                val status = if (game.state == GameState.RESPAWNING) "Returning to camp..." else "Steering: $steering"
+                val status = if (game.state == GameState.RESPAWNING) "Returning to camp..." else "Movement: $movement"
                 val dash = if (game.canDash) "ready" else "charging"
                 val weapon = game.equipment.weapon?.name ?: "find a campfire"
                 lines +=
@@ -259,7 +259,7 @@ class TerminalGame(
         val footer =
             listOf(
                 line(" " + hint()),
-                line(" A/D,Left/Right run | S/Down stop | Space/W/Up jump | X dash | J fire"),
+                line(" Hold A/D,Left/Right run | S/Down stop | Space/W/Up jump | X dash | J fire"),
                 line(" P/Esc pause | R retry | M sound: $sound | G motion: $motion | Q quit"),
             )
         val artRows = rows - lines.size - footer.size - 1
@@ -295,7 +295,7 @@ fun main(arguments: Array<String>) {
     }
     if (args.contentEquals(arrayOf("--help"))) {
         println(
-            "Emberwood Terminal\nUsage: emberwood-tui [--practice 1..20 | --version | --help]\nA/D or arrows steer; S/Down stops; Space/W/Up jumps; X dashes; J fires.\nP/Esc pauses/resumes; Ctrl+Z pauses; R retries; M sound; G motion; Q quits.\nSteering continues after key release. Terminal needs UTF-8, color and 80x28 cells.",
+            "Emberwood Terminal\nUsage: emberwood-tui [--practice 1..20 | --version | --help]\nHold A/D or arrows to move; S/Down stops. Space/W/Up jumps; X dashes; J fires.\nP/Esc pauses/resumes; Ctrl+Z pauses; R retries; M sound; G motion; Q quits.\nMovement requires holding keys (keyboard repeat). Needs UTF-8, color and 80x28 cells.",
         )
         return
     }

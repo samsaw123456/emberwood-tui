@@ -7,13 +7,16 @@ import kotlin.test.assertTrue
 
 class TerminalInputTest {
     @Test
-    fun steeringIsExplicitlyLatchedAndStopsOnEveryBrake() {
+    fun holdingMovementRequiresContinuedKeyPressesAndBrakeStopsImmediately() {
         for (left in listOf("a", "left")) {
             for (right in listOf("d", "right")) {
                 for (stop in listOf("s", "down")) {
                     val input = TerminalInput()
                     input.key(left)
-                    repeat(60) { assertTrue(input.frame(1.0 / 60).left) }
+                    repeat(60) {
+                        assertTrue(input.frame(1.0 / 60).left)
+                        input.key(left)
+                    }
                     input.key(right)
                     val reverse = input.frame(1.0 / 60)
                     assertTrue(reverse.right)
@@ -24,6 +27,18 @@ class TerminalInputTest {
                 }
             }
         }
+    }
+
+    @Test
+    fun movementStopsShortlyAfterKeyPressesStop() {
+        val input = TerminalInput()
+        input.key("d")
+        var moving = 0
+        repeat(30) {
+            if (input.frame(1.0 / 60).right) moving++
+        }
+        assertTrue(moving in 10..16)
+        repeat(10) { assertFalse(input.frame(1.0 / 60).right) }
     }
 
     @Test

@@ -44,9 +44,9 @@ Every third trail has a guardian. Dodge its marked landing, jump its ground wave
 
 | Action | Physical keys |
 | --- | --- |
-| Start running left | A or Left arrow |
-| Start running right | D or Right arrow |
-| Stop running | S or Down arrow |
+| Run left | Hold A or Left arrow |
+| Run right | Hold D or Right arrow |
+| Stop running | Release movement key, or press S or Down arrow |
 | Jump; press again to double-jump | Space, W or Up arrow |
 | Dash in the facing direction | X |
 | Fire equipped weapon | J |
@@ -60,7 +60,7 @@ Every third trail has a guardian. Dodge its marked landing, jump its ground wave
 | Toggle reduced motion (particles, snow, camera easing) | G |
 | Quit | Q or Ctrl+C |
 
-**Tap to steer; tap to stop.** Ordinary ANSI terminals send presses, not releases. Movement intentionally continues after releasing A/D or an arrow. You can jump, dash and fire while running. Jump presses use a 0.35-second hold pulse; keyboard auto-repeat can issue additional actions. Shift alone cannot be detected by ordinary terminals, so dash uses X. Letter commands are lowercase.
+**Hold to move.** Ordinary ANSI terminals send presses, not releases, so movement is detected while the terminal delivers key-repeat events for a held key and stops shortly after they stop. S/Down also stops immediately. You can jump, dash and fire while running. Jump presses use a 0.35-second hold pulse; keyboard auto-repeat can issue additional actions. Shift alone cannot be detected by ordinary terminals, so dash uses X. Letter commands are lowercase.
 
 Pause, death, level changes, and reported focus loss clear steering. Focus-loss detection depends on your terminal; pause before switching away if it does not report focus. Shrinking below the minimum size pauses play; enlarge it and press P to resume. Mouse, touch, controller, key remapping, and variable-height physical key-release jumping are not implemented.
 

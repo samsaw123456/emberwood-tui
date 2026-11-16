@@ -33,7 +33,7 @@ class TerminalGameTest {
         assertEquals(GameState.PAUSED, game.state)
         press(model, 'p')
         assertEquals(GameState.PLAYING, game.state)
-        assertTrue("Steering: STOP" in model.view())
+        assertTrue("Movement: STOP" in model.view())
         model.update(KeyPressMessage(Key(KeyType.keySUB)))
         assertEquals(GameState.PAUSED, game.state)
         assertEquals(0, model.input.direction)
@@ -76,7 +76,7 @@ class TerminalGameTest {
         model.update(KeyPressMessage(Key(KeyType.keyCR)))
         assertTrue(Regex("> Leaf armor\\s+equipped").containsMatchIn(model.view()))
         press(model, 'p')
-        assertTrue("Steering: STOP" in model.view())
+        assertTrue("Movement: STOP" in model.view())
         assertFalse("Paused" in model.view())
     }
 
